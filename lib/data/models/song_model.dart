@@ -37,10 +37,10 @@ class Song with _$Song {
 @freezed
 class AlbumArt with _$AlbumArt {
   const factory AlbumArt({
-    required String path,
-    @Default(0) int width,
-    @Default(0) int height,
-    String? mimeType,
+    @HiveField(0) required String path,
+    @HiveField(1) @Default(0) int width,
+    @HiveField(2) @Default(0) int height,
+    @HiveField(3) String? mimeType,
   }) = _AlbumArt;
 
   factory AlbumArt.fromJson(Map<String, dynamic> json) =>

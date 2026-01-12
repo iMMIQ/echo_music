@@ -97,11 +97,13 @@ ThemeData get lightTheme {
       type: BottomNavigationBarType.fixed,
       elevation: DesignTokens.elevationSubtle,
     ),
-    cardTheme: CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.lightSurface,
       elevation: DesignTokens.elevationSubtle,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+        borderRadius: BorderRadius.all(
+          Radius.circular(DesignTokens.radiusMedium),
+        ),
       ),
     ),
     iconTheme: const IconThemeData(
@@ -140,11 +142,13 @@ ThemeData get darkTheme {
       type: BottomNavigationBarType.fixed,
       elevation: DesignTokens.elevationSubtle,
     ),
-    cardTheme: CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.darkSurface,
       elevation: DesignTokens.elevationSubtle,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+        borderRadius: BorderRadius.all(
+          Radius.circular(DesignTokens.radiusMedium),
+        ),
       ),
     ),
     iconTheme: const IconThemeData(

@@ -16,12 +16,26 @@ class AlbumArtAdapter extends TypeAdapter<AlbumArt> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AlbumArt();
+    return AlbumArt(
+      path: fields[0] as String,
+      width: fields[1] as int,
+      height: fields[2] as int,
+      mimeType: fields[3] as String?,
+    );
   }
 
   @override
   void write(BinaryWriter writer, AlbumArt obj) {
-    writer.writeByte(0);
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.path)
+      ..writeByte(1)
+      ..write(obj.width)
+      ..writeByte(2)
+      ..write(obj.height)
+      ..writeByte(3)
+      ..write(obj.mimeType);
   }
 
   @override

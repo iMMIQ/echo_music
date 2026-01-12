@@ -559,9 +559,13 @@ AlbumArt _$AlbumArtFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AlbumArt {
+  @HiveField(0)
   String get path => throw _privateConstructorUsedError;
+  @HiveField(1)
   int get width => throw _privateConstructorUsedError;
+  @HiveField(2)
   int get height => throw _privateConstructorUsedError;
+  @HiveField(3)
   String? get mimeType => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -575,7 +579,11 @@ abstract class $AlbumArtCopyWith<$Res> {
   factory $AlbumArtCopyWith(AlbumArt value, $Res Function(AlbumArt) then) =
       _$AlbumArtCopyWithImpl<$Res, AlbumArt>;
   @useResult
-  $Res call({String path, int width, int height, String? mimeType});
+  $Res call(
+      {@HiveField(0) String path,
+      @HiveField(1) int width,
+      @HiveField(2) int height,
+      @HiveField(3) String? mimeType});
 }
 
 /// @nodoc
@@ -625,7 +633,11 @@ abstract class _$$AlbumArtImplCopyWith<$Res>
       __$$AlbumArtImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String path, int width, int height, String? mimeType});
+  $Res call(
+      {@HiveField(0) String path,
+      @HiveField(1) int width,
+      @HiveField(2) int height,
+      @HiveField(3) String? mimeType});
 }
 
 /// @nodoc
@@ -669,20 +681,27 @@ class __$$AlbumArtImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AlbumArtImpl implements _AlbumArt {
   const _$AlbumArtImpl(
-      {required this.path, this.width = 0, this.height = 0, this.mimeType});
+      {@HiveField(0) required this.path,
+      @HiveField(1) this.width = 0,
+      @HiveField(2) this.height = 0,
+      @HiveField(3) this.mimeType});
 
   factory _$AlbumArtImpl.fromJson(Map<String, dynamic> json) =>
       _$$AlbumArtImplFromJson(json);
 
   @override
+  @HiveField(0)
   final String path;
   @override
   @JsonKey()
+  @HiveField(1)
   final int width;
   @override
   @JsonKey()
+  @HiveField(2)
   final int height;
   @override
+  @HiveField(3)
   final String? mimeType;
 
   @override
@@ -722,21 +741,25 @@ class _$AlbumArtImpl implements _AlbumArt {
 
 abstract class _AlbumArt implements AlbumArt {
   const factory _AlbumArt(
-      {required final String path,
-      final int width,
-      final int height,
-      final String? mimeType}) = _$AlbumArtImpl;
+      {@HiveField(0) required final String path,
+      @HiveField(1) final int width,
+      @HiveField(2) final int height,
+      @HiveField(3) final String? mimeType}) = _$AlbumArtImpl;
 
   factory _AlbumArt.fromJson(Map<String, dynamic> json) =
       _$AlbumArtImpl.fromJson;
 
   @override
+  @HiveField(0)
   String get path;
   @override
+  @HiveField(1)
   int get width;
   @override
+  @HiveField(2)
   int get height;
   @override
+  @HiveField(3)
   String? get mimeType;
   @override
   @JsonKey(ignore: true)
