@@ -71,7 +71,7 @@ class MetadataServiceImpl extends MetadataService {
 
   @override
   Future<AlbumArt?> extractAlbumArt(String filePath) async {
-    // TODO: Implement album art extraction when API is stable
+    // TODO(claude): Implement album art extraction when API is stable
     return null;
   }
 
@@ -130,7 +130,7 @@ class MetadataServiceImpl extends MetadataService {
 
   @override
   Future<String> saveAlbumArt(AlbumArt albumArt, String directory) async {
-    // TODO: Implement saving album art to a file
+    // TODO(claude): Implement saving album art to a file
     // For now, return the original path
     return albumArt.path;
   }

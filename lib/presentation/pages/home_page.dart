@@ -10,6 +10,7 @@ import '../../data/models/song_model.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/library_provider.dart';
+import '../providers/navigation_provider.dart';
 import '../providers/search_provider.dart';
 import '../widgets/mini_player.dart';
 
@@ -22,8 +23,6 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  int _currentIndex = 0;
-
   final List<NavigationDestination> _destinations = [
     NavigationDestination(
       icon: Icon(PhosphorIcons.house()),
@@ -52,6 +51,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final currentIndex = ref.watch(currentNavigationIndexProvider);
 
     return Scaffold(
       body: Stack(
@@ -59,14 +59,12 @@ class _HomePageState extends ConsumerState<HomePage> {
           Column(
             children: [
               // Main content
-              Expanded(child: SafeArea(child: _buildPage(_currentIndex))),
+              Expanded(child: SafeArea(child: _buildPage(currentIndex))),
               // Bottom navigation
               NavigationBar(
-                selectedIndex: _currentIndex,
+                selectedIndex: currentIndex,
                 onDestinationSelected: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
+                  ref.read(currentNavigationIndexProvider.notifier).index = index;
                 },
                 destinations: _destinations,
                 backgroundColor: theme.colorScheme.surface,
@@ -157,7 +155,7 @@ class _QuickActions extends ConsumerWidget {
             icon: Icon(PhosphorIcons.heart(PhosphorIconsStyle.fill), size: 28),
             label: 'Favorites',
             color: Theme.of(context).colorScheme.secondary,
-            onTap: () => _navigateToTab(context, 1), // Navigate to Library
+            onTap: () => _navigateToTab(context, ref, 1), // Navigate to Library
           ),
         ),
         const SizedBox(width: 12),
@@ -185,12 +183,9 @@ class _QuickActions extends ConsumerWidget {
     );
   }
 
-  void _navigateToTab(BuildContext context, int index) {
-    // Find the HomePage state and update the tab index
-    final homePageState = context.findAncestorStateOfType<_HomePageState>();
-    homePageState?.setState(() {
-      homePageState._currentIndex = index;
-    });
+  void _navigateToTab(BuildContext context, WidgetRef ref, int index) {
+    // Use provider to navigate to tab
+    ref.read(currentNavigationIndexProvider.notifier).index = index;
   }
 
   void _showComingSoon(BuildContext context, String feature) {
@@ -244,7 +239,7 @@ class _QuickActionCard extends StatelessWidget {
       child: Container(
         height: 80,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
+          color: color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -420,8 +415,8 @@ class _MadeForYouCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.8),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(12),
@@ -1091,7 +1086,7 @@ class _SearchPageContentState extends ConsumerState<_SearchPageContent> {
   }
 
   void _onSearchChanged(String query) {
-    ref.read(searchQueryProvider.notifier).updateQuery(query);
+    ref.read(searchQueryProvider.notifier).query = query;
   }
 
   void _clearSearch() {

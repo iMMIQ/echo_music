@@ -287,7 +287,7 @@ class LibraryServiceImpl extends LibraryService {
       songCount: songs.length,
       albumCount: albums.length,
       artistCount: artists.length,
-      playlistCount: 0, // TODO: Implement playlists
+      playlistCount: 0, // TODO(claude): Implement playlists
       totalDuration: totalDuration,
       favoriteCount: favoriteCount,
     );

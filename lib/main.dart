@@ -23,7 +23,8 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const themeMode = ThemeMode.dark; // TODO: Get from settings
+    // TODO(claude): Get from settings
+    const themeMode = ThemeMode.dark;
 
     return MaterialApp(
       title: AppConstants.appName,

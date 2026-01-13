@@ -23,7 +23,7 @@ final searchResultsProvider = AutoDisposeFutureProvider<SearchResults>.internal(
 );
 
 typedef SearchResultsRef = AutoDisposeFutureProviderRef<SearchResults>;
-String _$searchQueryHash() => r'705b7bae115c1d6132c5db12668a80127c3bfd99';
+String _$searchQueryHash() => r'dff8b43c136a1237850fc6c1390c531f1e7539e0';
 
 /// Search query provider
 ///

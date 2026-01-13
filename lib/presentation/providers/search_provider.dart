@@ -10,9 +10,7 @@ class SearchQuery extends _$SearchQuery {
   @override
   String build() => '';
 
-  void updateQuery(String query) {
-    state = query;
-  }
+  set query(String value) => state = value;
 
   void clear() {
     state = '';
