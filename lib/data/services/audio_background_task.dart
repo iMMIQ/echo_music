@@ -116,7 +116,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     // Not implemented for now
   }
 
-  @override
   Future<void> prepareFromMediaItem(MediaItem mediaItem) async {
     // Not implemented for now
   }
@@ -142,7 +141,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     await _player.seek(position);
   }
 
-  @override
   Future<void> playFromMediaItem(MediaItem mediaItem) async {
     // Convert MediaItem back to audio source
     // This would need to be implemented based on your data model
@@ -242,7 +240,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     }
   }
 
-  @override
   Future<void> setQueue(List<MediaItem> queue) async {
     final audioSources = queue.map((item) {
       return AudioSource.uri(

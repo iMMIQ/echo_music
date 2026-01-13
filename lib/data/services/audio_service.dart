@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart' as audio_service_pkg;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../models/song_model.dart';
 
