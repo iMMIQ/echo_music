@@ -12,8 +12,7 @@ part of 'artist_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Artist _$ArtistFromJson(Map<String, dynamic> json) {
   return _Artist.fromJson(json);
@@ -47,16 +46,15 @@ abstract class $ArtistCopyWith<$Res> {
   factory $ArtistCopyWith(Artist value, $Res Function(Artist) then) =
       _$ArtistCopyWithImpl<$Res, Artist>;
   @useResult
-  $Res call({
-    String id,
-    String name,
-    @AlbumArtConverter() @HiveField(2) AlbumArt? artwork,
-    @HiveField(3) List<Album> albums,
-    @HiveField(4) int albumCount,
-    @HiveField(5) int songCount,
-    @HiveField(6) String? genre,
-    @HiveField(7) DateTime? dateAdded,
-  });
+  $Res call(
+      {String id,
+      String name,
+      @AlbumArtConverter() @HiveField(2) AlbumArt? artwork,
+      @HiveField(3) List<Album> albums,
+      @HiveField(4) int albumCount,
+      @HiveField(5) int songCount,
+      @HiveField(6) String? genre,
+      @HiveField(7) DateTime? dateAdded});
 
   $AlbumArtCopyWith<$Res>? get artwork;
 }
@@ -83,43 +81,40 @@ class _$ArtistCopyWithImpl<$Res, $Val extends Artist>
     Object? genre = freezed,
     Object? dateAdded = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            artwork: freezed == artwork
-                ? _value.artwork
-                : artwork // ignore: cast_nullable_to_non_nullable
-                      as AlbumArt?,
-            albums: null == albums
-                ? _value.albums
-                : albums // ignore: cast_nullable_to_non_nullable
-                      as List<Album>,
-            albumCount: null == albumCount
-                ? _value.albumCount
-                : albumCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            songCount: null == songCount
-                ? _value.songCount
-                : songCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            genre: freezed == genre
-                ? _value.genre
-                : genre // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            dateAdded: freezed == dateAdded
-                ? _value.dateAdded
-                : dateAdded // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      artwork: freezed == artwork
+          ? _value.artwork
+          : artwork // ignore: cast_nullable_to_non_nullable
+              as AlbumArt?,
+      albums: null == albums
+          ? _value.albums
+          : albums // ignore: cast_nullable_to_non_nullable
+              as List<Album>,
+      albumCount: null == albumCount
+          ? _value.albumCount
+          : albumCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      songCount: null == songCount
+          ? _value.songCount
+          : songCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      genre: freezed == genre
+          ? _value.genre
+          : genre // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dateAdded: freezed == dateAdded
+          ? _value.dateAdded
+          : dateAdded // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ) as $Val);
   }
 
   @override
@@ -138,21 +133,19 @@ class _$ArtistCopyWithImpl<$Res, $Val extends Artist>
 /// @nodoc
 abstract class _$$ArtistImplCopyWith<$Res> implements $ArtistCopyWith<$Res> {
   factory _$$ArtistImplCopyWith(
-    _$ArtistImpl value,
-    $Res Function(_$ArtistImpl) then,
-  ) = __$$ArtistImplCopyWithImpl<$Res>;
+          _$ArtistImpl value, $Res Function(_$ArtistImpl) then) =
+      __$$ArtistImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String id,
-    String name,
-    @AlbumArtConverter() @HiveField(2) AlbumArt? artwork,
-    @HiveField(3) List<Album> albums,
-    @HiveField(4) int albumCount,
-    @HiveField(5) int songCount,
-    @HiveField(6) String? genre,
-    @HiveField(7) DateTime? dateAdded,
-  });
+  $Res call(
+      {String id,
+      String name,
+      @AlbumArtConverter() @HiveField(2) AlbumArt? artwork,
+      @HiveField(3) List<Album> albums,
+      @HiveField(4) int albumCount,
+      @HiveField(5) int songCount,
+      @HiveField(6) String? genre,
+      @HiveField(7) DateTime? dateAdded});
 
   @override
   $AlbumArtCopyWith<$Res>? get artwork;
@@ -163,9 +156,8 @@ class __$$ArtistImplCopyWithImpl<$Res>
     extends _$ArtistCopyWithImpl<$Res, _$ArtistImpl>
     implements _$$ArtistImplCopyWith<$Res> {
   __$$ArtistImplCopyWithImpl(
-    _$ArtistImpl _value,
-    $Res Function(_$ArtistImpl) _then,
-  ) : super(_value, _then);
+      _$ArtistImpl _value, $Res Function(_$ArtistImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -179,59 +171,57 @@ class __$$ArtistImplCopyWithImpl<$Res>
     Object? genre = freezed,
     Object? dateAdded = freezed,
   }) {
-    return _then(
-      _$ArtistImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        artwork: freezed == artwork
-            ? _value.artwork
-            : artwork // ignore: cast_nullable_to_non_nullable
-                  as AlbumArt?,
-        albums: null == albums
-            ? _value._albums
-            : albums // ignore: cast_nullable_to_non_nullable
-                  as List<Album>,
-        albumCount: null == albumCount
-            ? _value.albumCount
-            : albumCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        songCount: null == songCount
-            ? _value.songCount
-            : songCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        genre: freezed == genre
-            ? _value.genre
-            : genre // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        dateAdded: freezed == dateAdded
-            ? _value.dateAdded
-            : dateAdded // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-      ),
-    );
+    return _then(_$ArtistImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      artwork: freezed == artwork
+          ? _value.artwork
+          : artwork // ignore: cast_nullable_to_non_nullable
+              as AlbumArt?,
+      albums: null == albums
+          ? _value._albums
+          : albums // ignore: cast_nullable_to_non_nullable
+              as List<Album>,
+      albumCount: null == albumCount
+          ? _value.albumCount
+          : albumCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      songCount: null == songCount
+          ? _value.songCount
+          : songCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      genre: freezed == genre
+          ? _value.genre
+          : genre // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dateAdded: freezed == dateAdded
+          ? _value.dateAdded
+          : dateAdded // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$ArtistImpl extends _Artist {
-  const _$ArtistImpl({
-    required this.id,
-    required this.name,
-    @AlbumArtConverter() @HiveField(2) this.artwork,
-    @HiveField(3) final List<Album> albums = const [],
-    @HiveField(4) this.albumCount = 0,
-    @HiveField(5) this.songCount = 0,
-    @HiveField(6) this.genre,
-    @HiveField(7) this.dateAdded,
-  }) : _albums = albums,
-       super._();
+  const _$ArtistImpl(
+      {required this.id,
+      required this.name,
+      @AlbumArtConverter() @HiveField(2) this.artwork,
+      @HiveField(3) final List<Album> albums = const [],
+      @HiveField(4) this.albumCount = 0,
+      @HiveField(5) this.songCount = 0,
+      @HiveField(6) this.genre,
+      @HiveField(7) this.dateAdded})
+      : _albums = albums,
+        super._();
 
   factory _$ArtistImpl.fromJson(Map<String, dynamic> json) =>
       _$$ArtistImplFromJson(json);
@@ -295,16 +285,15 @@ class _$ArtistImpl extends _Artist {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    name,
-    artwork,
-    const DeepCollectionEquality().hash(_albums),
-    albumCount,
-    songCount,
-    genre,
-    dateAdded,
-  );
+      runtimeType,
+      id,
+      name,
+      artwork,
+      const DeepCollectionEquality().hash(_albums),
+      albumCount,
+      songCount,
+      genre,
+      dateAdded);
 
   @JsonKey(ignore: true)
   @override
@@ -314,21 +303,22 @@ class _$ArtistImpl extends _Artist {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ArtistImplToJson(this);
+    return _$$ArtistImplToJson(
+      this,
+    );
   }
 }
 
 abstract class _Artist extends Artist {
-  const factory _Artist({
-    required final String id,
-    required final String name,
-    @AlbumArtConverter() @HiveField(2) final AlbumArt? artwork,
-    @HiveField(3) final List<Album> albums,
-    @HiveField(4) final int albumCount,
-    @HiveField(5) final int songCount,
-    @HiveField(6) final String? genre,
-    @HiveField(7) final DateTime? dateAdded,
-  }) = _$ArtistImpl;
+  const factory _Artist(
+      {required final String id,
+      required final String name,
+      @AlbumArtConverter() @HiveField(2) final AlbumArt? artwork,
+      @HiveField(3) final List<Album> albums,
+      @HiveField(4) final int albumCount,
+      @HiveField(5) final int songCount,
+      @HiveField(6) final String? genre,
+      @HiveField(7) final DateTime? dateAdded}) = _$ArtistImpl;
   const _Artist._() : super._();
 
   factory _Artist.fromJson(Map<String, dynamic> json) = _$ArtistImpl.fromJson;

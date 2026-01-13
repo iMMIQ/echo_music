@@ -12,8 +12,7 @@ part of 'audio_service.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$PlaybackState {
@@ -22,10 +21,10 @@ mixin _$PlaybackState {
   Duration get position => throw _privateConstructorUsedError;
   Duration get duration => throw _privateConstructorUsedError;
   double get playbackSpeed => throw _privateConstructorUsedError;
-  RepeatMode get repeatMode => throw _privateConstructorUsedError;
-  bool get isShuffle => throw _privateConstructorUsedError;
   List<Song> get queue => throw _privateConstructorUsedError;
   int get currentIndex => throw _privateConstructorUsedError;
+  RepeatMode get repeatMode => throw _privateConstructorUsedError;
+  bool get isShuffle => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PlaybackStateCopyWith<PlaybackState> get copyWith =>
@@ -35,21 +34,19 @@ mixin _$PlaybackState {
 /// @nodoc
 abstract class $PlaybackStateCopyWith<$Res> {
   factory $PlaybackStateCopyWith(
-    PlaybackState value,
-    $Res Function(PlaybackState) then,
-  ) = _$PlaybackStateCopyWithImpl<$Res, PlaybackState>;
+          PlaybackState value, $Res Function(PlaybackState) then) =
+      _$PlaybackStateCopyWithImpl<$Res, PlaybackState>;
   @useResult
-  $Res call({
-    bool isPlaying,
-    Song? currentSong,
-    Duration position,
-    Duration duration,
-    double playbackSpeed,
-    RepeatMode repeatMode,
-    bool isShuffle,
-    List<Song> queue,
-    int currentIndex,
-  });
+  $Res call(
+      {bool isPlaying,
+      Song? currentSong,
+      Duration position,
+      Duration duration,
+      double playbackSpeed,
+      List<Song> queue,
+      int currentIndex,
+      RepeatMode repeatMode,
+      bool isShuffle});
 
   $SongCopyWith<$Res>? get currentSong;
 }
@@ -72,52 +69,49 @@ class _$PlaybackStateCopyWithImpl<$Res, $Val extends PlaybackState>
     Object? position = null,
     Object? duration = null,
     Object? playbackSpeed = null,
-    Object? repeatMode = null,
-    Object? isShuffle = null,
     Object? queue = null,
     Object? currentIndex = null,
+    Object? repeatMode = null,
+    Object? isShuffle = null,
   }) {
-    return _then(
-      _value.copyWith(
-            isPlaying: null == isPlaying
-                ? _value.isPlaying
-                : isPlaying // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            currentSong: freezed == currentSong
-                ? _value.currentSong
-                : currentSong // ignore: cast_nullable_to_non_nullable
-                      as Song?,
-            position: null == position
-                ? _value.position
-                : position // ignore: cast_nullable_to_non_nullable
-                      as Duration,
-            duration: null == duration
-                ? _value.duration
-                : duration // ignore: cast_nullable_to_non_nullable
-                      as Duration,
-            playbackSpeed: null == playbackSpeed
-                ? _value.playbackSpeed
-                : playbackSpeed // ignore: cast_nullable_to_non_nullable
-                      as double,
-            repeatMode: null == repeatMode
-                ? _value.repeatMode
-                : repeatMode // ignore: cast_nullable_to_non_nullable
-                      as RepeatMode,
-            isShuffle: null == isShuffle
-                ? _value.isShuffle
-                : isShuffle // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            queue: null == queue
-                ? _value.queue
-                : queue // ignore: cast_nullable_to_non_nullable
-                      as List<Song>,
-            currentIndex: null == currentIndex
-                ? _value.currentIndex
-                : currentIndex // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      isPlaying: null == isPlaying
+          ? _value.isPlaying
+          : isPlaying // ignore: cast_nullable_to_non_nullable
+              as bool,
+      currentSong: freezed == currentSong
+          ? _value.currentSong
+          : currentSong // ignore: cast_nullable_to_non_nullable
+              as Song?,
+      position: null == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      duration: null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      playbackSpeed: null == playbackSpeed
+          ? _value.playbackSpeed
+          : playbackSpeed // ignore: cast_nullable_to_non_nullable
+              as double,
+      queue: null == queue
+          ? _value.queue
+          : queue // ignore: cast_nullable_to_non_nullable
+              as List<Song>,
+      currentIndex: null == currentIndex
+          ? _value.currentIndex
+          : currentIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      repeatMode: null == repeatMode
+          ? _value.repeatMode
+          : repeatMode // ignore: cast_nullable_to_non_nullable
+              as RepeatMode,
+      isShuffle: null == isShuffle
+          ? _value.isShuffle
+          : isShuffle // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
   }
 
   @override
@@ -137,22 +131,20 @@ class _$PlaybackStateCopyWithImpl<$Res, $Val extends PlaybackState>
 abstract class _$$PlaybackStateImplCopyWith<$Res>
     implements $PlaybackStateCopyWith<$Res> {
   factory _$$PlaybackStateImplCopyWith(
-    _$PlaybackStateImpl value,
-    $Res Function(_$PlaybackStateImpl) then,
-  ) = __$$PlaybackStateImplCopyWithImpl<$Res>;
+          _$PlaybackStateImpl value, $Res Function(_$PlaybackStateImpl) then) =
+      __$$PlaybackStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    bool isPlaying,
-    Song? currentSong,
-    Duration position,
-    Duration duration,
-    double playbackSpeed,
-    RepeatMode repeatMode,
-    bool isShuffle,
-    List<Song> queue,
-    int currentIndex,
-  });
+  $Res call(
+      {bool isPlaying,
+      Song? currentSong,
+      Duration position,
+      Duration duration,
+      double playbackSpeed,
+      List<Song> queue,
+      int currentIndex,
+      RepeatMode repeatMode,
+      bool isShuffle});
 
   @override
   $SongCopyWith<$Res>? get currentSong;
@@ -163,9 +155,8 @@ class __$$PlaybackStateImplCopyWithImpl<$Res>
     extends _$PlaybackStateCopyWithImpl<$Res, _$PlaybackStateImpl>
     implements _$$PlaybackStateImplCopyWith<$Res> {
   __$$PlaybackStateImplCopyWithImpl(
-    _$PlaybackStateImpl _value,
-    $Res Function(_$PlaybackStateImpl) _then,
-  ) : super(_value, _then);
+      _$PlaybackStateImpl _value, $Res Function(_$PlaybackStateImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -175,68 +166,66 @@ class __$$PlaybackStateImplCopyWithImpl<$Res>
     Object? position = null,
     Object? duration = null,
     Object? playbackSpeed = null,
-    Object? repeatMode = null,
-    Object? isShuffle = null,
     Object? queue = null,
     Object? currentIndex = null,
+    Object? repeatMode = null,
+    Object? isShuffle = null,
   }) {
-    return _then(
-      _$PlaybackStateImpl(
-        isPlaying: null == isPlaying
-            ? _value.isPlaying
-            : isPlaying // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        currentSong: freezed == currentSong
-            ? _value.currentSong
-            : currentSong // ignore: cast_nullable_to_non_nullable
-                  as Song?,
-        position: null == position
-            ? _value.position
-            : position // ignore: cast_nullable_to_non_nullable
-                  as Duration,
-        duration: null == duration
-            ? _value.duration
-            : duration // ignore: cast_nullable_to_non_nullable
-                  as Duration,
-        playbackSpeed: null == playbackSpeed
-            ? _value.playbackSpeed
-            : playbackSpeed // ignore: cast_nullable_to_non_nullable
-                  as double,
-        repeatMode: null == repeatMode
-            ? _value.repeatMode
-            : repeatMode // ignore: cast_nullable_to_non_nullable
-                  as RepeatMode,
-        isShuffle: null == isShuffle
-            ? _value.isShuffle
-            : isShuffle // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        queue: null == queue
-            ? _value._queue
-            : queue // ignore: cast_nullable_to_non_nullable
-                  as List<Song>,
-        currentIndex: null == currentIndex
-            ? _value.currentIndex
-            : currentIndex // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
+    return _then(_$PlaybackStateImpl(
+      isPlaying: null == isPlaying
+          ? _value.isPlaying
+          : isPlaying // ignore: cast_nullable_to_non_nullable
+              as bool,
+      currentSong: freezed == currentSong
+          ? _value.currentSong
+          : currentSong // ignore: cast_nullable_to_non_nullable
+              as Song?,
+      position: null == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      duration: null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      playbackSpeed: null == playbackSpeed
+          ? _value.playbackSpeed
+          : playbackSpeed // ignore: cast_nullable_to_non_nullable
+              as double,
+      queue: null == queue
+          ? _value._queue
+          : queue // ignore: cast_nullable_to_non_nullable
+              as List<Song>,
+      currentIndex: null == currentIndex
+          ? _value.currentIndex
+          : currentIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      repeatMode: null == repeatMode
+          ? _value.repeatMode
+          : repeatMode // ignore: cast_nullable_to_non_nullable
+              as RepeatMode,
+      isShuffle: null == isShuffle
+          ? _value.isShuffle
+          : isShuffle // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
   }
 }
 
 /// @nodoc
 
 class _$PlaybackStateImpl implements _PlaybackState {
-  const _$PlaybackStateImpl({
-    required this.isPlaying,
-    required this.currentSong,
-    required this.position,
-    required this.duration,
-    required this.playbackSpeed,
-    this.repeatMode = RepeatMode.off,
-    this.isShuffle = false,
-    required final List<Song> queue,
-    required this.currentIndex,
-  }) : _queue = queue;
+  const _$PlaybackStateImpl(
+      {required this.isPlaying,
+      required this.currentSong,
+      required this.position,
+      required this.duration,
+      required this.playbackSpeed,
+      required final List<Song> queue,
+      required this.currentIndex,
+      this.repeatMode = RepeatMode.off,
+      this.isShuffle = false})
+      : _queue = queue;
 
   @override
   final bool isPlaying;
@@ -248,12 +237,6 @@ class _$PlaybackStateImpl implements _PlaybackState {
   final Duration duration;
   @override
   final double playbackSpeed;
-  @override
-  @JsonKey()
-  final RepeatMode repeatMode;
-  @override
-  @JsonKey()
-  final bool isShuffle;
   final List<Song> _queue;
   @override
   List<Song> get queue {
@@ -264,10 +247,16 @@ class _$PlaybackStateImpl implements _PlaybackState {
 
   @override
   final int currentIndex;
+  @override
+  @JsonKey()
+  final RepeatMode repeatMode;
+  @override
+  @JsonKey()
+  final bool isShuffle;
 
   @override
   String toString() {
-    return 'PlaybackState(isPlaying: $isPlaying, currentSong: $currentSong, position: $position, duration: $duration, playbackSpeed: $playbackSpeed, repeatMode: $repeatMode, isShuffle: $isShuffle, queue: $queue, currentIndex: $currentIndex)';
+    return 'PlaybackState(isPlaying: $isPlaying, currentSong: $currentSong, position: $position, duration: $duration, playbackSpeed: $playbackSpeed, queue: $queue, currentIndex: $currentIndex, repeatMode: $repeatMode, isShuffle: $isShuffle)';
   }
 
   @override
@@ -285,28 +274,27 @@ class _$PlaybackStateImpl implements _PlaybackState {
                 other.duration == duration) &&
             (identical(other.playbackSpeed, playbackSpeed) ||
                 other.playbackSpeed == playbackSpeed) &&
+            const DeepCollectionEquality().equals(other._queue, _queue) &&
+            (identical(other.currentIndex, currentIndex) ||
+                other.currentIndex == currentIndex) &&
             (identical(other.repeatMode, repeatMode) ||
                 other.repeatMode == repeatMode) &&
             (identical(other.isShuffle, isShuffle) ||
-                other.isShuffle == isShuffle) &&
-            const DeepCollectionEquality().equals(other._queue, _queue) &&
-            (identical(other.currentIndex, currentIndex) ||
-                other.currentIndex == currentIndex));
+                other.isShuffle == isShuffle));
   }
 
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    isPlaying,
-    currentSong,
-    position,
-    duration,
-    playbackSpeed,
-    repeatMode,
-    isShuffle,
-    const DeepCollectionEquality().hash(_queue),
-    currentIndex,
-  );
+      runtimeType,
+      isPlaying,
+      currentSong,
+      position,
+      duration,
+      playbackSpeed,
+      const DeepCollectionEquality().hash(_queue),
+      currentIndex,
+      repeatMode,
+      isShuffle);
 
   @JsonKey(ignore: true)
   @override
@@ -316,17 +304,16 @@ class _$PlaybackStateImpl implements _PlaybackState {
 }
 
 abstract class _PlaybackState implements PlaybackState {
-  const factory _PlaybackState({
-    required final bool isPlaying,
-    required final Song? currentSong,
-    required final Duration position,
-    required final Duration duration,
-    required final double playbackSpeed,
-    final RepeatMode repeatMode,
-    final bool isShuffle,
-    required final List<Song> queue,
-    required final int currentIndex,
-  }) = _$PlaybackStateImpl;
+  const factory _PlaybackState(
+      {required final bool isPlaying,
+      required final Song? currentSong,
+      required final Duration position,
+      required final Duration duration,
+      required final double playbackSpeed,
+      required final List<Song> queue,
+      required final int currentIndex,
+      final RepeatMode repeatMode,
+      final bool isShuffle}) = _$PlaybackStateImpl;
 
   @override
   bool get isPlaying;
@@ -339,13 +326,13 @@ abstract class _PlaybackState implements PlaybackState {
   @override
   double get playbackSpeed;
   @override
-  RepeatMode get repeatMode;
-  @override
-  bool get isShuffle;
-  @override
   List<Song> get queue;
   @override
   int get currentIndex;
+  @override
+  RepeatMode get repeatMode;
+  @override
+  bool get isShuffle;
   @override
   @JsonKey(ignore: true)
   _$$PlaybackStateImplCopyWith<_$PlaybackStateImpl> get copyWith =>

@@ -15,14 +15,14 @@ String _$favoritesControllerHash() =>
 @ProviderFor(FavoritesController)
 final favoritesControllerProvider =
     AutoDisposeAsyncNotifierProvider<FavoritesController, void>.internal(
-      FavoritesController.new,
-      name: r'favoritesControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$favoritesControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  FavoritesController.new,
+  name: r'favoritesControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$favoritesControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$FavoritesController = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint

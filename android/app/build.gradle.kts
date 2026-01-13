@@ -28,6 +28,11 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Only build for arm64-v8a to reduce APK size for modern devices
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
     }
 
     buildTypes {

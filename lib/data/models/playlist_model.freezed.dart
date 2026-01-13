@@ -12,8 +12,7 @@ part of 'playlist_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Playlist _$PlaylistFromJson(Map<String, dynamic> json) {
   return _Playlist.fromJson(json);
@@ -23,13 +22,13 @@ Playlist _$PlaylistFromJson(Map<String, dynamic> json) {
 mixin _$Playlist {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
   @HiveField(2)
   String? get description => throw _privateConstructorUsedError;
   @HiveField(3)
   List<Song> get songs => throw _privateConstructorUsedError;
   @HiveField(4)
   AlbumArt? get artwork => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
   @HiveField(6)
   DateTime? get updatedAt => throw _privateConstructorUsedError;
   @HiveField(7)
@@ -48,17 +47,16 @@ abstract class $PlaylistCopyWith<$Res> {
   factory $PlaylistCopyWith(Playlist value, $Res Function(Playlist) then) =
       _$PlaylistCopyWithImpl<$Res, Playlist>;
   @useResult
-  $Res call({
-    String id,
-    String name,
-    @HiveField(2) String? description,
-    @HiveField(3) List<Song> songs,
-    @HiveField(4) AlbumArt? artwork,
-    DateTime createdAt,
-    @HiveField(6) DateTime? updatedAt,
-    @HiveField(7) bool isSmartPlaylist,
-    @HiveField(8) String? smartPlaylistRules,
-  });
+  $Res call(
+      {String id,
+      String name,
+      DateTime createdAt,
+      @HiveField(2) String? description,
+      @HiveField(3) List<Song> songs,
+      @HiveField(4) AlbumArt? artwork,
+      @HiveField(6) DateTime? updatedAt,
+      @HiveField(7) bool isSmartPlaylist,
+      @HiveField(8) String? smartPlaylistRules});
 
   $AlbumArtCopyWith<$Res>? get artwork;
 }
@@ -78,55 +76,52 @@ class _$PlaylistCopyWithImpl<$Res, $Val extends Playlist>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? createdAt = null,
     Object? description = freezed,
     Object? songs = null,
     Object? artwork = freezed,
-    Object? createdAt = null,
     Object? updatedAt = freezed,
     Object? isSmartPlaylist = null,
     Object? smartPlaylistRules = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            description: freezed == description
-                ? _value.description
-                : description // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            songs: null == songs
-                ? _value.songs
-                : songs // ignore: cast_nullable_to_non_nullable
-                      as List<Song>,
-            artwork: freezed == artwork
-                ? _value.artwork
-                : artwork // ignore: cast_nullable_to_non_nullable
-                      as AlbumArt?,
-            createdAt: null == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            updatedAt: freezed == updatedAt
-                ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            isSmartPlaylist: null == isSmartPlaylist
-                ? _value.isSmartPlaylist
-                : isSmartPlaylist // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            smartPlaylistRules: freezed == smartPlaylistRules
-                ? _value.smartPlaylistRules
-                : smartPlaylistRules // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      songs: null == songs
+          ? _value.songs
+          : songs // ignore: cast_nullable_to_non_nullable
+              as List<Song>,
+      artwork: freezed == artwork
+          ? _value.artwork
+          : artwork // ignore: cast_nullable_to_non_nullable
+              as AlbumArt?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      isSmartPlaylist: null == isSmartPlaylist
+          ? _value.isSmartPlaylist
+          : isSmartPlaylist // ignore: cast_nullable_to_non_nullable
+              as bool,
+      smartPlaylistRules: freezed == smartPlaylistRules
+          ? _value.smartPlaylistRules
+          : smartPlaylistRules // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
   }
 
   @override
@@ -146,22 +141,20 @@ class _$PlaylistCopyWithImpl<$Res, $Val extends Playlist>
 abstract class _$$PlaylistImplCopyWith<$Res>
     implements $PlaylistCopyWith<$Res> {
   factory _$$PlaylistImplCopyWith(
-    _$PlaylistImpl value,
-    $Res Function(_$PlaylistImpl) then,
-  ) = __$$PlaylistImplCopyWithImpl<$Res>;
+          _$PlaylistImpl value, $Res Function(_$PlaylistImpl) then) =
+      __$$PlaylistImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String id,
-    String name,
-    @HiveField(2) String? description,
-    @HiveField(3) List<Song> songs,
-    @HiveField(4) AlbumArt? artwork,
-    DateTime createdAt,
-    @HiveField(6) DateTime? updatedAt,
-    @HiveField(7) bool isSmartPlaylist,
-    @HiveField(8) String? smartPlaylistRules,
-  });
+  $Res call(
+      {String id,
+      String name,
+      DateTime createdAt,
+      @HiveField(2) String? description,
+      @HiveField(3) List<Song> songs,
+      @HiveField(4) AlbumArt? artwork,
+      @HiveField(6) DateTime? updatedAt,
+      @HiveField(7) bool isSmartPlaylist,
+      @HiveField(8) String? smartPlaylistRules});
 
   @override
   $AlbumArtCopyWith<$Res>? get artwork;
@@ -172,81 +165,78 @@ class __$$PlaylistImplCopyWithImpl<$Res>
     extends _$PlaylistCopyWithImpl<$Res, _$PlaylistImpl>
     implements _$$PlaylistImplCopyWith<$Res> {
   __$$PlaylistImplCopyWithImpl(
-    _$PlaylistImpl _value,
-    $Res Function(_$PlaylistImpl) _then,
-  ) : super(_value, _then);
+      _$PlaylistImpl _value, $Res Function(_$PlaylistImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? createdAt = null,
     Object? description = freezed,
     Object? songs = null,
     Object? artwork = freezed,
-    Object? createdAt = null,
     Object? updatedAt = freezed,
     Object? isSmartPlaylist = null,
     Object? smartPlaylistRules = freezed,
   }) {
-    return _then(
-      _$PlaylistImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        description: freezed == description
-            ? _value.description
-            : description // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        songs: null == songs
-            ? _value._songs
-            : songs // ignore: cast_nullable_to_non_nullable
-                  as List<Song>,
-        artwork: freezed == artwork
-            ? _value.artwork
-            : artwork // ignore: cast_nullable_to_non_nullable
-                  as AlbumArt?,
-        createdAt: null == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        updatedAt: freezed == updatedAt
-            ? _value.updatedAt
-            : updatedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        isSmartPlaylist: null == isSmartPlaylist
-            ? _value.isSmartPlaylist
-            : isSmartPlaylist // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        smartPlaylistRules: freezed == smartPlaylistRules
-            ? _value.smartPlaylistRules
-            : smartPlaylistRules // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
+    return _then(_$PlaylistImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      songs: null == songs
+          ? _value._songs
+          : songs // ignore: cast_nullable_to_non_nullable
+              as List<Song>,
+      artwork: freezed == artwork
+          ? _value.artwork
+          : artwork // ignore: cast_nullable_to_non_nullable
+              as AlbumArt?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      isSmartPlaylist: null == isSmartPlaylist
+          ? _value.isSmartPlaylist
+          : isSmartPlaylist // ignore: cast_nullable_to_non_nullable
+              as bool,
+      smartPlaylistRules: freezed == smartPlaylistRules
+          ? _value.smartPlaylistRules
+          : smartPlaylistRules // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$PlaylistImpl extends _Playlist {
-  const _$PlaylistImpl({
-    required this.id,
-    required this.name,
-    @HiveField(2) this.description,
-    @HiveField(3) final List<Song> songs = const [],
-    @HiveField(4) this.artwork,
-    required this.createdAt,
-    @HiveField(6) this.updatedAt,
-    @HiveField(7) this.isSmartPlaylist = false,
-    @HiveField(8) this.smartPlaylistRules,
-  }) : _songs = songs,
-       super._();
+  const _$PlaylistImpl(
+      {required this.id,
+      required this.name,
+      required this.createdAt,
+      @HiveField(2) this.description,
+      @HiveField(3) final List<Song> songs = const [],
+      @HiveField(4) this.artwork,
+      @HiveField(6) this.updatedAt,
+      @HiveField(7) this.isSmartPlaylist = false,
+      @HiveField(8) this.smartPlaylistRules})
+      : _songs = songs,
+        super._();
 
   factory _$PlaylistImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlaylistImplFromJson(json);
@@ -255,6 +245,8 @@ class _$PlaylistImpl extends _Playlist {
   final String id;
   @override
   final String name;
+  @override
+  final DateTime createdAt;
   @override
   @HiveField(2)
   final String? description;
@@ -272,8 +264,6 @@ class _$PlaylistImpl extends _Playlist {
   @HiveField(4)
   final AlbumArt? artwork;
   @override
-  final DateTime createdAt;
-  @override
   @HiveField(6)
   final DateTime? updatedAt;
   @override
@@ -286,7 +276,7 @@ class _$PlaylistImpl extends _Playlist {
 
   @override
   String toString() {
-    return 'Playlist(id: $id, name: $name, description: $description, songs: $songs, artwork: $artwork, createdAt: $createdAt, updatedAt: $updatedAt, isSmartPlaylist: $isSmartPlaylist, smartPlaylistRules: $smartPlaylistRules)';
+    return 'Playlist(id: $id, name: $name, createdAt: $createdAt, description: $description, songs: $songs, artwork: $artwork, updatedAt: $updatedAt, isSmartPlaylist: $isSmartPlaylist, smartPlaylistRules: $smartPlaylistRules)';
   }
 
   @override
@@ -296,12 +286,12 @@ class _$PlaylistImpl extends _Playlist {
             other is _$PlaylistImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             const DeepCollectionEquality().equals(other._songs, _songs) &&
             (identical(other.artwork, artwork) || other.artwork == artwork) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.isSmartPlaylist, isSmartPlaylist) ||
@@ -313,17 +303,16 @@ class _$PlaylistImpl extends _Playlist {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    name,
-    description,
-    const DeepCollectionEquality().hash(_songs),
-    artwork,
-    createdAt,
-    updatedAt,
-    isSmartPlaylist,
-    smartPlaylistRules,
-  );
+      runtimeType,
+      id,
+      name,
+      createdAt,
+      description,
+      const DeepCollectionEquality().hash(_songs),
+      artwork,
+      updatedAt,
+      isSmartPlaylist,
+      smartPlaylistRules);
 
   @JsonKey(ignore: true)
   @override
@@ -333,22 +322,23 @@ class _$PlaylistImpl extends _Playlist {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$PlaylistImplToJson(this);
+    return _$$PlaylistImplToJson(
+      this,
+    );
   }
 }
 
 abstract class _Playlist extends Playlist {
-  const factory _Playlist({
-    required final String id,
-    required final String name,
-    @HiveField(2) final String? description,
-    @HiveField(3) final List<Song> songs,
-    @HiveField(4) final AlbumArt? artwork,
-    required final DateTime createdAt,
-    @HiveField(6) final DateTime? updatedAt,
-    @HiveField(7) final bool isSmartPlaylist,
-    @HiveField(8) final String? smartPlaylistRules,
-  }) = _$PlaylistImpl;
+  const factory _Playlist(
+      {required final String id,
+      required final String name,
+      required final DateTime createdAt,
+      @HiveField(2) final String? description,
+      @HiveField(3) final List<Song> songs,
+      @HiveField(4) final AlbumArt? artwork,
+      @HiveField(6) final DateTime? updatedAt,
+      @HiveField(7) final bool isSmartPlaylist,
+      @HiveField(8) final String? smartPlaylistRules}) = _$PlaylistImpl;
   const _Playlist._() : super._();
 
   factory _Playlist.fromJson(Map<String, dynamic> json) =
@@ -359,6 +349,8 @@ abstract class _Playlist extends Playlist {
   @override
   String get name;
   @override
+  DateTime get createdAt;
+  @override
   @HiveField(2)
   String? get description;
   @override
@@ -367,8 +359,6 @@ abstract class _Playlist extends Playlist {
   @override
   @HiveField(4)
   AlbumArt? get artwork;
-  @override
-  DateTime get createdAt;
   @override
   @HiveField(6)
   DateTime? get updatedAt;
