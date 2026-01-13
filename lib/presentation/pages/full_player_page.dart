@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../providers/audio_provider.dart';
+import '../providers/favorites_provider.dart';
+import '../providers/library_provider.dart';
 import '../widgets/queue_panel.dart';
 import '../../data/services/audio_service.dart';
 
@@ -483,7 +485,7 @@ class _MainControls extends ConsumerWidget {
 }
 
 /// Secondary controls widget
-class _SecondaryControls extends StatelessWidget {
+class _SecondaryControls extends ConsumerWidget {
   final VoidCallback onShowQueue;
 
   const _SecondaryControls({
@@ -491,38 +493,124 @@ class _SecondaryControls extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _SecondaryButton(
-          icon: PhosphorIcons.queue(),
-          label: 'Queue',
-          onTap: onShowQueue,
-        ),
-        _SecondaryButton(
-          icon: PhosphorIcons.heart(),
-          label: 'Like',
-          onTap: () {
-            // Toggle favorite
-          },
-        ),
-        _SecondaryButton(
-          icon: PhosphorIcons.speakerHigh(),
-          label: 'Volume',
-          onTap: () {
-            // Show volume slider
-          },
-        ),
-        _SecondaryButton(
-          icon: PhosphorIcons.shareFat(),
-          label: 'Share',
-          onTap: () {
-            // Share song
-          },
-        ),
-      ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playbackStateAsync = ref.watch(playbackStateProvider);
+    final favoritesAsync = ref.watch(favoriteSongsProvider);
+
+    return playbackStateAsync.when(
+      data: (state) {
+        final currentSong = state.currentSong;
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _SecondaryButton(
+              icon: PhosphorIcons.queue(),
+              label: 'Queue',
+              onTap: onShowQueue,
+            ),
+            if (currentSong != null)
+              favoritesAsync.when(
+                data: (favorites) {
+                  final isFavorite = favorites.any((s) => s.id == currentSong.id);
+                  return _SecondaryButton(
+                    icon: isFavorite
+                        ? PhosphorIcons.heart(PhosphorIconsStyle.fill)
+                        : PhosphorIcons.heart(),
+                    label: 'Like',
+                    onTap: () => _toggleFavorite(ref, currentSong.id),
+                    isActive: isFavorite,
+                  );
+                },
+                loading: () => _SecondaryButton(
+                  icon: PhosphorIcons.heart(),
+                  label: 'Like',
+                  onTap: () {},
+                ),
+                error: (_, __) => _SecondaryButton(
+                  icon: PhosphorIcons.heart(),
+                  label: 'Like',
+                  onTap: () {},
+                ),
+              )
+            else
+              _SecondaryButton(
+                icon: PhosphorIcons.heart(),
+                label: 'Like',
+                onTap: () {},
+              ),
+            _SecondaryButton(
+              icon: PhosphorIcons.speakerHigh(),
+              label: 'Volume',
+              onTap: () {
+                // Show volume slider
+              },
+            ),
+            _SecondaryButton(
+              icon: PhosphorIcons.shareFat(),
+              label: 'Share',
+              onTap: () {
+                // Share song
+              },
+            ),
+          ],
+        );
+      },
+      loading: () => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _SecondaryButton(
+            icon: PhosphorIcons.queue(),
+            label: 'Queue',
+            onTap: onShowQueue,
+          ),
+          _SecondaryButton(
+            icon: PhosphorIcons.heart(),
+            label: 'Like',
+            onTap: () {},
+          ),
+          _SecondaryButton(
+            icon: PhosphorIcons.speakerHigh(),
+            label: 'Volume',
+            onTap: () {},
+          ),
+          _SecondaryButton(
+            icon: PhosphorIcons.shareFat(),
+            label: 'Share',
+            onTap: () {},
+          ),
+        ],
+      ),
+      error: (_, __) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _SecondaryButton(
+            icon: PhosphorIcons.queue(),
+            label: 'Queue',
+            onTap: onShowQueue,
+          ),
+          _SecondaryButton(
+            icon: PhosphorIcons.heart(),
+            label: 'Like',
+            onTap: () {},
+          ),
+          _SecondaryButton(
+            icon: PhosphorIcons.speakerHigh(),
+            label: 'Volume',
+            onTap: () {},
+          ),
+          _SecondaryButton(
+            icon: PhosphorIcons.shareFat(),
+            label: 'Share',
+            onTap: () {},
+          ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _toggleFavorite(WidgetRef ref, String songId) async {
+    await ref.read(favoritesControllerProvider.notifier).toggleFavorite(songId);
   }
 }
 
@@ -531,11 +619,13 @@ class _SecondaryButton extends StatelessWidget {
   final PhosphorIconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool isActive;
 
   const _SecondaryButton({
     required this.icon,
     required this.label,
     required this.onTap,
+    this.isActive = false,
   });
 
   @override
@@ -550,13 +640,17 @@ class _SecondaryButton extends StatelessWidget {
             Icon(
               icon,
               size: 24,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              color: isActive
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: isActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
             ),
           ],

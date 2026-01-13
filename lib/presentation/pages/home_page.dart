@@ -6,6 +6,7 @@ import '../widgets/mini_player.dart';
 import '../providers/library_provider.dart';
 import '../providers/audio_provider.dart';
 import '../providers/search_provider.dart';
+import '../providers/favorites_provider.dart';
 import '../../data/models/song_model.dart';
 import '../../data/services/audio_service.dart';
 
@@ -440,7 +441,7 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -476,6 +477,7 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
           controller: _tabController,
           tabs: const [
             Tab(text: 'Songs'),
+            Tab(text: 'Favorites'),
             Tab(text: 'Albums'),
             Tab(text: 'Artists'),
           ],
@@ -487,6 +489,7 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
             controller: _tabController,
             children: const [
               _SongsTab(),
+              _FavoritesTab(),
               _AlbumsTab(),
               _ArtistsTab(),
             ],
@@ -601,7 +604,7 @@ class _EmptyLibraryState extends ConsumerWidget {
 }
 
 /// Song list item widget
-class _SongListItem extends StatelessWidget {
+class _SongListItem extends ConsumerWidget {
   final Song song;
   final int index;
   final VoidCallback onTap;
@@ -613,26 +616,74 @@ class _SongListItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: _buildAlbumArt(context),
-      title: Text(
-        song.title,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoritesAsync = ref.watch(favoriteSongsProvider);
+
+    return favoritesAsync.when(
+      data: (favorites) {
+        final isFavorite = favorites.any((s) => s.id == song.id);
+
+        return ListTile(
+          leading: _buildAlbumArt(context),
+          title: Text(
+            song.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            '${song.artist} • ${song.album}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Duration
+              Text(
+                _formatDuration(song.duration),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
+                    ),
+              ),
+              const SizedBox(width: 8),
+              // Favorite button
+              IconButton(
+                icon: Icon(
+                  isFavorite
+                      ? PhosphorIcons.heart(PhosphorIconsStyle.fill)
+                      : PhosphorIcons.heart(),
+                  size: 20,
+                  color: isFavorite
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
+                ),
+                onPressed: () => _toggleFavorite(ref, song.id),
+              ),
+            ],
+          ),
+          onTap: onTap,
+        );
+      },
+      loading: () => ListTile(
+        leading: _buildAlbumArt(context),
+        title: Text(song.title),
+        subtitle: Text('${song.artist} • ${song.album}'),
+        trailing: Text(_formatDuration(song.duration)),
+        onTap: onTap,
       ),
-      subtitle: Text(
-        '${song.artist} • ${song.album}',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+      error: (_, __) => ListTile(
+        leading: _buildAlbumArt(context),
+        title: Text(song.title),
+        subtitle: Text('${song.artist} • ${song.album}'),
+        trailing: Text(_formatDuration(song.duration)),
+        onTap: onTap,
       ),
-      trailing: Text(
-        _formatDuration(song.duration),
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-      ),
-      onTap: onTap,
     );
   }
 
@@ -673,6 +724,10 @@ class _SongListItem extends StatelessWidget {
     final seconds = twoDigits(duration.inSeconds.remainder(60));
     return '$minutes:$seconds';
   }
+
+  Future<void> _toggleFavorite(WidgetRef ref, String songId) async {
+    await ref.read(favoritesControllerProvider.notifier).toggleFavorite(songId);
+  }
 }
 
 /// Albums tab
@@ -684,6 +739,78 @@ class _AlbumsTab extends StatelessWidget {
     return const Center(
       child: Text('Albums'),
     );
+  }
+}
+
+/// Favorites tab
+class _FavoritesTab extends ConsumerWidget {
+  const _FavoritesTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoritesAsync = ref.watch(favoriteSongsProvider);
+
+    return favoritesAsync.when(
+      data: (favorites) {
+        if (favorites.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  PhosphorIcons.heart(),
+                  size: 64,
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No favorites yet',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Like some songs to see them here',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: favorites.length,
+          itemBuilder: (context, index) {
+            final song = favorites[index];
+            return _SongListItem(
+              song: song,
+              index: index,
+              onTap: () => _playSong(context, ref, song),
+            );
+          },
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (error, stack) => Center(
+        child: Text('Error: $error'),
+      ),
+    );
+  }
+
+  void _playSong(BuildContext context, WidgetRef ref, Song song) {
+    final audioService = ref.read(audioServiceProvider);
+    audioService.play(song);
   }
 }
 
