@@ -21,7 +21,7 @@ class AudioBackgroundTask {
         androidNotificationOngoing: true,
         androidShowNotificationBadge: false,
         androidNotificationIcon: 'mipmap/ic_launcher',
-        androidStopForegroundOnPause: false,
+        androidStopForegroundOnPause: true,
       ),
     );
   }
