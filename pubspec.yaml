@@ -17,11 +17,11 @@ dependencies:
   phosphor_flutter: ^2.1.0  # Modern icon set
 
   # State Management
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
 
   # Audio Playback
-  just_audio: ^0.9.40
+  just_audio: ^0.9.46
   audio_service: ^0.18.13
 
   # Data Persistence
@@ -31,12 +31,12 @@ dependencies:
   # Metadata & Media
   metadata_god: ^1.1.0
   path_provider: ^2.1.3
-  file_picker: ^8.0.6
-  permission_handler: ^11.3.1
+  file_picker: ^8.3.7
+  permission_handler: ^11.4.0
 
   # Network & API
   http: ^1.2.2
-  cached_network_image: ^3.3.1
+  cached_network_image: ^3.4.1
 
   # UI Components & Animation
   flutter_animate: ^4.5.0
@@ -46,8 +46,8 @@ dependencies:
   # Utilities
   path: ^1.9.0
   collection: ^1.18.0
-  rxdart: ^0.27.7
-  freezed_annotation: ^2.4.1
+  rxdart: ^0.28.0
+  freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
 
   # Platform-specific
@@ -59,7 +59,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
   # Code Generation
-  build_runner: ^2.4.11
+  build_runner: ^2.4.13
   riverpod_generator: ^2.4.0
   freezed: ^2.5.2
   json_serializable: ^6.8.0
