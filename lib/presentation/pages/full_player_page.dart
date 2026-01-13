@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../providers/audio_provider.dart';
+import '../widgets/queue_panel.dart';
 import '../../data/services/audio_service.dart';
 
 /// Full-screen music player page
@@ -16,6 +17,43 @@ class FullPlayerPage extends ConsumerStatefulWidget {
 class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
   double _sliderValue = 0.0;
   bool _isDragging = false;
+
+  void _showQueuePanel() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.3,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            children: [
+              // Handle bar
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              // Queue panel
+              Expanded(
+                child: QueuePanel(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +96,9 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                     const SizedBox(height: 32),
 
                     // Secondary controls
-                    _SecondaryControls(),
+                    _SecondaryControls(
+                      onShowQueue: _showQueuePanel,
+                    ),
 
                     const SizedBox(height: 24),
                   ],
@@ -444,6 +484,12 @@ class _MainControls extends ConsumerWidget {
 
 /// Secondary controls widget
 class _SecondaryControls extends StatelessWidget {
+  final VoidCallback onShowQueue;
+
+  const _SecondaryControls({
+    required this.onShowQueue,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -452,9 +498,7 @@ class _SecondaryControls extends StatelessWidget {
         _SecondaryButton(
           icon: PhosphorIcons.queue(),
           label: 'Queue',
-          onTap: () {
-            // Show queue
-          },
+          onTap: onShowQueue,
         ),
         _SecondaryButton(
           icon: PhosphorIcons.heart(),
