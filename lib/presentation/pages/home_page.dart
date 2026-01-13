@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/mini_player.dart';
 import '../providers/library_provider.dart';
 import '../providers/audio_provider.dart';
+import '../providers/search_provider.dart';
 import '../../data/models/song_model.dart';
 import '../../data/services/audio_service.dart';
 
@@ -699,31 +700,285 @@ class _ArtistsTab extends StatelessWidget {
 }
 
 /// Search page content
-class _SearchPageContent extends StatelessWidget {
+class _SearchPageContent extends ConsumerStatefulWidget {
   const _SearchPageContent();
 
   @override
+  ConsumerState<_SearchPageContent> createState() => _SearchPageContentState();
+}
+
+class _SearchPageContentState extends ConsumerState<_SearchPageContent> {
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    ref.read(searchQueryProvider.notifier).updateQuery(query);
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    ref.read(searchQueryProvider.notifier).clear();
+    _focusNode.requestFocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
+    final searchQuery = ref.watch(searchQueryProvider);
+
+    return Column(
       children: [
         // Search bar
-        SearchBar(
-          leading: Icon(PhosphorIcons.magnifyingGlass()),
-          hintText: 'Search songs, albums, artists...',
-          onTap: () {},
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SearchBar(
+            controller: _searchController,
+            focusNode: _focusNode,
+            leading: Icon(PhosphorIcons.magnifyingGlass()),
+            trailing: searchQuery.isNotEmpty
+                ? [IconButton(
+                    icon: Icon(PhosphorIcons.x()),
+                    onPressed: _clearSearch,
+                  )]
+                : null,
+            hintText: 'Search songs, albums, artists...',
+            onChanged: _onSearchChanged,
+          ),
         ),
-        const SizedBox(height: 24),
 
-        // Browse categories
-        Text(
-          'Browse All',
-          style: Theme.of(context).textTheme.titleLarge,
+        // Content
+        Expanded(
+          child: searchQuery.isEmpty
+              ? _BrowseContent()
+              : _SearchResultsContent(),
         ),
-        const SizedBox(height: 16),
-        _BrowseCategoriesGrid(),
       ],
     );
+  }
+}
+
+/// Browse content (when search is empty)
+class _BrowseContent extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allSongsAsync = ref.watch(allSongsProvider);
+
+    return allSongsAsync.when(
+      data: (songs) {
+        if (songs.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  PhosphorIcons.musicNotes(),
+                  size: 64,
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No music in library',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Add some songs to get started',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            Text(
+              'Browse All',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            _BrowseCategoriesGrid(),
+            const SizedBox(height: 24),
+            Text(
+              'Recently Added',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            ...songs.take(10).map((song) => _SongListItem(
+                  song: song,
+                  index: songs.indexOf(song),
+                  onTap: () => _playSong(context, ref, song),
+                )),
+          ],
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (_, __) => const Center(
+        child: Text('Error loading library'),
+      ),
+    );
+  }
+
+  void _playSong(BuildContext context, WidgetRef ref, Song song) {
+    final audioService = ref.read(audioServiceProvider);
+    audioService.play(song);
+  }
+}
+
+/// Search results content
+class _SearchResultsContent extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final resultsAsync = ref.watch(searchResultsProvider);
+
+    return resultsAsync.when(
+      data: (results) {
+        if (results.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  PhosphorIcons.magnifyingGlass(),
+                  size: 64,
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No results found',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Try a different search term',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            // Results summary
+            if (results.totalResults > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'Found ${results.totalResults} results',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                ),
+              ),
+
+            // Songs section
+            if (results.songs.isNotEmpty) ...[
+              Text(
+                'Songs (${results.songs.length})',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              ...results.songs.map((song) => _SongListItem(
+                    song: song,
+                    index: results.songs.indexOf(song),
+                    onTap: () => _playSong(context, ref, song),
+                  )),
+              const SizedBox(height: 24),
+            ],
+
+            // Artists section
+            if (results.artists.isNotEmpty) ...[
+              Text(
+                'Artists (${results.artists.length})',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: results.artists.map((artist) {
+                  return Chip(
+                    label: Text(artist),
+                    avatar: Icon(
+                      PhosphorIcons.user(),
+                      size: 18,
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            // Albums section
+            if (results.albums.isNotEmpty) ...[
+              Text(
+                'Albums (${results.albums.length})',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: results.albums.map((album) {
+                  return Chip(
+                    label: Text(album),
+                    avatar: Icon(
+                      PhosphorIcons.vinylRecord(),
+                      size: 18,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ],
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (_, __) => const Center(
+        child: Text('Error searching'),
+      ),
+    );
+  }
+
+  void _playSong(BuildContext context, WidgetRef ref, Song song) {
+    final audioService = ref.read(audioServiceProvider);
+    audioService.play(song);
   }
 }
 
