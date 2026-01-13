@@ -49,8 +49,9 @@ String _$allSongsHash() => r'ced01c986e9e2b76fd168e24ba4dac3b8fcc01f9';
 final allSongsProvider = AutoDisposeFutureProvider<List<Song>>.internal(
   allSongs,
   name: r'allSongsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$allSongsHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$allSongsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -99,8 +100,9 @@ String _$libraryStatsHash() => r'e6c28063d4c0bf2fd53bc5c066769d524cfbfee7';
 final libraryStatsProvider = AutoDisposeFutureProvider<LibraryStats>.internal(
   libraryStats,
   name: r'libraryStatsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$libraryStatsHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$libraryStatsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -114,14 +116,14 @@ String _$importControllerHash() => r'717deb945cc64be57df8288913b24369bbc6eb56';
 @ProviderFor(ImportController)
 final importControllerProvider =
     AutoDisposeAsyncNotifierProvider<ImportController, List<Song>>.internal(
-  ImportController.new,
-  name: r'importControllerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$importControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      ImportController.new,
+      name: r'importControllerProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$importControllerHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$ImportController = AutoDisposeAsyncNotifier<List<Song>>;
 // ignore_for_file: type=lint

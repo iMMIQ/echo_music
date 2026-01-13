@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/models/song_model.dart';
 import 'library_provider.dart';
@@ -61,15 +60,14 @@ Future<SearchResults> searchResults(SearchResultsRef ref) async {
 
 /// Search results model
 class SearchResults {
-  final List<Song> songs;
-  final List<String> albums;
-  final List<String> artists;
-
   const SearchResults({
     required this.songs,
     required this.albums,
     required this.artists,
   });
+  final List<Song> songs;
+  final List<String> albums;
+  final List<String> artists;
 
   bool get isEmpty => songs.isEmpty && albums.isEmpty && artists.isEmpty;
 

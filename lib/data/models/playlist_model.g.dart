@@ -11,7 +11,8 @@ _$PlaylistImpl _$$PlaylistImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
-      songs: (json['songs'] as List<dynamic>?)
+      songs:
+          (json['songs'] as List<dynamic>?)
               ?.map((e) => Song.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],

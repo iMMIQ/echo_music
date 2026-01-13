@@ -1,14 +1,15 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import '../widgets/mini_player.dart';
-import '../providers/library_provider.dart';
-import '../providers/audio_provider.dart';
-import '../providers/search_provider.dart';
-import '../providers/favorites_provider.dart';
+
 import '../../data/models/song_model.dart';
-import '../../data/services/audio_service.dart';
+import '../providers/audio_provider.dart';
+import '../providers/favorites_provider.dart';
+import '../providers/library_provider.dart';
+import '../providers/search_provider.dart';
+import '../widgets/mini_player.dart';
 
 /// Home page of the app
 class HomePage extends ConsumerStatefulWidget {
@@ -34,7 +35,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     ),
     NavigationDestination(
       icon: Icon(PhosphorIcons.magnifyingGlass()),
-      selectedIcon: Icon(PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.fill)),
+      selectedIcon: Icon(
+        PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.fill),
+      ),
       label: 'Search',
     ),
     NavigationDestination(
@@ -54,11 +57,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Column(
             children: [
               // Main content
-              Expanded(
-                child: SafeArea(
-                  child: _buildPage(_currentIndex),
-                ),
-              ),
+              Expanded(child: SafeArea(child: _buildPage(_currentIndex))),
               // Bottom navigation
               NavigationBar(
                 selectedIndex: _currentIndex,
@@ -73,12 +72,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ],
           ),
           // Mini player
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 80,
-            child: MiniPlayer(),
-          ),
+          const Positioned(left: 0, right: 0, bottom: 80, child: MiniPlayer()),
         ],
       ),
     );
@@ -110,10 +104,7 @@ class _HomePageContent extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         // Header
-        Text(
-          'Good Evening',
-          style: Theme.of(context).textTheme.displaySmall,
-        ),
+        Text('Good Evening', style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(height: 24),
 
         // Quick actions
@@ -123,10 +114,7 @@ class _HomePageContent extends StatelessWidget {
         // Recently played
         _SectionHeader(
           title: 'Recently Played',
-          action: TextButton(
-            onPressed: () {},
-            child: const Text('View All'),
-          ),
+          action: TextButton(onPressed: () {}, child: const Text('View All')),
         ),
         const SizedBox(height: 12),
         _RecentlyPlayedGrid(),
@@ -135,10 +123,7 @@ class _HomePageContent extends StatelessWidget {
         // Made for you
         _SectionHeader(
           title: 'Made for You',
-          action: TextButton(
-            onPressed: () {},
-            child: const Text('View All'),
-          ),
+          action: TextButton(onPressed: () {}, child: const Text('View All')),
         ),
         const SizedBox(height: 12),
         _MadeForYouGrid(),
@@ -171,7 +156,10 @@ class _QuickActions extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _QuickActionCard(
-            icon: Icon(PhosphorIcons.shuffle(PhosphorIconsStyle.fill), size: 28),
+            icon: Icon(
+              PhosphorIcons.shuffle(PhosphorIconsStyle.fill),
+              size: 28,
+            ),
             label: 'Shuffle',
             color: Theme.of(context).colorScheme.tertiary,
           ),
@@ -183,15 +171,14 @@ class _QuickActions extends StatelessWidget {
 
 /// Quick action card
 class _QuickActionCard extends StatelessWidget {
-  final Icon icon;
-  final String label;
-  final Color color;
-
   const _QuickActionCard({
     required this.icon,
     required this.label,
     required this.color,
   });
+  final Icon icon;
+  final String label;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -211,9 +198,9 @@ class _QuickActionCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: color,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: color),
           ),
         ],
       ),
@@ -223,23 +210,16 @@ class _QuickActionCard extends StatelessWidget {
 
 /// Section header
 class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, required this.action});
   final String title;
   final Widget action;
-
-  const _SectionHeader({
-    required this.title,
-    required this.action,
-  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        Text(title, style: Theme.of(context).textTheme.titleLarge),
         action,
       ],
     );
@@ -285,21 +265,20 @@ class _RecentlyPlayedGrid extends StatelessWidget {
 
 /// Recently played card
 class _RecentlyPlayedCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final PhosphorIconData icon;
-
   const _RecentlyPlayedCard({
     required this.title,
     required this.subtitle,
     required this.icon,
   });
+  final String title;
+  final String subtitle;
+  final PhosphorIconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -329,11 +308,10 @@ class _RecentlyPlayedCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -357,15 +335,12 @@ class _MadeForYouGrid extends StatelessWidget {
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       childAspectRatio: 1.2,
-      children: [
+      children: const [
         _MadeForYouCard(
           title: 'Discover Weekly',
           subtitle: 'Your weekly mixtape',
         ),
-        _MadeForYouCard(
-          title: 'Release Radar',
-          subtitle: 'New music for you',
-        ),
+        _MadeForYouCard(title: 'Release Radar', subtitle: 'New music for you'),
       ],
     );
   }
@@ -373,17 +348,13 @@ class _MadeForYouGrid extends StatelessWidget {
 
 /// Made for you card
 class _MadeForYouCard extends StatelessWidget {
+  const _MadeForYouCard({required this.title, required this.subtitle});
   final String title;
   final String subtitle;
 
-  const _MadeForYouCard({
-    required this.title,
-    required this.subtitle,
-  });
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -404,9 +375,9 @@ class _MadeForYouCard extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -414,8 +385,8 @@ class _MadeForYouCard extends StatelessWidget {
             Text(
               subtitle,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.8),
-                  ),
+                color: Colors.white.withValues(alpha: 0.8),
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -464,10 +435,7 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
                 'Library',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(PhosphorIcons.plus()),
-              ),
+              IconButton(onPressed: () {}, icon: Icon(PhosphorIcons.plus())),
             ],
           ),
         ),
@@ -526,12 +494,8 @@ class _SongsTab extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (error, stack) => Center(
-        child: Text('Error: $error'),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 
@@ -552,27 +516,25 @@ class _EmptyLibraryState extends ConsumerWidget {
           Icon(
             PhosphorIcons.musicNotes(),
             size: 64,
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
           const SizedBox(height: 16),
           Text(
             'No songs yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'Add music to get started',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 24),
           FilledButton.icon(
@@ -593,10 +555,7 @@ class _EmptyLibraryState extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Imported ${songs.length} song(s)'),
-          action: SnackBarAction(
-            label: 'View',
-            onPressed: () {},
-          ),
+          action: SnackBarAction(label: 'View', onPressed: () {}),
         ),
       );
     }
@@ -605,15 +564,14 @@ class _EmptyLibraryState extends ConsumerWidget {
 
 /// Song list item widget
 class _SongListItem extends ConsumerWidget {
-  final Song song;
-  final int index;
-  final VoidCallback onTap;
-
   const _SongListItem({
     required this.song,
     required this.index,
     required this.onTap,
   });
+  final Song song;
+  final int index;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -625,11 +583,7 @@ class _SongListItem extends ConsumerWidget {
 
         return ListTile(
           leading: _buildAlbumArt(context),
-          title: Text(
-            song.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          title: Text(song.title, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Text(
             '${song.artist} • ${song.album}',
             maxLines: 1,
@@ -642,11 +596,10 @@ class _SongListItem extends ConsumerWidget {
               Text(
                 _formatDuration(song.duration),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.6),
-                    ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
               const SizedBox(width: 8),
               // Favorite button
@@ -658,10 +611,9 @@ class _SongListItem extends ConsumerWidget {
                   size: 20,
                   color: isFavorite
                       ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.6),
+                      : Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 onPressed: () => _toggleFavorite(ref, song.id),
               ),
@@ -693,7 +645,7 @@ class _SongListItem extends ConsumerWidget {
       height: 48,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: song.albumArt != null
           ? ClipRRect(
@@ -736,9 +688,7 @@ class _AlbumsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Albums'),
-    );
+    return const Center(child: Text('Albums'));
   }
 }
 
@@ -760,27 +710,25 @@ class _FavoritesTab extends ConsumerWidget {
                 Icon(
                   PhosphorIcons.heart(),
                   size: 64,
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No favorites yet',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Like some songs to see them here',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
               ],
             ),
@@ -799,12 +747,8 @@ class _FavoritesTab extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (error, stack) => Center(
-        child: Text('Error: $error'),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 
@@ -820,9 +764,7 @@ class _ArtistsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Artists'),
-    );
+    return const Center(child: Text('Artists'));
   }
 }
 
@@ -869,10 +811,12 @@ class _SearchPageContentState extends ConsumerState<_SearchPageContent> {
             focusNode: _focusNode,
             leading: Icon(PhosphorIcons.magnifyingGlass()),
             trailing: searchQuery.isNotEmpty
-                ? [IconButton(
-                    icon: Icon(PhosphorIcons.x()),
-                    onPressed: _clearSearch,
-                  )]
+                ? [
+                    IconButton(
+                      icon: Icon(PhosphorIcons.x()),
+                      onPressed: _clearSearch,
+                    ),
+                  ]
                 : null,
             hintText: 'Search songs, albums, artists...',
             onChanged: _onSearchChanged,
@@ -906,27 +850,25 @@ class _BrowseContent extends ConsumerWidget {
                 Icon(
                   PhosphorIcons.musicNotes(),
                   size: 64,
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No music in library',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Add some songs to get started',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
               ],
             ),
@@ -936,10 +878,7 @@ class _BrowseContent extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            Text(
-              'Browse All',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text('Browse All', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
             _BrowseCategoriesGrid(),
             const SizedBox(height: 24),
@@ -948,20 +887,20 @@ class _BrowseContent extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            ...songs.take(10).map((song) => _SongListItem(
-                  song: song,
-                  index: songs.indexOf(song),
-                  onTap: () => _playSong(context, ref, song),
-                )),
+            ...songs
+                .take(10)
+                .map(
+                  (song) => _SongListItem(
+                    song: song,
+                    index: songs.indexOf(song),
+                    onTap: () => _playSong(context, ref, song),
+                  ),
+                ),
           ],
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (_, __) => const Center(
-        child: Text('Error loading library'),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => const Center(child: Text('Error loading library')),
     );
   }
 
@@ -987,27 +926,25 @@ class _SearchResultsContent extends ConsumerWidget {
                 Icon(
                   PhosphorIcons.magnifyingGlass(),
                   size: 64,
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No results found',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Try a different search term',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
               ],
             ),
@@ -1024,11 +961,10 @@ class _SearchResultsContent extends ConsumerWidget {
                 child: Text(
                   'Found ${results.totalResults} results',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
 
@@ -1039,11 +975,13 @@ class _SearchResultsContent extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
-              ...results.songs.map((song) => _SongListItem(
-                    song: song,
-                    index: results.songs.indexOf(song),
-                    onTap: () => _playSong(context, ref, song),
-                  )),
+              ...results.songs.map(
+                (song) => _SongListItem(
+                  song: song,
+                  index: results.songs.indexOf(song),
+                  onTap: () => _playSong(context, ref, song),
+                ),
+              ),
               const SizedBox(height: 24),
             ],
 
@@ -1060,10 +998,7 @@ class _SearchResultsContent extends ConsumerWidget {
                 children: results.artists.map((artist) {
                   return Chip(
                     label: Text(artist),
-                    avatar: Icon(
-                      PhosphorIcons.user(),
-                      size: 18,
-                    ),
+                    avatar: Icon(PhosphorIcons.user(), size: 18),
                   );
                 }).toList(),
               ),
@@ -1083,10 +1018,7 @@ class _SearchResultsContent extends ConsumerWidget {
                 children: results.albums.map((album) {
                   return Chip(
                     label: Text(album),
-                    avatar: Icon(
-                      PhosphorIcons.vinylRecord(),
-                      size: 18,
-                    ),
+                    avatar: Icon(PhosphorIcons.vinylRecord(), size: 18),
                   );
                 }).toList(),
               ),
@@ -1094,12 +1026,8 @@ class _SearchResultsContent extends ConsumerWidget {
           ],
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (_, __) => const Center(
-        child: Text('Error searching'),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => const Center(child: Text('Error searching')),
     );
   }
 
@@ -1136,18 +1064,18 @@ class _BrowseCategoriesGrid extends StatelessWidget {
       itemCount: categories.length,
       itemBuilder: (context, index) {
         final category = categories[index];
-        return Container(
+        return DecoratedBox(
           decoration: BoxDecoration(
-            color: Color(category['color'] as int),
+            color: Color(category['color']! as int),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
             child: Text(
-              category['name'] as String,
+              category['name']! as String,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         );
@@ -1166,10 +1094,7 @@ class _SettingsPageContent extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         // Header
-        Text(
-          'Settings',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
+        Text('Settings', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 24),
 
         // Settings sections
@@ -1266,13 +1191,9 @@ class _SettingsPageContent extends StatelessWidget {
 
 /// Settings section
 class _SettingsSection extends StatelessWidget {
+  const _SettingsSection({required this.title, required this.items});
   final String title;
   final List<_SettingsItem> items;
-
-  const _SettingsSection({
-    required this.title,
-    required this.items,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -1284,15 +1205,11 @@ class _SettingsSection extends StatelessWidget {
           child: Text(
             title,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
-        Card(
-          child: Column(
-            children: items,
-          ),
-        ),
+        Card(child: Column(children: items)),
       ],
     );
   }
@@ -1300,17 +1217,16 @@ class _SettingsSection extends StatelessWidget {
 
 /// Settings item
 class _SettingsItem extends StatelessWidget {
-  final PhosphorIconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
   const _SettingsItem({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
   });
+  final PhosphorIconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

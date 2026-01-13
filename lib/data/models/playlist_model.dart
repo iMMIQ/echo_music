@@ -1,5 +1,6 @@
-import 'package:hive/hive.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
+
 import 'song_model.dart';
 
 part 'playlist_model.freezed.dart';
@@ -8,19 +9,18 @@ part 'playlist_model.g.dart';
 /// Playlist model stored in Hive
 @freezed
 class Playlist with _$Playlist {
-  const Playlist._();
-
   const factory Playlist({
     required String id,
     required String name,
+    required DateTime createdAt,
     @HiveField(2) String? description,
     @Default([]) @HiveField(3) List<Song> songs,
     @HiveField(4) AlbumArt? artwork,
-    required DateTime createdAt,
     @HiveField(6) DateTime? updatedAt,
     @Default(false) @HiveField(7) bool isSmartPlaylist,
     @HiveField(8) String? smartPlaylistRules,
   }) = _Playlist;
+  const Playlist._();
 
   factory Playlist.fromJson(Map<String, dynamic> json) =>
       _$PlaylistFromJson(json);
@@ -29,10 +29,8 @@ class Playlist with _$Playlist {
   int get trackCount => songs.length;
 
   /// Get total duration
-  Duration get totalDuration => songs.fold(
-        Duration.zero,
-        (sum, song) => sum + song.duration,
-      );
+  Duration get totalDuration =>
+      songs.fold(Duration.zero, (sum, song) => sum + song.duration);
 }
 
 /// Extension for Hive adapter

@@ -14,9 +14,9 @@ class AppConstants {
 
   // Playback
   static const int defaultCrossfadeDurationMs = 2000;
-  static const double defaultPlaybackSpeed = 1.0;
+  static const double defaultPlaybackSpeed = 1;
   static const double minPlaybackSpeed = 0.5;
-  static const double maxPlaybackSpeed = 2.0;
+  static const double maxPlaybackSpeed = 2;
 
   // Cache
   static const int maxAlbumArtCacheSize = 100;

@@ -1,8 +1,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/song_model.dart';
+
 import '../models/album_model.dart';
 import '../models/artist_model.dart';
 import '../models/playlist_model.dart';
+import '../models/song_model.dart';
 
 /// Box names for different data types
 class HiveBoxes {

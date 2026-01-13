@@ -39,11 +39,7 @@ abstract class PlaylistService {
   Future<void> removeSongAt(String playlistId, int index);
 
   /// Reorder songs in playlist
-  Future<void> reorderSongs(
-    String playlistId,
-    int oldIndex,
-    int newIndex,
-  );
+  Future<void> reorderSongs(String playlistId, int oldIndex, int newIndex);
 
   /// Get songs from playlist
   Future<List<Song>> getPlaylistSongs(String playlistId);
@@ -61,10 +57,7 @@ abstract class PlaylistService {
   });
 
   /// Update smart playlist rules
-  Future<void> updateSmartPlaylistRules(
-    String playlistId,
-    String rules,
-  );
+  Future<void> updateSmartPlaylistRules(String playlistId, String rules);
 
   /// Evaluate smart playlist (generate songs from rules)
   Future<List<Song>> evaluateSmartPlaylist(String playlistId);

@@ -1,10 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../data/models/song_model.dart';
 import '../../data/services/library_service.dart';
 import '../../data/services/library_service_impl.dart';
 import '../../data/services/metadata_service.dart';
 import '../../data/services/metadata_service_impl.dart';
-import '../../data/models/song_model.dart';
 
 part 'library_provider.g.dart';
 
@@ -21,7 +23,7 @@ LibraryService libraryService(LibraryServiceRef ref) {
   final service = LibraryServiceImpl(metadataService);
 
   // Initialize the service when first accessed
-  final future = service.init();
+  unawaited(service.init());
   ref.onDispose(() {
     // Cleanup if needed
   });
@@ -36,30 +38,30 @@ Future<List<Song>> allSongs(AllSongsRef ref) async {
   final service = ref.watch(libraryServiceProvider);
   // Ensure service is initialized
   if (service is LibraryServiceImpl) {
-    await (service as LibraryServiceImpl).init();
+    await service.init();
   }
-  return await service.getAllSongs();
+  return service.getAllSongs();
 }
 
 /// Favorite songs provider
 @riverpod
 Future<List<Song>> favoriteSongs(FavoriteSongsRef ref) async {
   final service = ref.watch(libraryServiceProvider);
-  return await service.getFavoriteSongs();
+  return service.getFavoriteSongs();
 }
 
 /// Recently played provider
 @riverpod
 Future<List<Song>> recentlyPlayed(RecentlyPlayedRef ref) async {
   final service = ref.watch(libraryServiceProvider);
-  return await service.getRecentlyPlayed();
+  return service.getRecentlyPlayed();
 }
 
 /// Library stats provider
 @riverpod
 Future<LibraryStats> libraryStats(LibraryStatsRef ref) async {
   final service = ref.watch(libraryServiceProvider);
-  return await service.getStats();
+  return service.getStats();
 }
 
 /// Import music controller
@@ -75,7 +77,7 @@ class ImportController extends _$ImportController {
       final service = ref.read(libraryServiceProvider);
       // Ensure service is initialized
       if (service is LibraryServiceImpl) {
-        await (service as LibraryServiceImpl).init();
+        await service.init();
       }
       final filePaths = await service.pickAudioFiles();
 
@@ -83,7 +85,7 @@ class ImportController extends _$ImportController {
         return [];
       }
 
-      return await service.importFiles(filePaths);
+      return service.importFiles(filePaths);
     });
 
     // Invalidate the allSongsProvider to refresh the list
@@ -97,7 +99,7 @@ class ImportController extends _$ImportController {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final service = ref.read(libraryServiceProvider);
-      return await service.scanDirectory(path);
+      return service.scanDirectory(path);
     });
 
     return state.value ?? [];

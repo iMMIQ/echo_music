@@ -1,21 +1,22 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:hive/hive.dart';
-import 'library_service.dart';
-import 'metadata_service.dart';
-import '../models/song_model.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import '../models/album_model.dart';
 import '../models/artist_model.dart';
+import '../models/song_model.dart';
+import 'library_service.dart';
+import 'metadata_service.dart';
 
 /// Library service implementation
 class LibraryServiceImpl extends LibraryService {
+  LibraryServiceImpl(this._metadataService);
   final MetadataService _metadataService;
   late Box<Song> _songsBox;
   late Box<Album> _albumsBox;
   late Box<Artist> _artistsBox;
-
-  LibraryServiceImpl(this._metadataService);
 
   /// Initialize the service (must be called before use)
   Future<void> init() async {
@@ -302,6 +303,7 @@ class LibraryServiceImpl extends LibraryService {
   // === Helper Methods ===
 
   /// Pick audio files using file picker
+  @override
   Future<List<String>> pickAudioFiles() async {
     // Request storage permission on Android
     if (Platform.isAndroid) {
@@ -323,13 +325,14 @@ class LibraryServiceImpl extends LibraryService {
     // Filter out null paths and unsupported formats
     final paths = result.paths
         .whereType<String>()
-        .where((path) => _metadataService.isSupportedFormat(path))
+        .where(_metadataService.isSupportedFormat)
         .toList();
 
     return paths;
   }
 
   /// Pick a directory for scanning
+  @override
   Future<String?> pickDirectory() async {
     // Request storage permission on Android
     if (Platform.isAndroid) {

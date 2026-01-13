@@ -1,6 +1,6 @@
-import '../models/song_model.dart';
 import '../models/album_model.dart';
 import '../models/artist_model.dart';
+import '../models/song_model.dart';
 
 /// Library service interface for media library management
 abstract class LibraryService {
@@ -117,13 +117,6 @@ abstract class LibraryService {
 
 /// Library statistics
 class LibraryStats {
-  final int songCount;
-  final int albumCount;
-  final int artistCount;
-  final int playlistCount;
-  final Duration totalDuration;
-  final int favoriteCount;
-
   const LibraryStats({
     required this.songCount,
     required this.albumCount,
@@ -132,6 +125,12 @@ class LibraryStats {
     required this.totalDuration,
     required this.favoriteCount,
   });
+  final int songCount;
+  final int albumCount;
+  final int artistCount;
+  final int playlistCount;
+  final Duration totalDuration;
+  final int favoriteCount;
 
   /// Empty stats
   static const empty = LibraryStats(

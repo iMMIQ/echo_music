@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/theme/app_theme.dart';
+
 import 'core/constants/app_constants.dart';
+import 'core/theme/app_theme.dart';
 import 'data/services/hive_service.dart';
 import 'presentation/pages/home_page.dart';
 
@@ -14,11 +15,7 @@ void main() async {
   // Open all boxes
   await HiveService.openBoxes();
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -26,7 +23,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ThemeMode.dark; // TODO: Get from settings
+    const themeMode = ThemeMode.dark; // TODO: Get from settings
 
     return MaterialApp(
       title: AppConstants.appName,

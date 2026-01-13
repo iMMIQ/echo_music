@@ -1,11 +1,13 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+
 import '../../data/models/song_model.dart';
 import '../../data/services/audio_service.dart';
-import '../providers/audio_provider.dart';
 import '../pages/full_player_page.dart';
+import '../providers/audio_provider.dart';
 
 /// Mini player widget displayed at the bottom of the screen
 class MiniPlayer extends ConsumerWidget {
@@ -70,9 +72,7 @@ class MiniPlayer extends ConsumerWidget {
                           const SizedBox(width: 12),
 
                           // Song info
-                          Expanded(
-                            child: _SongInfo(song: song),
-                          ),
+                          Expanded(child: _SongInfo(song: song)),
 
                           // Controls
                           _Controls(state: state, ref: ref),
@@ -99,22 +99,19 @@ class MiniPlayer extends ConsumerWidget {
           return const FullPlayerPage();
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 1.0);
+          const begin = Offset(0, 1);
           const end = Offset.zero;
           const curve = Curves.easeInOutCubic;
 
-          var tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve),
-          );
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
 
-          var offsetAnimation = animation.drive(tween);
+          final offsetAnimation = animation.drive(tween);
 
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
+          return SlideTransition(position: offsetAnimation, child: child);
         },
-        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
   }
@@ -122,9 +119,8 @@ class MiniPlayer extends ConsumerWidget {
 
 /// Album art widget
 class _AlbumArt extends StatelessWidget {
-  final Song song;
-
   const _AlbumArt({required this.song});
+  final Song song;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +137,7 @@ class _AlbumArt extends StatelessWidget {
               )
             : null,
         color: song.albumArt == null
-            ? Theme.of(context).colorScheme.surfaceVariant
+            ? Theme.of(context).colorScheme.surfaceContainerHighest
             : null,
       ),
       child: song.albumArt == null
@@ -157,9 +153,8 @@ class _AlbumArt extends StatelessWidget {
 
 /// Song info widget
 class _SongInfo extends StatelessWidget {
-  final Song song;
-
   const _SongInfo({required this.song});
+  final Song song;
 
   @override
   Widget build(BuildContext context) {
@@ -177,8 +172,10 @@ class _SongInfo extends StatelessWidget {
         Text(
           song.artist,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -189,10 +186,9 @@ class _SongInfo extends StatelessWidget {
 
 /// Controls widget
 class _Controls extends StatelessWidget {
+  const _Controls({required this.state, required this.ref});
   final PlaybackState state;
   final WidgetRef ref;
-
-  const _Controls({required this.state, required this.ref});
 
   @override
   Widget build(BuildContext context) {
@@ -200,19 +196,13 @@ class _Controls extends StatelessWidget {
       children: [
         // Previous
         IconButton(
-          icon: Icon(
-            PhosphorIcons.skipBack(),
-            size: 24,
-          ),
+          icon: Icon(PhosphorIcons.skipBack(), size: 24),
           onPressed: () {
             final service = ref.read(audioServiceProvider);
             service.skipToPrevious();
           },
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: 40,
-            minHeight: 40,
-          ),
+          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
         ),
 
         // Play/Pause
@@ -234,27 +224,18 @@ class _Controls extends StatelessWidget {
             }
           },
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: 40,
-            minHeight: 40,
-          ),
+          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
         ),
 
         // Next
         IconButton(
-          icon: Icon(
-            PhosphorIcons.skipForward(),
-            size: 24,
-          ),
+          icon: Icon(PhosphorIcons.skipForward(), size: 24),
           onPressed: () {
             final service = ref.read(audioServiceProvider);
             service.skipToNext();
           },
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: 40,
-            minHeight: 40,
-          ),
+          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
         ),
       ],
     );

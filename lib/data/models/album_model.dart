@@ -1,5 +1,6 @@
-import 'package:hive/hive.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
+
 import 'song_model.dart';
 
 part 'album_model.freezed.dart';
@@ -8,8 +9,6 @@ part 'album_model.g.dart';
 /// Album model stored in Hive
 @freezed
 class Album with _$Album {
-  const Album._();
-
   const factory Album({
     required String id,
     required String name,
@@ -23,9 +22,9 @@ class Album with _$Album {
     @HiveField(10) Duration? totalDuration,
     @HiveField(11) DateTime? dateAdded,
   }) = _Album;
+  const Album._();
 
-  factory Album.fromJson(Map<String, dynamic> json) =>
-      _$AlbumFromJson(json);
+  factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
 }
 
 /// Extension for Hive adapter

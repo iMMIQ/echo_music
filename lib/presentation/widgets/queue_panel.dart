@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../data/models/song_model.dart';
-import '../../data/services/audio_service.dart';
 import '../providers/audio_provider.dart';
 
 /// Queue panel widget for managing playback queue
@@ -36,12 +35,8 @@ class QueuePanel extends ConsumerWidget {
             Expanded(
               child: ReorderableListView.builder(
                 itemCount: queue.length,
-                onReorder: (oldIndex, newIndex) => _reorderQueue(
-                  ref,
-                  queue,
-                  oldIndex,
-                  newIndex,
-                ),
+                onReorder: (oldIndex, newIndex) =>
+                    _reorderQueue(ref, queue, oldIndex, newIndex),
                 itemBuilder: (context, index) {
                   final song = queue[index];
                   final isCurrentSong = index == currentIndex;
@@ -60,12 +55,8 @@ class QueuePanel extends ConsumerWidget {
           ],
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (_, __) => const Center(
-        child: Text('Error loading queue'),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => const Center(child: Text('Error loading queue')),
     );
   }
 
@@ -129,27 +120,25 @@ class _EmptyQueue extends StatelessWidget {
           Icon(
             PhosphorIcons.queue(),
             size: 64,
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
           const SizedBox(height: 16),
           Text(
             'Queue is empty',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'Add songs to start playing',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
         ],
       ),
@@ -159,13 +148,9 @@ class _EmptyQueue extends StatelessWidget {
 
 /// Queue header widget
 class _QueueHeader extends StatelessWidget {
+  const _QueueHeader({required this.songCount, required this.onClear});
   final int songCount;
   final VoidCallback onClear;
-
-  const _QueueHeader({
-    required this.songCount,
-    required this.onClear,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -191,35 +176,31 @@ class _QueueHeader extends StatelessWidget {
 
 /// Queue item widget
 class _QueueItem extends StatelessWidget {
+  const _QueueItem({
+    required this.song,
+    required this.isCurrentSong,
+    required this.index,
+    required this.onPlay,
+    required this.onRemove,
+    super.key,
+  });
   final Song song;
   final bool isCurrentSong;
   final int index;
   final VoidCallback onPlay;
   final VoidCallback onRemove;
 
-  const _QueueItem({
-    super.key,
-    required this.song,
-    required this.isCurrentSong,
-    required this.index,
-    required this.onPlay,
-    required this.onRemove,
-  });
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: isCurrentSong
-            ? theme.colorScheme.primaryContainer.withOpacity(0.3)
+            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
             : null,
         border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.surfaceVariant,
-            width: 1,
-          ),
+          bottom: BorderSide(color: theme.colorScheme.surfaceContainerHighest),
         ),
       ),
       child: ListTile(
@@ -279,7 +260,7 @@ class _QueueItem extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
         ),
         child: Center(
           child: isCurrentSong
@@ -291,11 +272,10 @@ class _QueueItem extends StatelessWidget {
               : Text(
                   '${index + 1}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
         ),
       ),

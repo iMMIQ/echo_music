@@ -2,6 +2,18 @@ import '../models/song_model.dart';
 
 /// Metadata extraction result
 class MetadataResult {
+  const MetadataResult({
+    required this.title,
+    required this.artist,
+    required this.album,
+    required this.duration,
+    this.year,
+    this.trackNumber,
+    this.discNumber,
+    this.genre,
+    this.bitrate,
+    this.albumArt,
+  });
   final String title;
   final String artist;
   final String album;
@@ -12,19 +24,6 @@ class MetadataResult {
   final int? bitrate;
   final Duration duration;
   final AlbumArt? albumArt;
-
-  const MetadataResult({
-    required this.title,
-    required this.artist,
-    required this.album,
-    this.year,
-    this.trackNumber,
-    this.discNumber,
-    this.genre,
-    this.bitrate,
-    required this.duration,
-    this.albumArt,
-  });
 }
 
 /// Metadata service interface for extracting audio metadata
@@ -56,6 +55,15 @@ abstract class MetadataService {
 
 /// Audio format information
 class AudioFormatInfo {
+  const AudioFormatInfo({
+    required this.format,
+    required this.duration,
+    this.mimeType,
+    this.bitrate,
+    this.sampleRate,
+    this.channels,
+    this.bitsPerSample,
+  });
   final String format;
   final String? mimeType;
   final int? bitrate;
@@ -63,16 +71,6 @@ class AudioFormatInfo {
   final int? channels;
   final int? bitsPerSample;
   final Duration duration;
-
-  const AudioFormatInfo({
-    required this.format,
-    this.mimeType,
-    this.bitrate,
-    this.sampleRate,
-    this.channels,
-    this.bitsPerSample,
-    required this.duration,
-  });
 
   /// Get human readable format
   String get formatLabel {

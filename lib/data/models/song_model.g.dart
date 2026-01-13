@@ -54,29 +54,30 @@ class AlbumArtAdapter extends TypeAdapter<AlbumArt> {
 // **************************************************************************
 
 _$SongImpl _$$SongImplFromJson(Map<String, dynamic> json) => _$SongImpl(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      artist: json['artist'] as String,
-      album: json['album'] as String,
-      duration: Duration(microseconds: (json['duration'] as num).toInt()),
-      filePath: json['filePath'] as String,
-      albumArt: const AlbumArtConverter()
-          .fromJson(json['albumArt'] as Map<String, dynamic>?),
-      trackNumber: (json['trackNumber'] as num?)?.toInt(),
-      discNumber: (json['discNumber'] as num?)?.toInt(),
-      year: (json['year'] as num?)?.toInt(),
-      genre: json['genre'] as String?,
-      bitrate: (json['bitrate'] as num?)?.toInt(),
-      format: json['format'] as String?,
-      isFavorite: json['isFavorite'] as bool? ?? false,
-      playCount: (json['playCount'] as num?)?.toInt() ?? 0,
-      lastPlayed: json['lastPlayed'] == null
-          ? null
-          : DateTime.parse(json['lastPlayed'] as String),
-      dateAdded: json['dateAdded'] == null
-          ? null
-          : DateTime.parse(json['dateAdded'] as String),
-    );
+  id: json['id'] as String,
+  title: json['title'] as String,
+  artist: json['artist'] as String,
+  album: json['album'] as String,
+  duration: Duration(microseconds: (json['duration'] as num).toInt()),
+  filePath: json['filePath'] as String,
+  albumArt: const AlbumArtConverter().fromJson(
+    json['albumArt'] as Map<String, dynamic>?,
+  ),
+  trackNumber: (json['trackNumber'] as num?)?.toInt(),
+  discNumber: (json['discNumber'] as num?)?.toInt(),
+  year: (json['year'] as num?)?.toInt(),
+  genre: json['genre'] as String?,
+  bitrate: (json['bitrate'] as num?)?.toInt(),
+  format: json['format'] as String?,
+  isFavorite: json['isFavorite'] as bool? ?? false,
+  playCount: (json['playCount'] as num?)?.toInt() ?? 0,
+  lastPlayed: json['lastPlayed'] == null
+      ? null
+      : DateTime.parse(json['lastPlayed'] as String),
+  dateAdded: json['dateAdded'] == null
+      ? null
+      : DateTime.parse(json['dateAdded'] as String),
+);
 
 Map<String, dynamic> _$$SongImplToJson(_$SongImpl instance) =>
     <String, dynamic>{

@@ -12,30 +12,26 @@ class PlaybackState with _$PlaybackState {
     required Duration position,
     required Duration duration,
     required double playbackSpeed,
-    @Default(RepeatMode.off) RepeatMode repeatMode,
-    @Default(false) bool isShuffle,
     required List<Song> queue,
     required int currentIndex,
+    @Default(RepeatMode.off) RepeatMode repeatMode,
+    @Default(false) bool isShuffle,
   }) = _PlaybackState;
 
   /// Initial state
-  factory PlaybackState.initial() => PlaybackState(
-        isPlaying: false,
-        currentSong: null,
-        position: Duration.zero,
-        duration: Duration.zero,
-        playbackSpeed: 1.0,
-        queue: [],
-        currentIndex: -1,
-      );
+  factory PlaybackState.initial() => const PlaybackState(
+    isPlaying: false,
+    currentSong: null,
+    position: Duration.zero,
+    duration: Duration.zero,
+    playbackSpeed: 1,
+    queue: [],
+    currentIndex: -1,
+  );
 }
 
 /// Repeat mode
-enum RepeatMode {
-  off,
-  all,
-  one,
-}
+enum RepeatMode { off, all, one }
 
 /// Audio service interface for playback control
 abstract class AudioService {

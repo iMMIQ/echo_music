@@ -5,30 +5,30 @@ class DesignTokens {
   const DesignTokens._();
 
   // Spacing
-  static const double spacing0 = 0.0;
-  static const double spacing1 = 4.0;
-  static const double spacing2 = 8.0;
-  static const double spacing3 = 12.0;
-  static const double spacing4 = 16.0;
-  static const double spacing5 = 20.0;
-  static const double spacing6 = 24.0;
-  static const double spacing8 = 32.0;
-  static const double spacing10 = 40.0;
-  static const double spacing12 = 48.0;
-  static const double spacing16 = 64.0;
-  static const double spacing20 = 80.0;
+  static const double spacing0 = 0;
+  static const double spacing1 = 4;
+  static const double spacing2 = 8;
+  static const double spacing3 = 12;
+  static const double spacing4 = 16;
+  static const double spacing5 = 20;
+  static const double spacing6 = 24;
+  static const double spacing8 = 32;
+  static const double spacing10 = 40;
+  static const double spacing12 = 48;
+  static const double spacing16 = 64;
+  static const double spacing20 = 80;
 
   // Border radius
-  static const double radiusSmall = 8.0;
-  static const double radiusMedium = 12.0;
-  static const double radiusLarge = 16.0;
-  static const double radiusXLarge = 24.0;
+  static const double radiusSmall = 8;
+  static const double radiusMedium = 12;
+  static const double radiusLarge = 16;
+  static const double radiusXLarge = 24;
 
   // Elevation (for shadow)
-  static const double elevationNone = 0.0;
-  static const double elevationSubtle = 2.0;
-  static const double elevationMedium = 8.0;
-  static const double elevationHigh = 16.0;
+  static const double elevationNone = 0;
+  static const double elevationSubtle = 2;
+  static const double elevationMedium = 8;
+  static const double elevationHigh = 16;
 
   // Durations (ms)
   static const int durationFast = 150;
@@ -76,12 +76,9 @@ ThemeData get lightTheme {
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
-      surface: AppColors.lightSurface,
       error: AppColors.error,
-      onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: AppColors.lightTextPrimary,
-      onError: Colors.white,
     ),
     scaffoldBackgroundColor: AppColors.lightBackground,
     appBarTheme: const AppBarTheme(
@@ -106,9 +103,7 @@ ThemeData get lightTheme {
         ),
       ),
     ),
-    iconTheme: const IconThemeData(
-      color: AppColors.lightTextPrimary,
-    ),
+    iconTheme: const IconThemeData(color: AppColors.lightTextPrimary),
     textTheme: _buildTextTheme(AppColors.lightTextPrimary),
   );
 }
@@ -125,7 +120,6 @@ ThemeData get darkTheme {
       error: AppColors.error,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
-      onSurface: AppColors.darkTextPrimary,
       onError: Colors.white,
     ),
     scaffoldBackgroundColor: AppColors.darkBackground,
@@ -151,9 +145,7 @@ ThemeData get darkTheme {
         ),
       ),
     ),
-    iconTheme: const IconThemeData(
-      color: AppColors.darkTextPrimary,
-    ),
+    iconTheme: const IconThemeData(color: AppColors.darkTextPrimary),
     textTheme: _buildTextTheme(AppColors.darkTextPrimary),
   );
 }

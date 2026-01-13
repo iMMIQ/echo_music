@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/services/audio_service.dart';
 import '../../data/services/audio_service_impl.dart';
@@ -11,9 +10,7 @@ AudioService audioService(AudioServiceRef ref) {
   final service = AudioServiceImpl();
 
   // Dispose when provider is disposed
-  ref.onDispose(() {
-    service.dispose();
-  });
+  ref.onDispose(service.dispose);
 
   return service;
 }

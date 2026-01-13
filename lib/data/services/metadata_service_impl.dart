@@ -1,8 +1,8 @@
-import 'dart:io';
-import 'package:path/path.dart' as path;
 import 'package:metadata_god/metadata_god.dart';
-import 'metadata_service.dart';
+import 'package:path/path.dart' as path;
+
 import '../models/song_model.dart';
+import 'metadata_service.dart';
 
 /// Metadata service implementation using metadata_god
 class MetadataServiceImpl extends MetadataService {
@@ -26,8 +26,8 @@ class MetadataServiceImpl extends MetadataService {
       Duration duration = Duration.zero;
       if (metadata.durationMs != null) {
         final ms = metadata.durationMs is double
-            ? (metadata.durationMs as double).toInt()
-            : metadata.durationMs as int;
+            ? (metadata.durationMs!).toInt()
+            : metadata.durationMs! as int;
         duration = Duration(milliseconds: ms);
       } else {
         duration = await _getDurationFromFile(filePath);
@@ -41,9 +41,7 @@ class MetadataServiceImpl extends MetadataService {
         trackNumber: metadata.trackNumber,
         discNumber: metadata.discNumber,
         genre: metadata.genre,
-        bitrate: null,
         duration: duration,
-        albumArt: null, // TODO: Extract album art when API is stable
       );
     } catch (e) {
       // Return basic metadata if extraction fails
@@ -52,7 +50,6 @@ class MetadataServiceImpl extends MetadataService {
         artist: 'Unknown Artist',
         album: 'Unknown Album',
         duration: await _getDurationFromFile(filePath),
-        albumArt: null,
       );
     }
   }
@@ -84,14 +81,14 @@ class MetadataServiceImpl extends MetadataService {
       final metadata = await MetadataGod.readMetadata(file: filePath);
       if (metadata.durationMs != null) {
         final ms = metadata.durationMs is double
-            ? (metadata.durationMs as double).toInt()
-            : metadata.durationMs as int;
+            ? (metadata.durationMs!).toInt()
+            : metadata.durationMs! as int;
         return Duration(milliseconds: ms);
       }
     } catch (e) {
       // Fall through to file-based duration
     }
-    return await _getDurationFromFile(filePath);
+    return _getDurationFromFile(filePath);
   }
 
   @override
@@ -102,18 +99,14 @@ class MetadataServiceImpl extends MetadataService {
       final duration = metadata.durationMs != null
           ? Duration(
               milliseconds: metadata.durationMs is double
-                  ? (metadata.durationMs as double).toInt()
-                  : metadata.durationMs as int,
+                  ? (metadata.durationMs!).toInt()
+                  : metadata.durationMs! as int,
             )
           : await _getDurationFromFile(filePath);
 
       return AudioFormatInfo(
         format: extension,
         mimeType: _getMimeType(extension),
-        bitrate: null,
-        sampleRate: null,
-        channels: null,
-        bitsPerSample: null,
         duration: duration,
       );
     } catch (e) {

@@ -1,11 +1,16 @@
 import 'dart:async';
-import 'package:just_audio/just_audio.dart';
+
 import 'package:audio_service/audio_service.dart' as audio_service_pkg;
-import 'audio_service.dart';
+import 'package:just_audio/just_audio.dart';
+
 import '../models/song_model.dart';
+import 'audio_service.dart';
 
 /// Audio service implementation using just_audio
 class AudioServiceImpl extends AudioService {
+  AudioServiceImpl() {
+    _initListeners();
+  }
   final AudioPlayer _player = AudioPlayer();
   final StreamController<PlaybackState> _stateController =
       StreamController.broadcast();
@@ -43,10 +48,6 @@ class AudioServiceImpl extends AudioService {
 
   @override
   bool get isPlaying => _player.playing;
-
-  AudioServiceImpl() {
-    _initListeners();
-  }
 
   void _initListeners() {
     // Listen to player state changes
@@ -121,9 +122,7 @@ class AudioServiceImpl extends AudioService {
           title: song.title,
           artist: song.artist,
           album: song.album,
-          artUri: song.albumArt != null
-              ? Uri.file(song.albumArt!.path)
-              : null,
+          artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
           duration: song.duration,
         ),
       );
@@ -173,7 +172,6 @@ class AudioServiceImpl extends AudioService {
         // Restart current song
         await seek(Duration.zero);
         await _player.play();
-        break;
       case RepeatMode.off:
       case RepeatMode.all:
         if (_currentIndex < _queue.length - 1) {
@@ -223,7 +221,6 @@ class AudioServiceImpl extends AudioService {
     switch (mode) {
       case RepeatMode.one:
         await _player.setLoopMode(LoopMode.one);
-        break;
       case RepeatMode.all:
       case RepeatMode.off:
         await _player.setLoopMode(LoopMode.off);
@@ -254,10 +251,7 @@ class AudioServiceImpl extends AudioService {
     _queue.addAll(songs);
     _currentIndex = startIndex.clamp(0, songs.length - 1);
 
-    _updateState(
-      queue: List.from(_queue),
-      currentIndex: _currentIndex,
-    );
+    _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
   }
 
   @override
@@ -287,10 +281,7 @@ class AudioServiceImpl extends AudioService {
       } else if (index < _currentIndex) {
         _currentIndex--;
       }
-      _updateState(
-        queue: List.from(_queue),
-        currentIndex: _currentIndex,
-      );
+      _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
     }
   }
 
@@ -312,10 +303,7 @@ class AudioServiceImpl extends AudioService {
         _currentIndex++;
       }
 
-      _updateState(
-        queue: List.from(_queue),
-        currentIndex: _currentIndex,
-      );
+      _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
     }
   }
 
@@ -324,11 +312,7 @@ class AudioServiceImpl extends AudioService {
     await stop();
     _queue.clear();
     _currentIndex = -1;
-    _updateState(
-      queue: [],
-      currentIndex: -1,
-      currentSong: null,
-    );
+    _updateState(queue: [], currentIndex: -1);
   }
 
   @override

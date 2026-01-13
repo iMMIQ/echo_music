@@ -1,12 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+import '../../data/services/audio_service.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/library_provider.dart';
 import '../widgets/queue_panel.dart';
-import '../../data/services/audio_service.dart';
 
 /// Full-screen music player page
 class FullPlayerPage extends ConsumerStatefulWidget {
@@ -17,9 +19,6 @@ class FullPlayerPage extends ConsumerStatefulWidget {
 }
 
 class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
-  double _sliderValue = 0.0;
-  bool _isDragging = false;
-
   void _showQueuePanel() {
     showModalBottomSheet(
       context: context,
@@ -29,7 +28,7 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
         initialChildSize: 0.7,
         minChildSize: 0.3,
         maxChildSize: 0.95,
-        builder: (context, scrollController) => Container(
+        builder: (context, scrollController) => DecoratedBox(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -42,14 +41,12 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               // Queue panel
-              Expanded(
-                child: QueuePanel(),
-              ),
+              const Expanded(child: QueuePanel()),
             ],
           ),
         ),
@@ -98,9 +95,7 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                     const SizedBox(height: 32),
 
                     // Secondary controls
-                    _SecondaryControls(
-                      onShowQueue: _showQueuePanel,
-                    ),
+                    _SecondaryControls(onShowQueue: _showQueuePanel),
 
                     const SizedBox(height: 24),
                   ],
@@ -121,25 +116,16 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
         children: [
           // Back button
           IconButton(
-            icon: Icon(
-              PhosphorIcons.caretDown(),
-              size: 32,
-            ),
+            icon: Icon(PhosphorIcons.caretDown(), size: 32),
             onPressed: () => Navigator.of(context).pop(),
           ),
 
           // "Now Playing" label
-          Text(
-            'Now Playing',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('Now Playing', style: Theme.of(context).textTheme.titleMedium),
 
           // More options
           IconButton(
-            icon: Icon(
-              PhosphorIcons.dotsThree(),
-              size: 24,
-            ),
+            icon: Icon(PhosphorIcons.dotsThree(), size: 24),
             onPressed: () {
               // Show more options menu
             },
@@ -180,12 +166,11 @@ class _AlbumArt extends ConsumerWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
             child: song.albumArt != null
-                ? Image.file(
-                    File(song.albumArt!.path),
-                    fit: BoxFit.cover,
-                  )
-                : Container(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                ? Image.file(File(song.albumArt!.path), fit: BoxFit.cover)
+                : ColoredBox(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     child: Icon(
                       PhosphorIcons.musicNote(),
                       size: 64,
@@ -219,9 +204,9 @@ class _SongInfo extends ConsumerWidget {
           children: [
             Text(
               song.title,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -230,8 +215,10 @@ class _SongInfo extends ConsumerWidget {
             Text(
               song.artist,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -240,8 +227,10 @@ class _SongInfo extends ConsumerWidget {
             Text(
               song.album,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -262,7 +251,7 @@ class _ProgressBar extends ConsumerStatefulWidget {
 }
 
 class _ProgressBarState extends ConsumerState<_ProgressBar> {
-  double _sliderValue = 0.0;
+  double _sliderValue = 0;
   bool _isDragging = false;
 
   @override
@@ -278,7 +267,10 @@ class _ProgressBarState extends ConsumerState<_ProgressBar> {
         }
 
         final position = _isDragging
-            ? Duration(milliseconds: (_sliderValue * state.duration.inMilliseconds).round())
+            ? Duration(
+                milliseconds: (_sliderValue * state.duration.inMilliseconds)
+                    .round(),
+              )
             : state.position;
         final progress = state.duration.inMilliseconds > 0
             ? position.inMilliseconds / state.duration.inMilliseconds
@@ -294,7 +286,9 @@ class _ProgressBarState extends ConsumerState<_ProgressBar> {
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 activeTrackColor: Theme.of(context).colorScheme.primary,
-                inactiveTrackColor: Theme.of(context).colorScheme.surfaceVariant,
+                inactiveTrackColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
                 thumbColor: Theme.of(context).colorScheme.primary,
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
                 overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
@@ -310,7 +304,8 @@ class _ProgressBarState extends ConsumerState<_ProgressBar> {
                 },
                 onChangeEnd: (value) {
                   final newPosition = Duration(
-                    milliseconds: (value * state.duration.inMilliseconds).round(),
+                    milliseconds: (value * state.duration.inMilliseconds)
+                        .round(),
                   );
                   ref.read(audioServiceProvider).seek(newPosition);
                   setState(() {
@@ -329,20 +324,18 @@ class _ProgressBarState extends ConsumerState<_ProgressBar> {
                   Text(
                     _formatDuration(position),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.6),
-                        ),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
                   Text(
                     _formatDuration(state.duration),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.6),
-                        ),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
                 ],
               ),
@@ -378,7 +371,9 @@ class _MainControls extends ConsumerWidget {
             IconButton(
               icon: Icon(
                 PhosphorIcons.shuffle(
-                  state.isShuffle ? PhosphorIconsStyle.fill : PhosphorIconsStyle.regular,
+                  state.isShuffle
+                      ? PhosphorIconsStyle.fill
+                      : PhosphorIconsStyle.regular,
                 ),
                 size: 24,
                 color: state.isShuffle
@@ -392,17 +387,14 @@ class _MainControls extends ConsumerWidget {
 
             // Previous
             IconButton(
-              icon: Icon(
-                PhosphorIcons.skipBack(),
-                size: 32,
-              ),
+              icon: Icon(PhosphorIcons.skipBack(), size: 32),
               onPressed: () {
                 ref.read(audioServiceProvider).skipToPrevious();
               },
             ),
 
             // Play/Pause
-            Container(
+            DecoratedBox(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
                 shape: BoxShape.circle,
@@ -430,10 +422,7 @@ class _MainControls extends ConsumerWidget {
 
             // Next
             IconButton(
-              icon: Icon(
-                PhosphorIcons.skipForward(),
-                size: 32,
-              ),
+              icon: Icon(PhosphorIcons.skipForward(), size: 32),
               onPressed: () {
                 ref.read(audioServiceProvider).skipToNext();
               },
@@ -486,11 +475,8 @@ class _MainControls extends ConsumerWidget {
 
 /// Secondary controls widget
 class _SecondaryControls extends ConsumerWidget {
+  const _SecondaryControls({required this.onShowQueue});
   final VoidCallback onShowQueue;
-
-  const _SecondaryControls({
-    required this.onShowQueue,
-  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -512,7 +498,9 @@ class _SecondaryControls extends ConsumerWidget {
             if (currentSong != null)
               favoritesAsync.when(
                 data: (favorites) {
-                  final isFavorite = favorites.any((s) => s.id == currentSong.id);
+                  final isFavorite = favorites.any(
+                    (s) => s.id == currentSong.id,
+                  );
                   return _SecondaryButton(
                     icon: isFavorite
                         ? PhosphorIcons.heart(PhosphorIconsStyle.fill)
@@ -616,17 +604,16 @@ class _SecondaryControls extends ConsumerWidget {
 
 /// Secondary button widget
 class _SecondaryButton extends StatelessWidget {
-  final PhosphorIconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final bool isActive;
-
   const _SecondaryButton({
     required this.icon,
     required this.label,
     required this.onTap,
     this.isActive = false,
   });
+  final PhosphorIconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -642,16 +629,20 @@ class _SecondaryButton extends StatelessWidget {
               size: 24,
               color: isActive
                   ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  : Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: isActive
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
+                color: isActive
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),

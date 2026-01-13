@@ -1,5 +1,5 @@
-import 'package:hive/hive.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
 
 part 'song_model.freezed.dart';
 part 'song_model.g.dart';
@@ -7,8 +7,6 @@ part 'song_model.g.dart';
 /// Song model stored in Hive
 @freezed
 class Song with _$Song {
-  const Song._();
-
   const factory Song({
     required String id,
     required String title,
@@ -28,6 +26,7 @@ class Song with _$Song {
     @HiveField(16) DateTime? lastPlayed,
     @HiveField(17) DateTime? dateAdded,
   }) = _Song;
+  const Song._();
 
   factory Song.fromJson(Map<String, dynamic> json) => _$SongFromJson(json);
 }
@@ -48,7 +47,8 @@ class AlbumArt with _$AlbumArt {
 }
 
 /// Album art JSON converter
-class AlbumArtConverter implements JsonConverter<AlbumArt?, Map<String, dynamic>?> {
+class AlbumArtConverter
+    implements JsonConverter<AlbumArt?, Map<String, dynamic>?> {
   const AlbumArtConverter();
 
   @override

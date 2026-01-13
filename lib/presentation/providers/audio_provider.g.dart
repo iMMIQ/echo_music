@@ -15,8 +15,9 @@ String _$audioServiceHash() => r'ab060eac90d6b2940d2a8cec99411a64abb92fbc';
 final audioServiceProvider = AutoDisposeProvider<AudioService>.internal(
   audioService,
   name: r'audioServiceProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$audioServiceHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$audioServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -82,8 +83,9 @@ String _$isPlayingHash() => r'a7d7d91cf1570a43aea0a81f39bb5848865abe09';
 final isPlayingProvider = AutoDisposeStreamProvider<bool>.internal(
   isPlaying,
   name: r'isPlayingProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$isPlayingHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$isPlayingHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

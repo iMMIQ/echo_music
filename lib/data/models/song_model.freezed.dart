@@ -12,7 +12,8 @@ part of 'song_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 Song _$SongFromJson(Map<String, dynamic> json) {
   return _Song.fromJson(json);
@@ -60,24 +61,25 @@ abstract class $SongCopyWith<$Res> {
   factory $SongCopyWith(Song value, $Res Function(Song) then) =
       _$SongCopyWithImpl<$Res, Song>;
   @useResult
-  $Res call(
-      {String id,
-      String title,
-      String artist,
-      String album,
-      Duration duration,
-      String filePath,
-      @AlbumArtConverter() @HiveField(7) AlbumArt? albumArt,
-      @HiveField(8) int? trackNumber,
-      @HiveField(9) int? discNumber,
-      @HiveField(10) int? year,
-      @HiveField(11) String? genre,
-      @HiveField(12) int? bitrate,
-      @HiveField(13) String? format,
-      @HiveField(14) bool isFavorite,
-      @HiveField(15) int playCount,
-      @HiveField(16) DateTime? lastPlayed,
-      @HiveField(17) DateTime? dateAdded});
+  $Res call({
+    String id,
+    String title,
+    String artist,
+    String album,
+    Duration duration,
+    String filePath,
+    @AlbumArtConverter() @HiveField(7) AlbumArt? albumArt,
+    @HiveField(8) int? trackNumber,
+    @HiveField(9) int? discNumber,
+    @HiveField(10) int? year,
+    @HiveField(11) String? genre,
+    @HiveField(12) int? bitrate,
+    @HiveField(13) String? format,
+    @HiveField(14) bool isFavorite,
+    @HiveField(15) int playCount,
+    @HiveField(16) DateTime? lastPlayed,
+    @HiveField(17) DateTime? dateAdded,
+  });
 
   $AlbumArtCopyWith<$Res>? get albumArt;
 }
@@ -113,76 +115,79 @@ class _$SongCopyWithImpl<$Res, $Val extends Song>
     Object? lastPlayed = freezed,
     Object? dateAdded = freezed,
   }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      artist: null == artist
-          ? _value.artist
-          : artist // ignore: cast_nullable_to_non_nullable
-              as String,
-      album: null == album
-          ? _value.album
-          : album // ignore: cast_nullable_to_non_nullable
-              as String,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      filePath: null == filePath
-          ? _value.filePath
-          : filePath // ignore: cast_nullable_to_non_nullable
-              as String,
-      albumArt: freezed == albumArt
-          ? _value.albumArt
-          : albumArt // ignore: cast_nullable_to_non_nullable
-              as AlbumArt?,
-      trackNumber: freezed == trackNumber
-          ? _value.trackNumber
-          : trackNumber // ignore: cast_nullable_to_non_nullable
-              as int?,
-      discNumber: freezed == discNumber
-          ? _value.discNumber
-          : discNumber // ignore: cast_nullable_to_non_nullable
-              as int?,
-      year: freezed == year
-          ? _value.year
-          : year // ignore: cast_nullable_to_non_nullable
-              as int?,
-      genre: freezed == genre
-          ? _value.genre
-          : genre // ignore: cast_nullable_to_non_nullable
-              as String?,
-      bitrate: freezed == bitrate
-          ? _value.bitrate
-          : bitrate // ignore: cast_nullable_to_non_nullable
-              as int?,
-      format: freezed == format
-          ? _value.format
-          : format // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isFavorite: null == isFavorite
-          ? _value.isFavorite
-          : isFavorite // ignore: cast_nullable_to_non_nullable
-              as bool,
-      playCount: null == playCount
-          ? _value.playCount
-          : playCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      lastPlayed: freezed == lastPlayed
-          ? _value.lastPlayed
-          : lastPlayed // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      dateAdded: freezed == dateAdded
-          ? _value.dateAdded
-          : dateAdded // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            artist: null == artist
+                ? _value.artist
+                : artist // ignore: cast_nullable_to_non_nullable
+                      as String,
+            album: null == album
+                ? _value.album
+                : album // ignore: cast_nullable_to_non_nullable
+                      as String,
+            duration: null == duration
+                ? _value.duration
+                : duration // ignore: cast_nullable_to_non_nullable
+                      as Duration,
+            filePath: null == filePath
+                ? _value.filePath
+                : filePath // ignore: cast_nullable_to_non_nullable
+                      as String,
+            albumArt: freezed == albumArt
+                ? _value.albumArt
+                : albumArt // ignore: cast_nullable_to_non_nullable
+                      as AlbumArt?,
+            trackNumber: freezed == trackNumber
+                ? _value.trackNumber
+                : trackNumber // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            discNumber: freezed == discNumber
+                ? _value.discNumber
+                : discNumber // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            year: freezed == year
+                ? _value.year
+                : year // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            genre: freezed == genre
+                ? _value.genre
+                : genre // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            bitrate: freezed == bitrate
+                ? _value.bitrate
+                : bitrate // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            format: freezed == format
+                ? _value.format
+                : format // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isFavorite: null == isFavorite
+                ? _value.isFavorite
+                : isFavorite // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            playCount: null == playCount
+                ? _value.playCount
+                : playCount // ignore: cast_nullable_to_non_nullable
+                      as int,
+            lastPlayed: freezed == lastPlayed
+                ? _value.lastPlayed
+                : lastPlayed // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            dateAdded: freezed == dateAdded
+                ? _value.dateAdded
+                : dateAdded // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+          )
+          as $Val,
+    );
   }
 
   @override
@@ -201,28 +206,30 @@ class _$SongCopyWithImpl<$Res, $Val extends Song>
 /// @nodoc
 abstract class _$$SongImplCopyWith<$Res> implements $SongCopyWith<$Res> {
   factory _$$SongImplCopyWith(
-          _$SongImpl value, $Res Function(_$SongImpl) then) =
-      __$$SongImplCopyWithImpl<$Res>;
+    _$SongImpl value,
+    $Res Function(_$SongImpl) then,
+  ) = __$$SongImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String id,
-      String title,
-      String artist,
-      String album,
-      Duration duration,
-      String filePath,
-      @AlbumArtConverter() @HiveField(7) AlbumArt? albumArt,
-      @HiveField(8) int? trackNumber,
-      @HiveField(9) int? discNumber,
-      @HiveField(10) int? year,
-      @HiveField(11) String? genre,
-      @HiveField(12) int? bitrate,
-      @HiveField(13) String? format,
-      @HiveField(14) bool isFavorite,
-      @HiveField(15) int playCount,
-      @HiveField(16) DateTime? lastPlayed,
-      @HiveField(17) DateTime? dateAdded});
+  $Res call({
+    String id,
+    String title,
+    String artist,
+    String album,
+    Duration duration,
+    String filePath,
+    @AlbumArtConverter() @HiveField(7) AlbumArt? albumArt,
+    @HiveField(8) int? trackNumber,
+    @HiveField(9) int? discNumber,
+    @HiveField(10) int? year,
+    @HiveField(11) String? genre,
+    @HiveField(12) int? bitrate,
+    @HiveField(13) String? format,
+    @HiveField(14) bool isFavorite,
+    @HiveField(15) int playCount,
+    @HiveField(16) DateTime? lastPlayed,
+    @HiveField(17) DateTime? dateAdded,
+  });
 
   @override
   $AlbumArtCopyWith<$Res>? get albumArt;
@@ -233,7 +240,7 @@ class __$$SongImplCopyWithImpl<$Res>
     extends _$SongCopyWithImpl<$Res, _$SongImpl>
     implements _$$SongImplCopyWith<$Res> {
   __$$SongImplCopyWithImpl(_$SongImpl _value, $Res Function(_$SongImpl) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -256,101 +263,103 @@ class __$$SongImplCopyWithImpl<$Res>
     Object? lastPlayed = freezed,
     Object? dateAdded = freezed,
   }) {
-    return _then(_$SongImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      artist: null == artist
-          ? _value.artist
-          : artist // ignore: cast_nullable_to_non_nullable
-              as String,
-      album: null == album
-          ? _value.album
-          : album // ignore: cast_nullable_to_non_nullable
-              as String,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      filePath: null == filePath
-          ? _value.filePath
-          : filePath // ignore: cast_nullable_to_non_nullable
-              as String,
-      albumArt: freezed == albumArt
-          ? _value.albumArt
-          : albumArt // ignore: cast_nullable_to_non_nullable
-              as AlbumArt?,
-      trackNumber: freezed == trackNumber
-          ? _value.trackNumber
-          : trackNumber // ignore: cast_nullable_to_non_nullable
-              as int?,
-      discNumber: freezed == discNumber
-          ? _value.discNumber
-          : discNumber // ignore: cast_nullable_to_non_nullable
-              as int?,
-      year: freezed == year
-          ? _value.year
-          : year // ignore: cast_nullable_to_non_nullable
-              as int?,
-      genre: freezed == genre
-          ? _value.genre
-          : genre // ignore: cast_nullable_to_non_nullable
-              as String?,
-      bitrate: freezed == bitrate
-          ? _value.bitrate
-          : bitrate // ignore: cast_nullable_to_non_nullable
-              as int?,
-      format: freezed == format
-          ? _value.format
-          : format // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isFavorite: null == isFavorite
-          ? _value.isFavorite
-          : isFavorite // ignore: cast_nullable_to_non_nullable
-              as bool,
-      playCount: null == playCount
-          ? _value.playCount
-          : playCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      lastPlayed: freezed == lastPlayed
-          ? _value.lastPlayed
-          : lastPlayed // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      dateAdded: freezed == dateAdded
-          ? _value.dateAdded
-          : dateAdded // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ));
+    return _then(
+      _$SongImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        artist: null == artist
+            ? _value.artist
+            : artist // ignore: cast_nullable_to_non_nullable
+                  as String,
+        album: null == album
+            ? _value.album
+            : album // ignore: cast_nullable_to_non_nullable
+                  as String,
+        duration: null == duration
+            ? _value.duration
+            : duration // ignore: cast_nullable_to_non_nullable
+                  as Duration,
+        filePath: null == filePath
+            ? _value.filePath
+            : filePath // ignore: cast_nullable_to_non_nullable
+                  as String,
+        albumArt: freezed == albumArt
+            ? _value.albumArt
+            : albumArt // ignore: cast_nullable_to_non_nullable
+                  as AlbumArt?,
+        trackNumber: freezed == trackNumber
+            ? _value.trackNumber
+            : trackNumber // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        discNumber: freezed == discNumber
+            ? _value.discNumber
+            : discNumber // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        year: freezed == year
+            ? _value.year
+            : year // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        genre: freezed == genre
+            ? _value.genre
+            : genre // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        bitrate: freezed == bitrate
+            ? _value.bitrate
+            : bitrate // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        format: freezed == format
+            ? _value.format
+            : format // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isFavorite: null == isFavorite
+            ? _value.isFavorite
+            : isFavorite // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        playCount: null == playCount
+            ? _value.playCount
+            : playCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        lastPlayed: freezed == lastPlayed
+            ? _value.lastPlayed
+            : lastPlayed // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        dateAdded: freezed == dateAdded
+            ? _value.dateAdded
+            : dateAdded // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$SongImpl extends _Song {
-  const _$SongImpl(
-      {required this.id,
-      required this.title,
-      required this.artist,
-      required this.album,
-      required this.duration,
-      required this.filePath,
-      @AlbumArtConverter() @HiveField(7) this.albumArt,
-      @HiveField(8) this.trackNumber,
-      @HiveField(9) this.discNumber,
-      @HiveField(10) this.year,
-      @HiveField(11) this.genre,
-      @HiveField(12) this.bitrate,
-      @HiveField(13) this.format,
-      @HiveField(14) this.isFavorite = false,
-      @HiveField(15) this.playCount = 0,
-      @HiveField(16) this.lastPlayed,
-      @HiveField(17) this.dateAdded})
-      : super._();
+  const _$SongImpl({
+    required this.id,
+    required this.title,
+    required this.artist,
+    required this.album,
+    required this.duration,
+    required this.filePath,
+    @AlbumArtConverter() @HiveField(7) this.albumArt,
+    @HiveField(8) this.trackNumber,
+    @HiveField(9) this.discNumber,
+    @HiveField(10) this.year,
+    @HiveField(11) this.genre,
+    @HiveField(12) this.bitrate,
+    @HiveField(13) this.format,
+    @HiveField(14) this.isFavorite = false,
+    @HiveField(15) this.playCount = 0,
+    @HiveField(16) this.lastPlayed,
+    @HiveField(17) this.dateAdded,
+  }) : super._();
 
   factory _$SongImpl.fromJson(Map<String, dynamic> json) =>
       _$$SongImplFromJson(json);
@@ -445,24 +454,25 @@ class _$SongImpl extends _Song {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      title,
-      artist,
-      album,
-      duration,
-      filePath,
-      albumArt,
-      trackNumber,
-      discNumber,
-      year,
-      genre,
-      bitrate,
-      format,
-      isFavorite,
-      playCount,
-      lastPlayed,
-      dateAdded);
+    runtimeType,
+    id,
+    title,
+    artist,
+    album,
+    duration,
+    filePath,
+    albumArt,
+    trackNumber,
+    discNumber,
+    year,
+    genre,
+    bitrate,
+    format,
+    isFavorite,
+    playCount,
+    lastPlayed,
+    dateAdded,
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -472,31 +482,30 @@ class _$SongImpl extends _Song {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SongImplToJson(
-      this,
-    );
+    return _$$SongImplToJson(this);
   }
 }
 
 abstract class _Song extends Song {
-  const factory _Song(
-      {required final String id,
-      required final String title,
-      required final String artist,
-      required final String album,
-      required final Duration duration,
-      required final String filePath,
-      @AlbumArtConverter() @HiveField(7) final AlbumArt? albumArt,
-      @HiveField(8) final int? trackNumber,
-      @HiveField(9) final int? discNumber,
-      @HiveField(10) final int? year,
-      @HiveField(11) final String? genre,
-      @HiveField(12) final int? bitrate,
-      @HiveField(13) final String? format,
-      @HiveField(14) final bool isFavorite,
-      @HiveField(15) final int playCount,
-      @HiveField(16) final DateTime? lastPlayed,
-      @HiveField(17) final DateTime? dateAdded}) = _$SongImpl;
+  const factory _Song({
+    required final String id,
+    required final String title,
+    required final String artist,
+    required final String album,
+    required final Duration duration,
+    required final String filePath,
+    @AlbumArtConverter() @HiveField(7) final AlbumArt? albumArt,
+    @HiveField(8) final int? trackNumber,
+    @HiveField(9) final int? discNumber,
+    @HiveField(10) final int? year,
+    @HiveField(11) final String? genre,
+    @HiveField(12) final int? bitrate,
+    @HiveField(13) final String? format,
+    @HiveField(14) final bool isFavorite,
+    @HiveField(15) final int playCount,
+    @HiveField(16) final DateTime? lastPlayed,
+    @HiveField(17) final DateTime? dateAdded,
+  }) = _$SongImpl;
   const _Song._() : super._();
 
   factory _Song.fromJson(Map<String, dynamic> json) = _$SongImpl.fromJson;
@@ -579,11 +588,12 @@ abstract class $AlbumArtCopyWith<$Res> {
   factory $AlbumArtCopyWith(AlbumArt value, $Res Function(AlbumArt) then) =
       _$AlbumArtCopyWithImpl<$Res, AlbumArt>;
   @useResult
-  $Res call(
-      {@HiveField(0) String path,
-      @HiveField(1) int width,
-      @HiveField(2) int height,
-      @HiveField(3) String? mimeType});
+  $Res call({
+    @HiveField(0) String path,
+    @HiveField(1) int width,
+    @HiveField(2) int height,
+    @HiveField(3) String? mimeType,
+  });
 }
 
 /// @nodoc
@@ -604,24 +614,27 @@ class _$AlbumArtCopyWithImpl<$Res, $Val extends AlbumArt>
     Object? height = null,
     Object? mimeType = freezed,
   }) {
-    return _then(_value.copyWith(
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
-              as String,
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as int,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as int,
-      mimeType: freezed == mimeType
-          ? _value.mimeType
-          : mimeType // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            path: null == path
+                ? _value.path
+                : path // ignore: cast_nullable_to_non_nullable
+                      as String,
+            width: null == width
+                ? _value.width
+                : width // ignore: cast_nullable_to_non_nullable
+                      as int,
+            height: null == height
+                ? _value.height
+                : height // ignore: cast_nullable_to_non_nullable
+                      as int,
+            mimeType: freezed == mimeType
+                ? _value.mimeType
+                : mimeType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -629,15 +642,17 @@ class _$AlbumArtCopyWithImpl<$Res, $Val extends AlbumArt>
 abstract class _$$AlbumArtImplCopyWith<$Res>
     implements $AlbumArtCopyWith<$Res> {
   factory _$$AlbumArtImplCopyWith(
-          _$AlbumArtImpl value, $Res Function(_$AlbumArtImpl) then) =
-      __$$AlbumArtImplCopyWithImpl<$Res>;
+    _$AlbumArtImpl value,
+    $Res Function(_$AlbumArtImpl) then,
+  ) = __$$AlbumArtImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@HiveField(0) String path,
-      @HiveField(1) int width,
-      @HiveField(2) int height,
-      @HiveField(3) String? mimeType});
+  $Res call({
+    @HiveField(0) String path,
+    @HiveField(1) int width,
+    @HiveField(2) int height,
+    @HiveField(3) String? mimeType,
+  });
 }
 
 /// @nodoc
@@ -645,8 +660,9 @@ class __$$AlbumArtImplCopyWithImpl<$Res>
     extends _$AlbumArtCopyWithImpl<$Res, _$AlbumArtImpl>
     implements _$$AlbumArtImplCopyWith<$Res> {
   __$$AlbumArtImplCopyWithImpl(
-      _$AlbumArtImpl _value, $Res Function(_$AlbumArtImpl) _then)
-      : super(_value, _then);
+    _$AlbumArtImpl _value,
+    $Res Function(_$AlbumArtImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -656,35 +672,38 @@ class __$$AlbumArtImplCopyWithImpl<$Res>
     Object? height = null,
     Object? mimeType = freezed,
   }) {
-    return _then(_$AlbumArtImpl(
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
-              as String,
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as int,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as int,
-      mimeType: freezed == mimeType
-          ? _value.mimeType
-          : mimeType // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _$AlbumArtImpl(
+        path: null == path
+            ? _value.path
+            : path // ignore: cast_nullable_to_non_nullable
+                  as String,
+        width: null == width
+            ? _value.width
+            : width // ignore: cast_nullable_to_non_nullable
+                  as int,
+        height: null == height
+            ? _value.height
+            : height // ignore: cast_nullable_to_non_nullable
+                  as int,
+        mimeType: freezed == mimeType
+            ? _value.mimeType
+            : mimeType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$AlbumArtImpl implements _AlbumArt {
-  const _$AlbumArtImpl(
-      {@HiveField(0) required this.path,
-      @HiveField(1) this.width = 0,
-      @HiveField(2) this.height = 0,
-      @HiveField(3) this.mimeType});
+  const _$AlbumArtImpl({
+    @HiveField(0) required this.path,
+    @HiveField(1) this.width = 0,
+    @HiveField(2) this.height = 0,
+    @HiveField(3) this.mimeType,
+  });
 
   factory _$AlbumArtImpl.fromJson(Map<String, dynamic> json) =>
       _$$AlbumArtImplFromJson(json);
@@ -733,18 +752,17 @@ class _$AlbumArtImpl implements _AlbumArt {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AlbumArtImplToJson(
-      this,
-    );
+    return _$$AlbumArtImplToJson(this);
   }
 }
 
 abstract class _AlbumArt implements AlbumArt {
-  const factory _AlbumArt(
-      {@HiveField(0) required final String path,
-      @HiveField(1) final int width,
-      @HiveField(2) final int height,
-      @HiveField(3) final String? mimeType}) = _$AlbumArtImpl;
+  const factory _AlbumArt({
+    @HiveField(0) required final String path,
+    @HiveField(1) final int width,
+    @HiveField(2) final int height,
+    @HiveField(3) final String? mimeType,
+  }) = _$AlbumArtImpl;
 
   factory _AlbumArt.fromJson(Map<String, dynamic> json) =
       _$AlbumArtImpl.fromJson;
