@@ -228,6 +228,7 @@ class LibraryServiceImpl extends LibraryService {
         try {
           final metadata = await _metadataService.extractMetadata(entity.path);
           final song = _createSongFromMetadata(entity.path, metadata);
+          await addSong(song);
           songs.add(song);
         } catch (e) {
           // Skip files that can't be processed
@@ -313,8 +314,14 @@ class LibraryServiceImpl extends LibraryService {
       }
     }
 
+    // FilePicker expects extensions without dots
+    final extensions = _metadataService.supportedExtensions
+        .map((e) => e.replaceFirst('.', ''))
+        .toList();
+
     final result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
+      type: FileType.custom,
+      allowedExtensions: extensions,
       allowMultiple: true,
     );
 
@@ -322,11 +329,8 @@ class LibraryServiceImpl extends LibraryService {
       return [];
     }
 
-    // Filter out null paths and unsupported formats
-    final paths = result.paths
-        .whereType<String>()
-        .where(_metadataService.isSupportedFormat)
-        .toList();
+    // Filter out null paths
+    final paths = result.paths.whereType<String>().toList();
 
     return paths;
   }

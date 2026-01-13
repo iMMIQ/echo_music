@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart' as path;
 
@@ -30,7 +32,8 @@ class MetadataServiceImpl extends MetadataService {
             : metadata.durationMs! as int;
         duration = Duration(milliseconds: ms);
       } else {
-        duration = await _getDurationFromFile(filePath);
+        // Try to get duration using ffprobe if metadata_god doesn't have it
+        duration = await _getDurationWithFfprobe(filePath);
       }
 
       return MetadataResult(
@@ -49,7 +52,7 @@ class MetadataServiceImpl extends MetadataService {
         title: _getFileName(filePath),
         artist: 'Unknown Artist',
         album: 'Unknown Album',
-        duration: await _getDurationFromFile(filePath),
+        duration: await _getDurationWithFfprobe(filePath),
       );
     }
   }
@@ -86,9 +89,9 @@ class MetadataServiceImpl extends MetadataService {
         return Duration(milliseconds: ms);
       }
     } catch (e) {
-      // Fall through to file-based duration
+      // Return default duration on error
     }
-    return _getDurationFromFile(filePath);
+    return await _getDurationWithFfprobe(filePath);
   }
 
   @override
@@ -102,7 +105,7 @@ class MetadataServiceImpl extends MetadataService {
                   ? (metadata.durationMs!).toInt()
                   : metadata.durationMs! as int,
             )
-          : await _getDurationFromFile(filePath);
+          : await _getDurationWithFfprobe(filePath);
 
       return AudioFormatInfo(
         format: extension,
@@ -114,7 +117,7 @@ class MetadataServiceImpl extends MetadataService {
       return AudioFormatInfo(
         format: extension,
         mimeType: _getMimeType(extension),
-        duration: await _getDurationFromFile(filePath),
+        duration: await _getDurationWithFfprobe(filePath),
       );
     }
   }
@@ -141,11 +144,32 @@ class MetadataServiceImpl extends MetadataService {
     return path.basenameWithoutExtension(filePath);
   }
 
-  Future<Duration> _getDurationFromFile(String filePath) async {
-    // This is a fallback method. In a real implementation,
-    // you might use just_audio or another audio library to get the duration.
-    // For now, return a default duration.
-    return Duration.zero;
+  /// Get duration using ffprobe as fallback
+  Future<Duration> _getDurationWithFfprobe(String filePath) async {
+    try {
+      // Try ffprobe first (available on most Linux systems)
+      final result = await Process.run(
+        'ffprobe',
+        [
+          '-v', 'error',
+          '-show_entries', 'format=duration',
+          '-of', 'default=noprint_wrappers=1:nokey=1',
+          filePath,
+        ],
+      );
+
+      if (result.exitCode == 0 && result.stdout.toString().isNotEmpty) {
+        final durationSeconds = double.parse(result.stdout.toString().trim());
+        return Duration(
+          milliseconds: (durationSeconds * 1000).round(),
+        );
+      }
+    } catch (e) {
+      // ffprobe not available or failed, return default duration
+    }
+
+    // Return default duration if ffprobe fails
+    return const Duration(minutes: 3);
   }
 
   String? _getMimeType(String extension) {

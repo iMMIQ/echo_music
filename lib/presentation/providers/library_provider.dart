@@ -74,7 +74,6 @@ class ImportController extends _$ImportController {
 
   /// Import audio files using file picker
   Future<List<Song>> importFiles() async {
-    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final service = ref.read(libraryServiceProvider);
       // Ensure service is initialized
@@ -98,7 +97,6 @@ class ImportController extends _$ImportController {
 
   /// Scan a directory for music
   Future<List<Song>> scanDirectory(String path) async {
-    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final service = ref.read(libraryServiceProvider);
       return service.scanDirectory(path);

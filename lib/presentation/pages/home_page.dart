@@ -521,7 +521,13 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
                 'Library',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              IconButton(onPressed: () {}, icon: Icon(PhosphorIcons.plus())),
+              Consumer(
+                builder: (context, ref, _) => IconButton(
+                  onPressed: () => _importMusic(context, ref),
+                  icon: Icon(PhosphorIcons.plus()),
+                  tooltip: 'Add Music',
+                ),
+              ),
             ],
           ),
         ),
@@ -551,6 +557,57 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
         ),
       ],
     );
+  }
+
+  Future<void> _importMusic(BuildContext context, WidgetRef ref) async {
+    final importController = ref.read(importControllerProvider.notifier);
+
+    // Show loading dialog
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Importing music...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final songs = await importController.importFiles();
+
+    // Close loading dialog
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+
+    // Show result
+    if (mounted) {
+      if (songs.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully imported ${songs.length} song(s)'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No songs were imported'),
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -634,16 +691,60 @@ class _EmptyLibraryState extends ConsumerWidget {
   }
 
   Future<void> _importMusic(BuildContext context, WidgetRef ref) async {
+    // Show loading dialog
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Importing music...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
     final importController = ref.read(importControllerProvider.notifier);
     final songs = await importController.importFiles();
 
-    if (context.mounted && songs.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Imported ${songs.length} song(s)'),
-          action: SnackBarAction(label: 'View', onPressed: () {}),
-        ),
-      );
+    // Close loading dialog
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+
+    // Show result
+    if (context.mounted) {
+      if (songs.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully imported ${songs.length} song(s)'),
+            action: SnackBarAction(
+              label: 'View',
+              onPressed: () {
+                // Navigate to songs tab
+                ref.read(currentNavigationIndexProvider.notifier).index = 1;
+              },
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No songs were imported. Make sure you selected valid audio files.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 }
@@ -687,7 +788,18 @@ class _SongListItem extends ConsumerWidget {
                   ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
+              // Delete button
+              IconButton(
+                icon: Icon(
+                  PhosphorIcons.trash(),
+                  size: 18,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                onPressed: () => _confirmDelete(context, ref, song),
+                tooltip: 'Delete',
+              ),
+              const SizedBox(width: 4),
               // Favorite button
               IconButton(
                 icon: Icon(
@@ -765,6 +877,57 @@ class _SongListItem extends ConsumerWidget {
 
   Future<void> _toggleFavorite(WidgetRef ref, String songId) async {
     await ref.read(favoritesControllerProvider.notifier).toggleFavorite(songId);
+  }
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, Song song) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Song'),
+        content: Text('Are you sure you want to delete "${song.title}" from your library?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      try {
+        final service = ref.read(libraryServiceProvider);
+        await service.removeSong(song.id);
+        ref.invalidate(allSongsProvider);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Deleted "${song.title}"'),
+              action: SnackBarAction(
+                label: 'Undo',
+                onPressed: () {
+                  // TODO: Implement undo
+                },
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error deleting song: $e')),
+          );
+        }
+      }
+    }
   }
 }
 

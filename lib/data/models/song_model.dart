@@ -86,7 +86,7 @@ class SongAdapter extends TypeAdapter<Song> {
       title: reader.read(),
       artist: reader.read(),
       album: reader.read(),
-      duration: reader.read(),
+      duration: Duration(milliseconds: reader.read()),
       filePath: reader.read(),
       albumArt: reader.read(),
       trackNumber: reader.read(),
@@ -108,7 +108,7 @@ class SongAdapter extends TypeAdapter<Song> {
     writer.write(obj.title);
     writer.write(obj.artist);
     writer.write(obj.album);
-    writer.write(obj.duration);
+    writer.write(obj.duration.inMilliseconds);
     writer.write(obj.filePath);
     writer.write(obj.albumArt);
     writer.write(obj.trackNumber);
