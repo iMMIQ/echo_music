@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../models/song_model.dart';
 
-part 'playback_state.freezed.dart';
+part 'audio_service.freezed.dart';
 
 /// Playback state
 @freezed

@@ -1,6 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/mini_player.dart';
+import '../providers/library_provider.dart';
+import '../providers/audio_provider.dart';
+import '../../data/models/song_model.dart';
+import '../../data/services/audio_service.dart';
 
 /// Home page of the app
 class HomePage extends ConsumerStatefulWidget {
@@ -41,18 +47,37 @@ class _HomePageState extends ConsumerState<HomePage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: _buildPage(_currentIndex),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        destinations: _destinations,
-        backgroundColor: theme.colorScheme.surface,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              // Main content
+              Expanded(
+                child: SafeArea(
+                  child: _buildPage(_currentIndex),
+                ),
+              ),
+              // Bottom navigation
+              NavigationBar(
+                selectedIndex: _currentIndex,
+                onDestinationSelected: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                destinations: _destinations,
+                backgroundColor: theme.colorScheme.surface,
+              ),
+            ],
+          ),
+          // Mini player
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 80,
+            child: MiniPlayer(),
+          ),
+        ],
       ),
     );
   }
@@ -472,11 +497,50 @@ class _LibraryPageContentState extends State<_LibraryPageContent>
 }
 
 /// Songs tab
-class _SongsTab extends StatelessWidget {
+class _SongsTab extends ConsumerWidget {
   const _SongsTab();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final songsAsync = ref.watch(allSongsProvider);
+
+    return songsAsync.when(
+      data: (songs) {
+        if (songs.isEmpty) {
+          return _EmptyLibraryState();
+        }
+
+        return ListView.builder(
+          itemCount: songs.length,
+          itemBuilder: (context, index) {
+            final song = songs[index];
+            return _SongListItem(
+              song: song,
+              index: index,
+              onTap: () => _playSong(context, ref, song),
+            );
+          },
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (error, stack) => Center(
+        child: Text('Error: $error'),
+      ),
+    );
+  }
+
+  void _playSong(BuildContext context, WidgetRef ref, Song song) {
+    final audioService = ref.read(audioServiceProvider);
+    audioService.play(song);
+  }
+}
+
+/// Empty library state widget
+class _EmptyLibraryState extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -508,13 +572,105 @@ class _SongsTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           FilledButton.icon(
-            onPressed: () {},
+            onPressed: () => _importMusic(context, ref),
             icon: Icon(PhosphorIcons.plus()),
             label: const Text('Add Music'),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _importMusic(BuildContext context, WidgetRef ref) async {
+    final importController = ref.read(importControllerProvider.notifier);
+    final songs = await importController.importFiles();
+
+    if (context.mounted && songs.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Imported ${songs.length} song(s)'),
+          action: SnackBarAction(
+            label: 'View',
+            onPressed: () {},
+          ),
+        ),
+      );
+    }
+  }
+}
+
+/// Song list item widget
+class _SongListItem extends StatelessWidget {
+  final Song song;
+  final int index;
+  final VoidCallback onTap;
+
+  const _SongListItem({
+    required this.song,
+    required this.index,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: _buildAlbumArt(context),
+      title: Text(
+        song.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        '${song.artist} • ${song.album}',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Text(
+        _formatDuration(song.duration),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildAlbumArt(BuildContext context) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Theme.of(context).colorScheme.surfaceVariant,
+      ),
+      child: song.albumArt != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(song.albumArt!.path),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    PhosphorIcons.musicNote(),
+                    size: 24,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  );
+                },
+              ),
+            )
+          : Icon(
+              PhosphorIcons.musicNote(),
+              size: 24,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+    );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return '$minutes:$seconds';
   }
 }
 

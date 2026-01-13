@@ -102,6 +102,12 @@ abstract class LibraryService {
   /// Import files from picker
   Future<List<Song>> importFiles(List<String> filePaths);
 
+  /// Pick audio files using file picker
+  Future<List<String>> pickAudioFiles();
+
+  /// Pick a directory for scanning
+  Future<String?> pickDirectory();
+
   /// Get library statistics
   Future<LibraryStats> getStats();
 
