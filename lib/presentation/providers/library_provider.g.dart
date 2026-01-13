@@ -23,7 +23,7 @@ final metadataServiceProvider = AutoDisposeProvider<MetadataService>.internal(
 );
 
 typedef MetadataServiceRef = AutoDisposeProviderRef<MetadataService>;
-String _$libraryServiceHash() => r'71777da07e82ccc4eff7ee454f2d9e3b785002c1';
+String _$libraryServiceHash() => r'926bf43f5917f1f189a266f1e3224eba6fd99635';
 
 /// Library service provider
 ///
@@ -40,7 +40,7 @@ final libraryServiceProvider = AutoDisposeProvider<LibraryService>.internal(
 );
 
 typedef LibraryServiceRef = AutoDisposeProviderRef<LibraryService>;
-String _$allSongsHash() => r'ced01c986e9e2b76fd168e24ba4dac3b8fcc01f9';
+String _$allSongsHash() => r'bfeb07d66a3b7a521acc524ca0b5e1725d7af842';
 
 /// All songs provider
 ///
@@ -49,15 +49,14 @@ String _$allSongsHash() => r'ced01c986e9e2b76fd168e24ba4dac3b8fcc01f9';
 final allSongsProvider = AutoDisposeFutureProvider<List<Song>>.internal(
   allSongs,
   name: r'allSongsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$allSongsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$allSongsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef AllSongsRef = AutoDisposeFutureProviderRef<List<Song>>;
-String _$favoriteSongsHash() => r'6b27fe15b58206fb83d8dab2ddc0f6bfb09e1579';
+String _$favoriteSongsHash() => r'676bd19accb23576b6d4ee125653309e5dd44d08';
 
 /// Favorite songs provider
 ///
@@ -74,7 +73,7 @@ final favoriteSongsProvider = AutoDisposeFutureProvider<List<Song>>.internal(
 );
 
 typedef FavoriteSongsRef = AutoDisposeFutureProviderRef<List<Song>>;
-String _$recentlyPlayedHash() => r'674a6bf2c72d26d4c8a3e94cbcb2e67bc706a36f';
+String _$recentlyPlayedHash() => r'9e7d1aeb9aee596cb05ce74a988fe88291fb5125';
 
 /// Recently played provider
 ///
@@ -91,7 +90,7 @@ final recentlyPlayedProvider = AutoDisposeFutureProvider<List<Song>>.internal(
 );
 
 typedef RecentlyPlayedRef = AutoDisposeFutureProviderRef<List<Song>>;
-String _$libraryStatsHash() => r'e6c28063d4c0bf2fd53bc5c066769d524cfbfee7';
+String _$libraryStatsHash() => r'3a9ab6ee1bf6a877a0b5f2db9a77aa710b781d0a';
 
 /// Library stats provider
 ///
@@ -100,15 +99,46 @@ String _$libraryStatsHash() => r'e6c28063d4c0bf2fd53bc5c066769d524cfbfee7';
 final libraryStatsProvider = AutoDisposeFutureProvider<LibraryStats>.internal(
   libraryStats,
   name: r'libraryStatsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$libraryStatsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$libraryStatsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef LibraryStatsRef = AutoDisposeFutureProviderRef<LibraryStats>;
-String _$importControllerHash() => r'717deb945cc64be57df8288913b24369bbc6eb56';
+String _$allAlbumsHash() => r'c31547f0fb3a3386a2181f873801500ed1a7af64';
+
+/// All albums provider
+///
+/// Copied from [allAlbums].
+@ProviderFor(allAlbums)
+final allAlbumsProvider = AutoDisposeFutureProvider<List<Album>>.internal(
+  allAlbums,
+  name: r'allAlbumsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$allAlbumsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AllAlbumsRef = AutoDisposeFutureProviderRef<List<Album>>;
+String _$allArtistsHash() => r'94d5aafde6861b550df1079c91147576effdd22a';
+
+/// All artists provider
+///
+/// Copied from [allArtists].
+@ProviderFor(allArtists)
+final allArtistsProvider = AutoDisposeFutureProvider<List<Artist>>.internal(
+  allArtists,
+  name: r'allArtistsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$allArtistsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AllArtistsRef = AutoDisposeFutureProviderRef<List<Artist>>;
+String _$importControllerHash() => r'639a8df41866ae923eb299b196cba5a77a1b03a0';
 
 /// Import music controller
 ///
@@ -116,14 +146,14 @@ String _$importControllerHash() => r'717deb945cc64be57df8288913b24369bbc6eb56';
 @ProviderFor(ImportController)
 final importControllerProvider =
     AutoDisposeAsyncNotifierProvider<ImportController, List<Song>>.internal(
-      ImportController.new,
-      name: r'importControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$importControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  ImportController.new,
+  name: r'importControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$importControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$ImportController = AutoDisposeAsyncNotifier<List<Song>>;
 // ignore_for_file: type=lint

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../data/models/album_model.dart';
+import '../../data/models/artist_model.dart';
 import '../../data/models/song_model.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
@@ -98,6 +100,12 @@ class _HomePageState extends ConsumerState<HomePage> {
 class _HomePageContent extends StatelessWidget {
   const _HomePageContent();
 
+  void _showComingSoon(BuildContext context, String feature) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$feature coming soon!')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -114,7 +122,10 @@ class _HomePageContent extends StatelessWidget {
         // Recently played
         _SectionHeader(
           title: 'Recently Played',
-          action: TextButton(onPressed: () {}, child: const Text('View All')),
+          action: TextButton(
+            onPressed: () => _showComingSoon(context, 'Recently Played'),
+            child: const Text('View All'),
+          ),
         ),
         const SizedBox(height: 12),
         _RecentlyPlayedGrid(),
@@ -123,7 +134,10 @@ class _HomePageContent extends StatelessWidget {
         // Made for you
         _SectionHeader(
           title: 'Made for You',
-          action: TextButton(onPressed: () {}, child: const Text('View All')),
+          action: TextButton(
+            onPressed: () => _showComingSoon(context, 'Made for You'),
+            child: const Text('View All'),
+          ),
         ),
         const SizedBox(height: 12),
         _MadeForYouGrid(),
@@ -133,9 +147,9 @@ class _HomePageContent extends StatelessWidget {
 }
 
 /// Quick actions grid
-class _QuickActions extends StatelessWidget {
+class _QuickActions extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         Expanded(
@@ -143,6 +157,7 @@ class _QuickActions extends StatelessWidget {
             icon: Icon(PhosphorIcons.heart(PhosphorIconsStyle.fill), size: 28),
             label: 'Favorites',
             color: Theme.of(context).colorScheme.secondary,
+            onTap: () => _navigateToTab(context, 1), // Navigate to Library
           ),
         ),
         const SizedBox(width: 12),
@@ -151,6 +166,7 @@ class _QuickActions extends StatelessWidget {
             icon: Icon(PhosphorIcons.clock(PhosphorIconsStyle.fill), size: 28),
             label: 'Recent',
             color: Theme.of(context).colorScheme.primary,
+            onTap: () => _showComingSoon(context, 'Recently Played'),
           ),
         ),
         const SizedBox(width: 12),
@@ -162,9 +178,48 @@ class _QuickActions extends StatelessWidget {
             ),
             label: 'Shuffle',
             color: Theme.of(context).colorScheme.tertiary,
+            onTap: () => _shuffleAll(context, ref),
           ),
         ),
       ],
+    );
+  }
+
+  void _navigateToTab(BuildContext context, int index) {
+    // Find the HomePage state and update the tab index
+    final homePageState = context.findAncestorStateOfType<_HomePageState>();
+    homePageState?.setState(() {
+      homePageState._currentIndex = index;
+    });
+  }
+
+  void _showComingSoon(BuildContext context, String feature) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$feature coming soon!')),
+    );
+  }
+
+  void _shuffleAll(BuildContext context, WidgetRef ref) {
+    final songsAsync = ref.read(allSongsProvider);
+    songsAsync.when(
+      data: (songs) {
+        if (songs.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No songs to shuffle')),
+          );
+          return;
+        }
+        // Shuffle and play
+        final shuffled = List<Song>.from(songs)..shuffle();
+        final audioService = ref.read(audioServiceProvider);
+        audioService.setQueue(shuffled, startIndex: 0);
+      },
+      loading: () => ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Loading library...')),
+      ),
+      error: (_, __) => ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error loading library')),
+      ),
     );
   }
 }
@@ -175,34 +230,39 @@ class _QuickActionCard extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.color,
+    this.onTap,
   });
   final Icon icon;
   final String label;
   final Color color;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconTheme(
-            data: IconThemeData(color: color),
-            child: icon,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: color),
-          ),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconTheme(
+              data: IconThemeData(color: color),
+              child: icon,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: color),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -683,12 +743,136 @@ class _SongListItem extends ConsumerWidget {
 }
 
 /// Albums tab
-class _AlbumsTab extends StatelessWidget {
+class _AlbumsTab extends ConsumerWidget {
   const _AlbumsTab();
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final albumsAsync = ref.watch(allAlbumsProvider);
+
+    return albumsAsync.when(
+      data: (albums) {
+        if (albums.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  PhosphorIcons.vinylRecord(),
+                  size: 64,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No albums yet',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Albums will appear here when you add music',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: albums.length,
+          itemBuilder: (context, index) {
+            final album = albums[index];
+            return _AlbumListItem(
+              album: album,
+              onTap: () => _showComingSoon(context, 'Album details'),
+            );
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+    );
+  }
+
+  void _showComingSoon(BuildContext context, String feature) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$feature coming soon!')),
+    );
+  }
+}
+
+/// Album list item widget
+class _AlbumListItem extends StatelessWidget {
+  const _AlbumListItem({
+    required this.album,
+    required this.onTap,
+  });
+  final Album album;
+  final VoidCallback onTap;
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Albums'));
+    return ListTile(
+      leading: _buildAlbumArt(context),
+      title: Text(
+        album.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        album.artist,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Text(
+        '${album.songCount} songs',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.6),
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildAlbumArt(BuildContext context) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
+      child: album.artwork != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(album.artwork!.path),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    PhosphorIcons.vinylRecord(),
+                    size: 24,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  );
+                },
+              ),
+            )
+          : Icon(
+              PhosphorIcons.vinylRecord(),
+              size: 24,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+    );
   }
 }
 
@@ -759,12 +943,131 @@ class _FavoritesTab extends ConsumerWidget {
 }
 
 /// Artists tab
-class _ArtistsTab extends StatelessWidget {
+class _ArtistsTab extends ConsumerWidget {
   const _ArtistsTab();
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final artistsAsync = ref.watch(allArtistsProvider);
+
+    return artistsAsync.when(
+      data: (artists) {
+        if (artists.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  PhosphorIcons.users(),
+                  size: 64,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No artists yet',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Artists will appear here when you add music',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: artists.length,
+          itemBuilder: (context, index) {
+            final artist = artists[index];
+            return _ArtistListItem(
+              artist: artist,
+              onTap: () => _showComingSoon(context, 'Artist details'),
+            );
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+    );
+  }
+
+  void _showComingSoon(BuildContext context, String feature) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$feature coming soon!')),
+    );
+  }
+}
+
+/// Artist list item widget
+class _ArtistListItem extends StatelessWidget {
+  const _ArtistListItem({
+    required this.artist,
+    required this.onTap,
+  });
+  final Artist artist;
+  final VoidCallback onTap;
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Artists'));
+    return ListTile(
+      leading: _buildArtistArt(context),
+      title: Text(
+        artist.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        '${artist.albumCount} albums • ${artist.songCount} songs',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.6),
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildArtistArt(BuildContext context) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
+      child: artist.artwork != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(artist.artwork!.path),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    PhosphorIcons.user(),
+                    size: 24,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  );
+                },
+              ),
+            )
+          : Icon(
+              PhosphorIcons.user(),
+              size: 24,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+    );
   }
 }
 

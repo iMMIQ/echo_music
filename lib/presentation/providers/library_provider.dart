@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/models/album_model.dart';
+import '../../data/models/artist_model.dart';
 import '../../data/models/song_model.dart';
 import '../../data/services/library_service.dart';
 import '../../data/services/library_service_impl.dart';
@@ -104,4 +106,26 @@ class ImportController extends _$ImportController {
 
     return state.value ?? [];
   }
+}
+
+/// All albums provider
+@riverpod
+Future<List<Album>> allAlbums(AllAlbumsRef ref) async {
+  final service = ref.watch(libraryServiceProvider);
+  // Ensure service is initialized
+  if (service is LibraryServiceImpl) {
+    await service.init();
+  }
+  return service.getAllAlbums();
+}
+
+/// All artists provider
+@riverpod
+Future<List<Artist>> allArtists(AllArtistsRef ref) async {
+  final service = ref.watch(libraryServiceProvider);
+  // Ensure service is initialized
+  if (service is LibraryServiceImpl) {
+    await service.init();
+  }
+  return service.getAllArtists();
 }
