@@ -52,6 +52,7 @@ dependencies:
 
   # Platform-specific
   shared_preferences: ^2.2.3
+  audio_meta: ^2.0.0
 
 dev_dependencies:
   flutter_test:
