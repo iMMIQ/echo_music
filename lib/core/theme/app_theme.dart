@@ -68,28 +68,28 @@ class AppColors {
   static const Color warning = Color(0xFFF59E0B); // Amber 500
 }
 
-/// Light theme data
-ThemeData get lightTheme {
+/// Light theme data with dynamic accent color
+ThemeData lightTheme({Color accentColor = AppColors.primary}) {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    colorScheme: const ColorScheme.light(
-      primary: AppColors.primary,
+    colorScheme: ColorScheme.light(
+      primary: accentColor,
       secondary: AppColors.secondary,
       error: AppColors.error,
       onSecondary: Colors.white,
       onSurface: AppColors.lightTextPrimary,
     ),
     scaffoldBackgroundColor: AppColors.lightBackground,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.lightSurface,
       foregroundColor: AppColors.lightTextPrimary,
       elevation: 0,
       centerTitle: true,
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.lightSurface,
-      selectedItemColor: AppColors.primary,
+      selectedItemColor: accentColor,
       unselectedItemColor: AppColors.lightTextSecondary,
       type: BottomNavigationBarType.fixed,
       elevation: DesignTokens.elevationSubtle,
@@ -108,13 +108,13 @@ ThemeData get lightTheme {
   );
 }
 
-/// Dark theme data
-ThemeData get darkTheme {
+/// Dark theme data with dynamic accent color
+ThemeData darkTheme({Color accentColor = AppColors.primary}) {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.primary,
+    colorScheme: ColorScheme.dark(
+      primary: accentColor,
       secondary: AppColors.secondary,
       surface: AppColors.darkSurface,
       error: AppColors.error,
@@ -123,15 +123,15 @@ ThemeData get darkTheme {
       onError: Colors.white,
     ),
     scaffoldBackgroundColor: AppColors.darkBackground,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.darkSurface,
       foregroundColor: AppColors.darkTextPrimary,
       elevation: 0,
       centerTitle: true,
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.darkSurface,
-      selectedItemColor: AppColors.primary,
+      selectedItemColor: accentColor,
       unselectedItemColor: AppColors.darkTextSecondary,
       type: BottomNavigationBarType.fixed,
       elevation: DesignTokens.elevationSubtle,

@@ -6,6 +6,7 @@ import 'core/theme/app_theme.dart';
 import 'data/services/audio_background_task.dart';
 import 'data/services/hive_service.dart';
 import 'presentation/pages/home_page.dart';
+import 'presentation/providers/settings_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,14 +28,14 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO(claude): Get from settings
-    const themeMode = ThemeMode.dark;
+    final themeMode = ref.watch(currentThemeModeProvider);
+    final accentColor = ref.watch(currentAccentColorProvider);
 
     return MaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: lightTheme(accentColor: accentColor),
+      darkTheme: darkTheme(accentColor: accentColor),
       themeMode: themeMode,
       home: const HomePage(),
     );

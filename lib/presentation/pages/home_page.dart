@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../data/models/album_model.dart';
 import '../../data/models/artist_model.dart';
+import '../../data/models/settings_model.dart';
 import '../../data/models/song_model.dart';
 import '../../data/services/permission_service.dart';
 import '../providers/audio_provider.dart';
@@ -13,7 +14,9 @@ import '../providers/favorites_provider.dart';
 import '../providers/library_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../providers/search_provider.dart';
+import '../providers/settings_provider.dart';
 import '../widgets/mini_player.dart';
+import '../widgets/settings_dialogs.dart';
 
 /// Home page of the app
 class HomePage extends ConsumerStatefulWidget {
@@ -1411,11 +1414,16 @@ class _BrowseCategoriesGrid extends StatelessWidget {
 }
 
 /// Settings page content
-class _SettingsPageContent extends StatelessWidget {
+class _SettingsPageContent extends ConsumerWidget {
   const _SettingsPageContent();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final themeMode = settings.themeMode;
+    final accentColorIndex = settings.accentColorIndex;
+    final audioQuality = settings.audioQuality;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -1430,20 +1438,30 @@ class _SettingsPageContent extends StatelessWidget {
             _SettingsItem(
               icon: PhosphorIcons.speakerHigh(),
               title: 'Audio Quality',
-              subtitle: 'High',
-              onTap: () {},
+              subtitle: audioQuality.label,
+              onTap: () => showAudioQualityDialog(context),
             ),
             _SettingsItem(
               icon: PhosphorIcons.equalizer(),
               title: 'Equalizer',
               subtitle: 'Not configured',
-              onTap: () {},
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Equalizer coming soon')),
+                );
+              },
             ),
             _SettingsItem(
               icon: PhosphorIcons.waveform(),
               title: 'Crossfade',
-              subtitle: 'Off',
-              onTap: () {},
+              subtitle: settings.crossfadeDuration > 0
+                  ? '${settings.crossfadeDuration}s'
+                  : 'Off',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Crossfade coming soon')),
+                );
+              },
             ),
           ],
         ),
@@ -1455,14 +1473,24 @@ class _SettingsPageContent extends StatelessWidget {
             _SettingsItem(
               icon: PhosphorIcons.folder(),
               title: 'Music Folders',
-              subtitle: 'No folders added',
-              onTap: () {},
+              subtitle: settings.musicFolders.isEmpty
+                  ? 'No folders added'
+                  : '${settings.musicFolders.length} folder${settings.musicFolders.length == 1 ? '' : 's'}',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Music folders coming soon')),
+                );
+              },
             ),
             _SettingsItem(
               icon: PhosphorIcons.arrowCounterClockwise(),
               title: 'Auto-refresh',
-              subtitle: 'On app start',
-              onTap: () {},
+              subtitle: settings.autoRefreshOnStart ? 'On app start' : 'Off',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Auto-refresh coming soon')),
+                );
+              },
             ),
           ],
         ),
@@ -1474,14 +1502,14 @@ class _SettingsPageContent extends StatelessWidget {
             _SettingsItem(
               icon: PhosphorIcons.moon(),
               title: 'Dark Mode',
-              subtitle: 'On',
-              onTap: () {},
+              subtitle: _getThemeModeLabel(themeMode),
+              onTap: () => showThemeModeDialog(context),
             ),
             _SettingsItem(
               icon: PhosphorIcons.palette(),
               title: 'Accent Color',
-              subtitle: 'Indigo',
-              onTap: () {},
+              subtitle: AccentColors.names[accentColorIndex],
+              onTap: () => showAccentColorDialog(context),
             ),
           ],
         ),
@@ -1500,7 +1528,11 @@ class _SettingsPageContent extends StatelessWidget {
               icon: PhosphorIcons.githubLogo(),
               title: 'GitHub',
               subtitle: 'View source code',
-              onTap: () {},
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('GitHub link coming soon')),
+                );
+              },
             ),
             _SettingsItem(
               icon: PhosphorIcons.heart(),
@@ -1512,6 +1544,17 @@ class _SettingsPageContent extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _getThemeModeLabel(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return 'System';
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.dark:
+        return 'Dark';
+    }
   }
 }
 

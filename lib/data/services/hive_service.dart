@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/album_model.dart';
 import '../models/artist_model.dart';
 import '../models/playlist_model.dart';
+import '../models/settings_model.dart';
 import '../models/song_model.dart';
 
 /// Box names for different data types
@@ -35,6 +36,7 @@ class HiveService {
     Hive.registerAdapter(AlbumAdapter());
     Hive.registerAdapter(ArtistAdapter());
     Hive.registerAdapter(PlaylistAdapter());
+    Hive.registerAdapter(AppSettingsAdapter());
   }
 
   /// Open all required boxes
@@ -46,7 +48,7 @@ class HiveService {
       Hive.openBox<Playlist>(HiveBoxes.playlists),
       Hive.openBox<dynamic>(HiveBoxes.playbackHistory),
       Hive.openBox<String>(HiveBoxes.favorites),
-      Hive.openBox<dynamic>(HiveBoxes.settings),
+      Hive.openBox<AppSettings>(HiveBoxes.settings),
     ]);
   }
 
@@ -68,6 +70,6 @@ class HiveService {
     await Hive.box<Playlist>(HiveBoxes.playlists).clear();
     await Hive.box<dynamic>(HiveBoxes.playbackHistory).clear();
     await Hive.box<String>(HiveBoxes.favorites).clear();
-    await Hive.box<dynamic>(HiveBoxes.settings).clear();
+    await Hive.box<AppSettings>(HiveBoxes.settings).clear();
   }
 }
