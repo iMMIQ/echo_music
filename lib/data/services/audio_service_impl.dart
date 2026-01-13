@@ -4,14 +4,23 @@ import 'package:audio_service/audio_service.dart' as audio_service_pkg;
 import 'package:just_audio/just_audio.dart';
 
 import '../models/song_model.dart';
+import 'audio_background_task.dart';
 import 'audio_service.dart';
 
 /// Audio service implementation using just_audio
-class AudioServiceImpl extends AudioService {
+class AudioServiceImpl implements AudioService {
   AudioServiceImpl() {
+    _initAudioFocus();
     _initListeners();
   }
   final AudioPlayer _player = AudioPlayer();
+
+  /// Initialize audio focus handling
+  void _initAudioFocus() {
+    // just_audio handles audio focus automatically by default
+    // We just need to ensure we're using the correct configuration
+    // Audio focus will be requested when playing and released when stopping
+  }
   final StreamController<PlaybackState> _stateController =
       StreamController.broadcast();
   final StreamController<Duration> _positionController =
@@ -97,7 +106,7 @@ class AudioServiceImpl extends AudioService {
     List<Song>? queue,
     int? currentIndex,
   }) {
-    _currentState = _currentState.copyWith(
+    _currentState = PlaybackState(
       isPlaying: isPlaying ?? _currentState.isPlaying,
       currentSong: currentSong ?? _currentState.currentSong,
       position: position ?? _currentState.position,
@@ -114,20 +123,22 @@ class AudioServiceImpl extends AudioService {
   @override
   Future<void> play(Song song) async {
     try {
+      // Create media item for background service
+      final mediaItem = AudioBackgroundTask.mediaItemFromSong(song);
+
       // Create audio source from file
       final AudioSource source = AudioSource.uri(
         Uri.file(song.filePath),
-        tag: audio_service_pkg.MediaItem(
-          id: song.id,
-          title: song.title,
-          artist: song.artist,
-          album: song.album,
-          artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
-          duration: song.duration,
-        ),
+        tag: mediaItem,
       );
 
       await _player.setAudioSource(source);
+
+      // Update background service
+      if (AudioBackgroundTask.currentHandler != null) {
+        AudioBackgroundTask.currentHandler!.mediaItem.add(mediaItem);
+        await AudioBackgroundTask.currentHandler!.play();
+      }
 
       // Update current song and queue
       if (!_queue.any((s) => s.id == song.id)) {

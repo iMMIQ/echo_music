@@ -1,12 +1,21 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../data/services/audio_service.dart';
+import '../../data/services/audio_service.dart' as app_audio;
 import '../../data/services/audio_service_impl.dart';
+import '../../data/services/audio_background_task.dart';
 
 part 'audio_provider.g.dart';
 
+/// Audio service global instance (for background playback)
+@riverpod
+AudioHandler? audioHandler(AudioHandlerRef ref) {
+  // Return the current handler from AudioBackgroundTask
+  return AudioBackgroundTask.currentHandler;
+}
+
 /// Audio service provider
 @riverpod
-AudioService audioService(AudioServiceRef ref) {
+app_audio.AudioService audioService(AudioServiceRef ref) {
   final service = AudioServiceImpl();
 
   // Dispose when provider is disposed
@@ -17,7 +26,7 @@ AudioService audioService(AudioServiceRef ref) {
 
 /// Playback state stream provider
 @riverpod
-Stream<PlaybackState> playbackState(PlaybackStateRef ref) {
+Stream<app_audio.PlaybackState> playbackState(PlaybackStateRef ref) {
   final audioService = ref.watch(audioServiceProvider);
   return audioService.playbackStateStream;
 }

@@ -1,5 +1,9 @@
+import 'package:audio_service/audio_service.dart' as audio_service_pkg;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../models/song_model.dart';
+
+// Export audio_service types for convenience
+export 'package:audio_service/audio_service.dart' show MediaItem;
 
 part 'audio_service.freezed.dart';
 
@@ -12,8 +16,8 @@ class PlaybackState with _$PlaybackState {
     required Duration position,
     required Duration duration,
     required double playbackSpeed,
-    required List<Song> queue,
-    required int currentIndex,
+    required List<Song>? queue,
+    required int? currentIndex,
     @Default(RepeatMode.off) RepeatMode repeatMode,
     @Default(false) bool isShuffle,
   }) = _PlaybackState;

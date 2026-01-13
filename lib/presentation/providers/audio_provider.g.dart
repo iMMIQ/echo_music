@@ -6,13 +6,30 @@ part of 'audio_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$audioServiceHash() => r'c6f4cc6ae1e7c871b81f4d8fa39c455ba1335990';
+String _$audioHandlerHash() => r'badffd7ba229576f79a070b796cfe4be116612a7';
+
+/// Audio service global instance (for background playback)
+///
+/// Copied from [audioHandler].
+@ProviderFor(audioHandler)
+final audioHandlerProvider = AutoDisposeProvider<AudioHandler?>.internal(
+  audioHandler,
+  name: r'audioHandlerProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$audioHandlerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AudioHandlerRef = AutoDisposeProviderRef<AudioHandler?>;
+String _$audioServiceHash() => r'88c97871a7634bacbb748a2123f413b022f00211';
 
 /// Audio service provider
 ///
 /// Copied from [audioService].
 @ProviderFor(audioService)
-final audioServiceProvider = AutoDisposeProvider<AudioService>.internal(
+final audioServiceProvider =
+    AutoDisposeProvider<app_audio.AudioService>.internal(
   audioService,
   name: r'audioServiceProvider',
   debugGetCreateSourceHash:
@@ -21,14 +38,15 @@ final audioServiceProvider = AutoDisposeProvider<AudioService>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef AudioServiceRef = AutoDisposeProviderRef<AudioService>;
-String _$playbackStateHash() => r'ef1e2750702a82b4ed340a4195289cdc277159cc';
+typedef AudioServiceRef = AutoDisposeProviderRef<app_audio.AudioService>;
+String _$playbackStateHash() => r'fb50e3018e40900256e05f9670fee590d5630620';
 
 /// Playback state stream provider
 ///
 /// Copied from [playbackState].
 @ProviderFor(playbackState)
-final playbackStateProvider = AutoDisposeStreamProvider<PlaybackState>.internal(
+final playbackStateProvider =
+    AutoDisposeStreamProvider<app_audio.PlaybackState>.internal(
   playbackState,
   name: r'playbackStateProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -38,7 +56,8 @@ final playbackStateProvider = AutoDisposeStreamProvider<PlaybackState>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef PlaybackStateRef = AutoDisposeStreamProviderRef<PlaybackState>;
+typedef PlaybackStateRef
+    = AutoDisposeStreamProviderRef<app_audio.PlaybackState>;
 String _$playbackPositionHash() => r'b5acb77f7db1ef536ea7f6e723378b49fc09d217';
 
 /// Position stream provider

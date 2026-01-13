@@ -3,11 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
+import 'data/services/audio_background_task.dart';
 import 'data/services/hive_service.dart';
 import 'presentation/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize audio service for background playback
+  await AudioBackgroundTask.start();
 
   // Initialize Hive
   await HiveService.init();

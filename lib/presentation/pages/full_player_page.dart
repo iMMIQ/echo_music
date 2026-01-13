@@ -650,9 +650,3 @@ class _SecondaryButton extends StatelessWidget {
     );
   }
 }
-
-/// Stream provider for playback state
-final playbackStateProvider = StreamProvider<PlaybackState>((ref) {
-  final audioService = ref.watch(audioServiceProvider);
-  return audioService.playbackStateStream;
-});

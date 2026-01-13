@@ -7,6 +7,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../data/models/album_model.dart';
 import '../../data/models/artist_model.dart';
 import '../../data/models/song_model.dart';
+import '../../data/services/permission_service.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/library_provider.dart';
@@ -23,6 +24,33 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    final permissionService = PermissionService();
+    final results = await permissionService.requestAllPermissions();
+
+    if (!results.allGranted) {
+      if (mounted) {
+        // Show a message if permissions are not granted
+        if (!results.storageGranted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Storage permission is required to access your music library',
+              ),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      }
+    }
+  }
+
   final List<NavigationDestination> _destinations = [
     NavigationDestination(
       icon: Icon(PhosphorIcons.house()),

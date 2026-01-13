@@ -14,8 +14,8 @@ class QueuePanel extends ConsumerWidget {
 
     return playbackStateAsync.when(
       data: (state) {
-        final queue = state.queue;
-        final currentIndex = state.currentIndex;
+        final queue = state.queue ?? [];
+        final currentIndex = state.currentIndex ?? -1;
 
         if (queue.isEmpty) {
           return _EmptyQueue();
