@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:echo_music/data/services/metadata_service.dart';
 import 'package:echo_music/data/services/metadata_service_impl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

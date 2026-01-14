@@ -86,7 +86,6 @@ class AccentColorDialog extends ConsumerWidget {
         itemCount: AccentColors.colors.length,
         itemBuilder: (context, index) {
           final color = AccentColors.colors[index];
-          final name = AccentColors.names[index];
           final isSelected = index == currentIndex;
 
           return InkWell(

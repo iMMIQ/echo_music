@@ -5,14 +5,12 @@ import 'package:echo_music/data/models/artist_model.dart';
 import 'package:echo_music/data/models/playlist_model.dart';
 import 'package:echo_music/data/models/settings_model.dart';
 import 'package:echo_music/data/models/song_model.dart';
-import 'package:echo_music/data/services/library_service.dart';
 import 'package:echo_music/data/services/library_service_impl.dart';
 import 'package:echo_music/data/services/metadata_service.dart';
 import 'package:echo_music/data/services/metadata_service_impl.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:path/path.dart' as p;
 
 void main() {
   // Initialize Hive with in-memory storage for testing
