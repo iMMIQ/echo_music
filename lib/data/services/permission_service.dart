@@ -14,7 +14,7 @@ class PermissionService {
         final status = await Permission.audio.request();
         return status.isGranted;
       } else {
-        // Older Android versions
+        // Older Android versions use READ_EXTERNAL_STORAGE
         final status = await Permission.storage.request();
         if (status.isGranted) {
           return true;

@@ -308,7 +308,14 @@ class LibraryServiceImpl extends LibraryService {
   Future<List<String>> pickAudioFiles() async {
     // Request storage permission on Android
     if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
+      // Android 13+ (API 33+) uses READ_MEDIA_AUDIO
+      // Older versions use READ_EXTERNAL_STORAGE
+      Permission permission = Permission.audio;
+      final version = int.tryParse(Platform.version.split(' ')[0]) ?? 0;
+      if (version < 33) {
+        permission = Permission.storage;
+      }
+      final status = await permission.request();
       if (!status.isGranted) {
         return [];
       }
