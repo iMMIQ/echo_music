@@ -12,19 +12,20 @@ import 'presentation/providers/settings_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize MediaKit for cross-platform audio playback
+  // Initialize MediaKit for cross-platform audio playback (synchronous)
   MediaKit.ensureInitialized();
 
-  // Initialize audio service for background playback
-  await AudioBackgroundTask.start();
-
-  // Initialize Hive
+  // Initialize Hive (quick local storage first)
   await HiveService.init();
-
-  // Open all boxes
   await HiveService.openBoxes();
 
+  // Start the app - audio background service will initialize later
   runApp(const ProviderScope(child: MyApp()));
+
+  // Initialize audio service in background (non-blocking)
+  AudioBackgroundTask.start().catchError((e) {
+    debugPrint('AudioBackgroundTask initialization failed: $e');
+  });
 }
 
 class MyApp extends ConsumerWidget {
