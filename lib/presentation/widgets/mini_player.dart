@@ -197,10 +197,7 @@ class _Controls extends StatelessWidget {
         // Previous
         IconButton(
           icon: Icon(PhosphorIcons.skipBack(), size: 24),
-          onPressed: () {
-            final service = ref.read(audioServiceProvider);
-            service.skipToPrevious();
-          },
+          onPressed: () => ref.read(audioServiceProvider).skipToPrevious(),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
         ),
@@ -230,10 +227,7 @@ class _Controls extends StatelessWidget {
         // Next
         IconButton(
           icon: Icon(PhosphorIcons.skipForward(), size: 24),
-          onPressed: () {
-            final service = ref.read(audioServiceProvider);
-            service.skipToNext();
-          },
+          onPressed: () => ref.read(audioServiceProvider).skipToNext(),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
         ),

@@ -51,16 +51,17 @@ class AlbumAdapter extends TypeAdapter<Album> {
 
   @override
   void write(BinaryWriter writer, Album obj) {
-    writer.write(obj.id);
-    writer.write(obj.name);
-    writer.write(obj.artist);
-    writer.write(obj.artistId);
-    writer.write(obj.artwork);
-    writer.write(obj.year);
-    writer.write(obj.genre);
-    writer.write(obj.songs);
-    writer.write(obj.songCount);
-    writer.write(obj.totalDuration);
-    writer.write(obj.dateAdded);
+    writer
+      ..write(obj.id)
+      ..write(obj.name)
+      ..write(obj.artist)
+      ..write(obj.artistId)
+      ..write(obj.artwork)
+      ..write(obj.year)
+      ..write(obj.genre)
+      ..write(obj.songs)
+      ..write(obj.songCount)
+      ..write(obj.totalDuration)
+      ..write(obj.dateAdded);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 
 import 'package:audio_meta/audio_meta.dart';
@@ -7,36 +8,23 @@ void main() {
   test('Test audio_meta API', () {
     const testFile = '/home/ayd/音乐/iroha _ 镜音铃 (鏡音リン) - 炉心融解.ogg';
 
-    print('Testing audio_meta API...');
-    print('File exists: ${File(testFile).existsSync()}');
+    // Use debugPrint instead of print for test output
+    debugPrint('Testing audio_meta API...');
+    debugPrint('File exists: ${File(testFile).existsSync()}');
 
     try {
-      // Try different API methods
-      print('Trying AudioMeta.fromPath...');
-      final meta1 = AudioMeta.fromPath(testFile);
-      print('✓ AudioMeta.fromPath works!');
-      print('Duration: ${meta1.duration}');
-    } catch (e) {
-      print('✗ AudioMeta.fromPath failed: $e');
-    }
-
-    try {
-      print('Trying AudioMeta.fromFile...');
-      final meta2 = AudioMeta.fromFile(File(testFile));
-      print('✓ AudioMeta.fromFile works!');
-      print('Duration: ${meta2.duration}');
-    } catch (e) {
-      print('✗ AudioMeta.fromFile failed: $e');
-    }
-
-    try {
-      print('Trying AudioMeta.fromBytes...');
+      // Test with bytes constructor (audio_meta 2.0.0 API)
+      debugPrint('Trying AudioMeta(bytes)...');
       final bytes = File(testFile).readAsBytesSync();
-      final meta3 = AudioMeta.fromBytes(bytes);
-      print('✓ AudioMeta.fromBytes works!');
-      print('Duration: ${meta3.duration}');
+      final meta = AudioMeta(bytes);
+      debugPrint('✓ AudioMeta(bytes) works!');
+      debugPrint('Duration: ${meta.duration}');
+
+      expect(meta.duration, isNotNull);
+      expect(meta.duration.inSeconds, greaterThan(0));
     } catch (e) {
-      print('✗ AudioMeta.fromBytes failed: $e');
+      debugPrint('✗ AudioMeta(bytes) failed: $e');
+      rethrow;
     }
   });
 }

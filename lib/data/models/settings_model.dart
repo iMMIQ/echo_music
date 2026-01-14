@@ -68,12 +68,13 @@ class AppSettingsAdapter extends TypeAdapter<AppSettings> {
 
   @override
   void write(BinaryWriter writer, AppSettings obj) {
-    writer.write(obj.themeMode.index);
-    writer.write(obj.accentColorIndex);
-    writer.write(obj.audioQuality.index);
-    writer.write(obj.crossfadeDuration);
-    writer.write(obj.autoRefreshOnStart);
-    writer.write(obj.musicFolders);
+    writer
+      ..write(obj.themeMode.index)
+      ..write(obj.accentColorIndex)
+      ..write(obj.audioQuality.index)
+      ..write(obj.crossfadeDuration)
+      ..write(obj.autoRefreshOnStart)
+      ..write(obj.musicFolders);
   }
 }
 

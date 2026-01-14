@@ -81,7 +81,7 @@ ThemeData lightTheme({Color accentColor = AppColors.primary}) {
       onSurface: AppColors.lightTextPrimary,
     ),
     scaffoldBackgroundColor: AppColors.lightBackground,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.lightSurface,
       foregroundColor: AppColors.lightTextPrimary,
       elevation: 0,
@@ -123,7 +123,7 @@ ThemeData darkTheme({Color accentColor = AppColors.primary}) {
       onError: Colors.white,
     ),
     scaffoldBackgroundColor: AppColors.darkBackground,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkSurface,
       foregroundColor: AppColors.darkTextPrimary,
       elevation: 0,

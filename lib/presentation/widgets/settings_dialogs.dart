@@ -80,7 +80,6 @@ class AccentColorDialog extends ConsumerWidget {
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          childAspectRatio: 1,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),

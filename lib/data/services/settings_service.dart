@@ -66,8 +66,7 @@ class SettingsService {
   /// Remove music folder
   static Future<void> removeMusicFolder(String path) async {
     final current = SettingsService.current;
-    final folders = List<String>.from(current.musicFolders);
-    folders.remove(path);
+    final folders = List<String>.from(current.musicFolders)..remove(path);
     await save(current.copyWith(musicFolders: folders));
   }
 

@@ -46,13 +46,14 @@ class ArtistAdapter extends TypeAdapter<Artist> {
 
   @override
   void write(BinaryWriter writer, Artist obj) {
-    writer.write(obj.id);
-    writer.write(obj.name);
-    writer.write(obj.artwork);
-    writer.write(obj.albums);
-    writer.write(obj.albumCount);
-    writer.write(obj.songCount);
-    writer.write(obj.genre);
-    writer.write(obj.dateAdded);
+    writer
+      ..write(obj.id)
+      ..write(obj.name)
+      ..write(obj.artwork)
+      ..write(obj.albums)
+      ..write(obj.albumCount)
+      ..write(obj.songCount)
+      ..write(obj.genre)
+      ..write(obj.dateAdded);
   }
 }

@@ -23,14 +23,11 @@ class AudioBackgroundTask {
     }
 
     _handler = await AudioService.init(
-      builder: () => AudioPlayerHandler(),
-      config: AudioServiceConfig(
+      builder: AudioPlayerHandler.new,
+      config: const AudioServiceConfig(
         androidNotificationChannelId: 'top.immiq.echo_music.channel.audio',
         androidNotificationChannelName: 'Echo Music',
         androidNotificationOngoing: true,
-        androidShowNotificationBadge: false,
-        androidNotificationIcon: 'mipmap/ic_launcher',
-        androidStopForegroundOnPause: true,
       ),
     );
   }

@@ -55,14 +55,15 @@ class PlaylistAdapter extends TypeAdapter<Playlist> {
 
   @override
   void write(BinaryWriter writer, Playlist obj) {
-    writer.write(obj.id);
-    writer.write(obj.name);
-    writer.write(obj.description);
-    writer.write(obj.songs);
-    writer.write(obj.artwork);
-    writer.write(obj.createdAt);
-    writer.write(obj.updatedAt);
-    writer.write(obj.isSmartPlaylist);
-    writer.write(obj.smartPlaylistRules);
+    writer
+      ..write(obj.id)
+      ..write(obj.name)
+      ..write(obj.description)
+      ..write(obj.songs)
+      ..write(obj.artwork)
+      ..write(obj.createdAt)
+      ..write(obj.updatedAt)
+      ..write(obj.isSmartPlaylist)
+      ..write(obj.smartPlaylistRules);
   }
 }

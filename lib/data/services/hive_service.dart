@@ -31,12 +31,13 @@ class HiveService {
   /// Register all type adapters
   static void _registerAdapters() {
     // Register adapters - order matters, register dependencies first
-    Hive.registerAdapter(AlbumArtAdapter());
-    Hive.registerAdapter(SongAdapter());
-    Hive.registerAdapter(AlbumAdapter());
-    Hive.registerAdapter(ArtistAdapter());
-    Hive.registerAdapter(PlaylistAdapter());
-    Hive.registerAdapter(AppSettingsAdapter());
+    Hive
+      ..registerAdapter(AlbumArtAdapter())
+      ..registerAdapter(SongAdapter())
+      ..registerAdapter(AlbumAdapter())
+      ..registerAdapter(ArtistAdapter())
+      ..registerAdapter(PlaylistAdapter())
+      ..registerAdapter(AppSettingsAdapter());
   }
 
   /// Open all required boxes

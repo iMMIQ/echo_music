@@ -1,28 +1,30 @@
 import 'dart:io';
 
-import 'package:hive/hive.dart';
 import 'package:echo_music/data/models/album_model.dart';
 import 'package:echo_music/data/models/artist_model.dart';
 import 'package:echo_music/data/models/playlist_model.dart';
-import 'package:echo_music/data/models/song_model.dart';
 import 'package:echo_music/data/models/settings_model.dart';
+import 'package:echo_music/data/models/song_model.dart';
 import 'package:echo_music/data/services/library_service.dart';
 import 'package:echo_music/data/services/library_service_impl.dart';
 import 'package:echo_music/data/services/metadata_service.dart';
 import 'package:echo_music/data/services/metadata_service_impl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 import 'package:path/path.dart' as p;
 
 void main() {
   // Initialize Hive with in-memory storage for testing
   setUpAll(() async {
     Hive.init('./test_hive');
-    Hive.registerAdapter(AlbumArtAdapter());
-    Hive.registerAdapter(SongAdapter());
-    Hive.registerAdapter(AlbumAdapter());
-    Hive.registerAdapter(ArtistAdapter());
-    Hive.registerAdapter(PlaylistAdapter());
-    Hive.registerAdapter(AppSettingsAdapter());
+    Hive
+      ..registerAdapter(AlbumArtAdapter())
+      ..registerAdapter(SongAdapter())
+      ..registerAdapter(AlbumAdapter())
+      ..registerAdapter(ArtistAdapter())
+      ..registerAdapter(PlaylistAdapter())
+      ..registerAdapter(AppSettingsAdapter());
   });
 
   group('Music Import Test', () {
@@ -40,28 +42,28 @@ void main() {
 
       // Check if file exists
       final file = File(testFile);
-      print('File exists: ${file.existsSync()}');
+      debugPrint('File exists: ${file.existsSync()}');
       if (!file.existsSync()) {
-        print('SKIP: Test file not found');
+        debugPrint('SKIP: Test file not found');
         return;
       }
 
       // Test if format is supported
       final isSupported = metadataService.isSupportedFormat(testFile);
-      print('Is supported format: $isSupported');
+      debugPrint('Is supported format: $isSupported');
       expect(isSupported, isTrue, reason: 'OGG file should be supported');
 
       // Test metadata extraction
-      print('Extracting metadata...');
+      debugPrint('Extracting metadata...');
       final metadata = await metadataService.extractMetadata(testFile);
 
-      print('Title: ${metadata.title}');
-      print('Artist: ${metadata.artist}');
-      print('Album: ${metadata.album}');
-      print('Duration: ${metadata.duration}');
-      print('Year: ${metadata.year}');
-      print('Track: ${metadata.trackNumber}');
-      print('Genre: ${metadata.genre}');
+      debugPrint('Title: ${metadata.title}');
+      debugPrint('Artist: ${metadata.artist}');
+      debugPrint('Album: ${metadata.album}');
+      debugPrint('Duration: ${metadata.duration}');
+      debugPrint('Year: ${metadata.year}');
+      debugPrint('Track: ${metadata.trackNumber}');
+      debugPrint('Genre: ${metadata.genre}');
 
       expect(metadata.title, isNotEmpty);
       expect(metadata.artist, isNotEmpty);
@@ -75,24 +77,24 @@ void main() {
       // Check if file exists
       final file = File(testFile);
       if (!file.existsSync()) {
-        print('SKIP: Test file not found');
+        debugPrint('SKIP: Test file not found');
         return;
       }
 
-      print('Importing file: $testFile');
+      debugPrint('Importing file: $testFile');
 
       // Try to get metadata first
-      print('Step 1: Extract metadata');
+      debugPrint('Step 1: Extract metadata');
       final metadata = await metadataService.extractMetadata(testFile);
-      print('Metadata extracted: ${metadata.title}');
+      debugPrint('Metadata extracted: ${metadata.title}');
 
       // Try to create song
-      print('Step 2: Create song object');
+      debugPrint('Step 2: Create song object');
       final songId = testFile.hashCode.toString();
-      print('Song ID: $songId');
+      debugPrint('Song ID: $songId');
 
       // Try to add song directly
-      print('Step 3: Add song to library');
+      debugPrint('Step 3: Add song to library');
       try {
         final song = Song(
           id: songId,
@@ -110,28 +112,28 @@ void main() {
           dateAdded: DateTime.now(),
         );
         await libraryService.addSong(song);
-        print('Song added successfully');
+        debugPrint('Song added successfully');
       } catch (e) {
-        print('Error adding song: $e');
+        debugPrint('Error adding song: $e');
         rethrow;
       }
 
       // Now try importFiles
-      print('Step 4: Run importFiles');
+      debugPrint('Step 4: Run importFiles');
       final songs = await libraryService.importFiles([testFile]);
 
-      print('Imported ${songs.length} song(s)');
+      debugPrint('Imported ${songs.length} song(s)');
 
       expect(songs, isNotEmpty);
       expect(songs.length, greaterThan(0));
 
       final song = songs.first;
-      print('Song ID: ${song.id}');
-      print('Song title: ${song.title}');
-      print('Song artist: ${song.artist}');
-      print('Song album: ${song.album}');
-      print('Song duration: ${song.duration}');
-      print('Song filePath: ${song.filePath}');
+      debugPrint('Song ID: ${song.id}');
+      debugPrint('Song title: ${song.title}');
+      debugPrint('Song artist: ${song.artist}');
+      debugPrint('Song album: ${song.album}');
+      debugPrint('Song duration: ${song.duration}');
+      debugPrint('Song filePath: ${song.filePath}');
 
       expect(song.title, isNotEmpty);
       expect(song.filePath, equals(testFile));
@@ -143,7 +145,7 @@ void main() {
       // Check if file exists
       final file = File(testFile);
       if (!file.existsSync()) {
-        print('SKIP: Test file not found');
+        debugPrint('SKIP: Test file not found');
         return;
       }
 
@@ -156,7 +158,7 @@ void main() {
       // Get all songs
       final allSongs = await libraryService.getAllSongs();
 
-      print('Total songs in library: ${allSongs.length}');
+      debugPrint('Total songs in library: ${allSongs.length}');
 
       expect(allSongs, isNotEmpty);
       expect(allSongs.length, greaterThan(0));
@@ -167,7 +169,7 @@ void main() {
         orElse: () => throw Exception('Imported song not found in library'),
       );
 
-      print('Found imported song: ${importedSong.title}');
+      debugPrint('Found imported song: ${importedSong.title}');
       expect(importedSong.title, isNotEmpty);
     });
   });

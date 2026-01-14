@@ -104,22 +104,23 @@ class SongAdapter extends TypeAdapter<Song> {
 
   @override
   void write(BinaryWriter writer, Song obj) {
-    writer.write(obj.id);
-    writer.write(obj.title);
-    writer.write(obj.artist);
-    writer.write(obj.album);
-    writer.write(obj.duration.inMilliseconds);
-    writer.write(obj.filePath);
-    writer.write(obj.albumArt);
-    writer.write(obj.trackNumber);
-    writer.write(obj.discNumber);
-    writer.write(obj.year);
-    writer.write(obj.genre);
-    writer.write(obj.bitrate);
-    writer.write(obj.format);
-    writer.write(obj.isFavorite);
-    writer.write(obj.playCount);
-    writer.write(obj.lastPlayed);
-    writer.write(obj.dateAdded);
+    writer
+      ..write(obj.id)
+      ..write(obj.title)
+      ..write(obj.artist)
+      ..write(obj.album)
+      ..write(obj.duration.inMilliseconds)
+      ..write(obj.filePath)
+      ..write(obj.albumArt)
+      ..write(obj.trackNumber)
+      ..write(obj.discNumber)
+      ..write(obj.year)
+      ..write(obj.genre)
+      ..write(obj.bitrate)
+      ..write(obj.format)
+      ..write(obj.isFavorite)
+      ..write(obj.playCount)
+      ..write(obj.lastPlayed)
+      ..write(obj.dateAdded);
   }
 }

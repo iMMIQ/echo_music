@@ -92,7 +92,7 @@ class MetadataServiceImpl extends MetadataService {
     } catch (e) {
       // Return default duration on error
     }
-    return await _getDurationWithAudioMeta(filePath);
+    return _getDurationWithAudioMeta(filePath);
   }
 
   @override

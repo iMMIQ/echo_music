@@ -1,5 +1,6 @@
 import 'package:echo_music/data/services/metadata_service.dart';
 import 'package:echo_music/data/services/metadata_service_impl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -16,8 +17,8 @@ void main() {
           .map((e) => e.replaceFirst('.', ''))
           .toList();
 
-      print('Extensions with dots: $extensionsWithDots');
-      print('Extensions without dots: $extensionsWithoutDots');
+      debugPrint('Extensions with dots: $extensionsWithDots');
+      debugPrint('Extensions without dots: $extensionsWithoutDots');
 
       // Verify all extensions are converted correctly
       expect(extensionsWithoutDots, contains('mp3'));

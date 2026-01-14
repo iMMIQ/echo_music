@@ -1,5 +1,6 @@
 import 'package:echo_music/data/services/metadata_service.dart';
 import 'package:echo_music/data/services/metadata_service_impl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
 
     test('should support all expected extensions', () {
       final extensions = metadataService.supportedExtensions;
-      print('Supported extensions: $extensions');
+      debugPrint('Supported extensions: $extensions');
 
       expect(extensions, contains('.mp3'));
       expect(extensions, contains('.ogg'));
@@ -40,7 +41,7 @@ void main() {
 
     test('FilePicker extensions should be without dots', () {
       final extensions = metadataService.supportedExtensions;
-      print('Extensions for FilePicker: ${extensions.map((e) => e.replaceFirst('.', ''))}');
+      debugPrint('Extensions for FilePicker: ${extensions.map((e) => e.replaceFirst('.', ''))}');
     });
   });
 }

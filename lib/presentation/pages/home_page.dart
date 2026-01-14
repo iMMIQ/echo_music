@@ -226,8 +226,7 @@ class _QuickActions extends ConsumerWidget {
   }
 
   void _shuffleAll(BuildContext context, WidgetRef ref) {
-    final songsAsync = ref.read(allSongsProvider);
-    songsAsync.when(
+    ref.read(allSongsProvider).when(
       data: (songs) {
         if (songs.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -237,8 +236,7 @@ class _QuickActions extends ConsumerWidget {
         }
         // Shuffle and play
         final shuffled = List<Song>.from(songs)..shuffle();
-        final audioService = ref.read(audioServiceProvider);
-        audioService.setQueue(shuffled, startIndex: 0);
+        ref.read(audioServiceProvider).setQueue(shuffled);
       },
       loading: () => ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Loading library...')),
@@ -643,8 +641,8 @@ class _SongsTab extends ConsumerWidget {
   }
 
   void _playSong(BuildContext context, WidgetRef ref, Song song) {
-    final audioService = ref.read(audioServiceProvider);
-    audioService.play(song);
+    // Use service directly
+    ref.read(audioServiceProvider).play(song);
   }
 }
 
@@ -1126,8 +1124,8 @@ class _FavoritesTab extends ConsumerWidget {
   }
 
   void _playSong(BuildContext context, WidgetRef ref, Song song) {
-    final audioService = ref.read(audioServiceProvider);
-    audioService.play(song);
+    // Use service directly
+    ref.read(audioServiceProvider).play(song);
   }
 }
 
@@ -1397,8 +1395,8 @@ class _BrowseContent extends ConsumerWidget {
   }
 
   void _playSong(BuildContext context, WidgetRef ref, Song song) {
-    final audioService = ref.read(audioServiceProvider);
-    audioService.play(song);
+    // Use service directly
+    ref.read(audioServiceProvider).play(song);
   }
 }
 
@@ -1524,8 +1522,8 @@ class _SearchResultsContent extends ConsumerWidget {
   }
 
   void _playSong(BuildContext context, WidgetRef ref, Song song) {
-    final audioService = ref.read(audioServiceProvider);
-    audioService.play(song);
+    // Use service directly
+    ref.read(audioServiceProvider).play(song);
   }
 }
 

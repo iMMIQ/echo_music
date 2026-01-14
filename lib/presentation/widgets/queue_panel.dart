@@ -61,13 +61,11 @@ class QueuePanel extends ConsumerWidget {
   }
 
   void _playSong(WidgetRef ref, Song song, int index) {
-    final service = ref.read(audioServiceProvider);
-    service.play(song);
+    ref.read(audioServiceProvider).play(song);
   }
 
   void _removeFromQueue(WidgetRef ref, int index) {
-    final service = ref.read(audioServiceProvider);
-    service.removeFromQueue(index);
+    ref.read(audioServiceProvider).removeFromQueue(index);
   }
 
   void _reorderQueue(

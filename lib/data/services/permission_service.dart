@@ -43,13 +43,9 @@ class PermissionService {
 
   /// Request all necessary permissions
   Future<PermissionResult> requestAllPermissions() async {
-    final results = PermissionResult();
-
-    // Request storage permission
-    results.storageGranted = await requestStoragePermission();
-
-    // Request notification permission
-    results.notificationGranted = await requestNotificationPermission();
+    final results = PermissionResult()
+      ..storageGranted = await requestStoragePermission()
+      ..notificationGranted = await requestNotificationPermission();
 
     return results;
   }

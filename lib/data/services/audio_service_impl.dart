@@ -106,10 +106,7 @@ class AudioServiceImpl implements AudioService {
   Future<void> play(Song song) async {
     try {
       // Open media file with media_kit
-      await _player.open(
-        Media('file://${song.filePath}'),
-        play: true,
-      );
+      await _player.open(Media('file://${song.filePath}'));
 
       // Update current song and queue
       if (!_queue.any((s) => s.id == song.id)) {
@@ -215,8 +212,9 @@ class AudioServiceImpl implements AudioService {
       if (_queue.isNotEmpty && _currentIndex >= 0) {
         final currentSong = _queue[_currentIndex];
         final shuffled = List<Song>.from(_queue)..shuffle();
-        _queue.clear();
-        _queue.addAll(shuffled);
+        _queue
+          ..clear()
+          ..addAll(shuffled);
         _currentIndex = _queue.indexWhere((s) => s.id == currentSong.id);
       }
     } else {
@@ -228,8 +226,9 @@ class AudioServiceImpl implements AudioService {
 
   @override
   Future<void> setQueue(List<Song> songs, {int startIndex = 0}) async {
-    _queue.clear();
-    _queue.addAll(songs);
+    _queue
+      ..clear()
+      ..addAll(songs);
     _currentIndex = startIndex.clamp(0, songs.length - 1);
 
     _updateState(queue: List.from(_queue), currentIndex: _currentIndex);

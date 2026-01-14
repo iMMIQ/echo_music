@@ -126,8 +126,8 @@ class LibraryServiceImpl extends LibraryService {
   @override
   Future<List<Song>> getRecentlyPlayed({int limit = 20}) async {
     final allSongs = await getAllSongs();
-    final played = allSongs.where((song) => song.lastPlayed != null).toList();
-    played.sort((a, b) => b.lastPlayed!.compareTo(a.lastPlayed!));
+    final played = allSongs.where((song) => song.lastPlayed != null).toList()
+      ..sort((a, b) => b.lastPlayed!.compareTo(a.lastPlayed!));
     return played.take(limit).toList();
   }
 
