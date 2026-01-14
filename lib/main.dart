@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
@@ -10,6 +11,9 @@ import 'presentation/providers/settings_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize MediaKit for cross-platform audio playback
+  MediaKit.ensureInitialized();
 
   // Initialize audio service for background playback
   await AudioBackgroundTask.start();

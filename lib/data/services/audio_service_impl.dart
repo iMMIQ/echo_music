@@ -1,25 +1,17 @@
 import 'dart:async';
 
-import 'package:just_audio/just_audio.dart';
+import 'package:media_kit/media_kit.dart';
 
 import '../models/song_model.dart';
-import 'audio_background_task.dart';
 import 'audio_service.dart';
 
-/// Audio service implementation using just_audio
+/// Audio service implementation using media_kit
 class AudioServiceImpl implements AudioService {
   AudioServiceImpl() {
-    _initAudioFocus();
     _initListeners();
   }
-  final AudioPlayer _player = AudioPlayer();
+  final Player _player = Player();
 
-  /// Initialize audio focus handling
-  void _initAudioFocus() {
-    // just_audio handles audio focus automatically by default
-    // We just need to ensure we're using the correct configuration
-    // Audio focus will be requested when playing and released when stopping
-  }
   final StreamController<PlaybackState> _stateController =
       StreamController.broadcast();
   final StreamController<Duration> _positionController =
@@ -49,47 +41,38 @@ class AudioServiceImpl implements AudioService {
   PlaybackState get currentState => _currentState;
 
   @override
-  Duration get position => _player.position;
+  Duration get position => _player.state.position;
 
   @override
-  Duration get duration => _player.duration ?? Duration.zero;
+  Duration get duration => _player.state.duration;
 
   @override
-  bool get isPlaying => _player.playing;
+  bool get isPlaying => _player.state.playing;
 
   void _initListeners() {
     // Listen to player state changes
-    _player.playerStateStream.listen((state) {
-      _updateState(
-        isPlaying: state.playing,
-        position: _player.position,
-        duration: _player.duration ?? Duration.zero,
-      );
+    _player.stream.playing.listen((playing) {
+      _playingController.add(playing);
+      _updateState(isPlaying: playing);
     });
 
     // Listen to position changes
-    _player.positionStream.listen((position) {
+    _player.stream.position.listen((position) {
       _positionController.add(position);
       _updateState(position: position);
     });
 
     // Listen to duration changes
-    _player.durationStream.listen((duration) {
-      _durationController.add(duration ?? Duration.zero);
-      _updateState(duration: duration ?? Duration.zero);
+    _player.stream.duration.listen((duration) {
+      _durationController.add(duration);
+      _updateState(duration: duration);
     });
 
-    // Listen to playing state
-    _player.playingStream.listen((playing) {
-      _playingController.add(playing);
-      _updateState(isPlaying: playing);
-    });
-
-    // Handle completion
-    _player.sequenceStream.listen((sequence) {
-      if (sequence == null || sequence.isEmpty && _queue.isNotEmpty) {
-        // Queue finished
-        _updateState(isPlaying: false);
+    // Listen to completion
+    _player.stream.completed.listen((completed) {
+      if (completed && _queue.isNotEmpty) {
+        // Track completed, move to next
+        skipToNext();
       }
     });
   }
@@ -122,22 +105,11 @@ class AudioServiceImpl implements AudioService {
   @override
   Future<void> play(Song song) async {
     try {
-      // Create media item for background service
-      final mediaItem = AudioBackgroundTask.mediaItemFromSong(song);
-
-      // Create audio source from file
-      final AudioSource source = AudioSource.uri(
-        Uri.file(song.filePath),
-        tag: mediaItem,
+      // Open media file with media_kit
+      await _player.open(
+        Media('file://${song.filePath}'),
+        play: true,
       );
-
-      await _player.setAudioSource(source);
-
-      // Update background service
-      if (AudioBackgroundTask.currentHandler != null) {
-        AudioBackgroundTask.currentHandler!.mediaItem.add(mediaItem);
-        await AudioBackgroundTask.currentHandler!.play();
-      }
 
       // Update current song and queue
       if (!_queue.any((s) => s.id == song.id)) {
@@ -150,8 +122,6 @@ class AudioServiceImpl implements AudioService {
         queue: List.from(_queue),
         currentIndex: _currentIndex,
       );
-
-      await _player.play();
     } catch (e) {
       throw Exception('Failed to play song: $e');
     }
@@ -201,7 +171,7 @@ class AudioServiceImpl implements AudioService {
     if (_queue.isEmpty) return;
 
     // If more than 3 seconds played, restart current song
-    if (_player.position.inSeconds > 3) {
+    if (_player.state.position.inSeconds > 3) {
       await seek(Duration.zero);
       return;
     }
@@ -219,7 +189,7 @@ class AudioServiceImpl implements AudioService {
     if (speed < 0.5 || speed > 2.0) {
       throw ArgumentError('Speed must be between 0.5 and 2.0');
     }
-    await _player.setSpeed(speed);
+    await _player.setRate(speed);
     _updateState(playbackSpeed: speed);
   }
 
@@ -227,13 +197,14 @@ class AudioServiceImpl implements AudioService {
   Future<void> setRepeatMode(RepeatMode mode) async {
     _updateState(repeatMode: mode);
 
-    // Configure loop mode for just_audio
+    // Configure playlist mode for media_kit
     switch (mode) {
       case RepeatMode.one:
-        await _player.setLoopMode(LoopMode.one);
+        await _player.setPlaylistMode(PlaylistMode.single);
       case RepeatMode.all:
+        await _player.setPlaylistMode(PlaylistMode.loop);
       case RepeatMode.off:
-        await _player.setLoopMode(LoopMode.off);
+        await _player.setPlaylistMode(PlaylistMode.single);
     }
   }
 
