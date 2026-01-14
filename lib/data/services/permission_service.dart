@@ -82,4 +82,7 @@ class PermissionService {
 class PermissionResult {
   bool storageGranted = false;
   bool notificationGranted = false;
+
+  /// Check if all requested permissions are granted
+  bool get allGranted => storageGranted && notificationGranted;
 }
