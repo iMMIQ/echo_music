@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -308,15 +309,28 @@ class LibraryServiceImpl extends LibraryService {
   Future<List<String>> pickAudioFiles() async {
     // Request storage permission on Android
     if (Platform.isAndroid) {
-      // Android 13+ (API 33+) uses READ_MEDIA_AUDIO
-      // Older versions use READ_EXTERNAL_STORAGE
-      Permission permission = Permission.audio;
-      final version = int.tryParse(Platform.version.split(' ')[0]) ?? 0;
-      if (version < 33) {
-        permission = Permission.storage;
+      // Try the newer READ_MEDIA_AUDIO permission first (Android 13+)
+      // If that fails, fall back to READ_EXTERNAL_STORAGE (Android < 13)
+      bool permissionGranted = false;
+
+      try {
+        final status = await Permission.audio.request();
+        permissionGranted = status.isGranted;
+      } catch (e) {
+        debugPrint('Permission.audio not available, trying Permission.storage: $e');
       }
-      final status = await permission.request();
-      if (!status.isGranted) {
+
+      if (!permissionGranted) {
+        try {
+          final status = await Permission.storage.request();
+          permissionGranted = status.isGranted;
+        } catch (e) {
+          debugPrint('Permission.storage not available: $e');
+        }
+      }
+
+      if (!permissionGranted) {
+        debugPrint('Storage permissions not granted');
         return [];
       }
     }
@@ -347,8 +361,26 @@ class LibraryServiceImpl extends LibraryService {
   Future<String?> pickDirectory() async {
     // Request storage permission on Android
     if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
+      bool permissionGranted = false;
+
+      try {
+        final status = await Permission.audio.request();
+        permissionGranted = status.isGranted;
+      } catch (e) {
+        debugPrint('Permission.audio not available, trying Permission.storage: $e');
+      }
+
+      if (!permissionGranted) {
+        try {
+          final status = await Permission.storage.request();
+          permissionGranted = status.isGranted;
+        } catch (e) {
+          debugPrint('Permission.storage not available: $e');
+        }
+      }
+
+      if (!permissionGranted) {
+        debugPrint('Storage permissions not granted for directory pick');
         return null;
       }
     }

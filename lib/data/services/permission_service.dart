@@ -7,24 +7,26 @@ class PermissionService {
   /// Request storage permission for accessing music files
   Future<bool> requestStoragePermission() async {
     if (Platform.isAndroid) {
-      // Android 13+ uses READ_MEDIA_AUDIO
-      if (Platform.version.contains('33') ||
-          Platform.version.contains('34') ||
-          Platform.version.contains('35')) {
+      // Try the newer READ_MEDIA_AUDIO permission first (Android 13+)
+      // If that fails, fall back to READ_EXTERNAL_STORAGE (Android < 13)
+      bool permissionGranted = false;
+
+      try {
         final status = await Permission.audio.request();
-        return status.isGranted;
-      } else {
-        // Older Android versions use READ_EXTERNAL_STORAGE
-        final status = await Permission.storage.request();
-        if (status.isGranted) {
-          return true;
-        } else if (status.isPermanentlyDenied) {
-          // Show dialog to open app settings
+        permissionGranted = status.isGranted;
+        if (!permissionGranted && status.isPermanentlyDenied) {
           await openAppSettings();
-          return false;
         }
-        return false;
+      } catch (e) {
+        // Permission.audio not available, try Permission.storage
+        final status = await Permission.storage.request();
+        permissionGranted = status.isGranted;
+        if (!permissionGranted && status.isPermanentlyDenied) {
+          await openAppSettings();
+        }
       }
+
+      return permissionGranted;
     } else if (Platform.isIOS) {
       // iOS doesn't need storage permission for music library
       return true;
@@ -53,25 +55,31 @@ class PermissionService {
   /// Check if all permissions are granted
   Future<bool> checkPermissions() async {
     if (Platform.isAndroid) {
-      // Android 13+ uses READ_MEDIA_AUDIO
-      if (Platform.version.contains('33') ||
-          Platform.version.contains('34') ||
-          Platform.version.contains('35')) {
-        final audioStatus = await Permission.audio.status;
-        final notificationStatus = await Permission.notification.status;
-        return audioStatus.isGranted && notificationStatus.isGranted;
-      } else {
-        final storageStatus = await Permission.storage.status;
-        return storageStatus.isGranted;
+      // Try both permission types
+      bool audioGranted = false;
+      bool storageGranted = false;
+
+      try {
+        audioGranted = await Permission.audio.status.isGranted;
+      } catch (e) {
+        // Permission.audio not available on this Android version
       }
+
+      try {
+        storageGranted = await Permission.storage.status.isGranted;
+      } catch (e) {
+        // Permission.storage not available on this Android version
+      }
+
+      // At least one storage permission should be granted
+      return audioGranted || storageGranted;
     }
     return true;
   }
 }
 
-/// Result of permission requests
+/// Result of permission request
 class PermissionResult {
   bool storageGranted = false;
   bool notificationGranted = false;
-  bool get allGranted => storageGranted && notificationGranted;
 }
