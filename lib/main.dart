@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:metadata_god/metadata_god.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
@@ -14,6 +15,9 @@ void main() async {
 
   // Initialize MediaKit for cross-platform audio playback (synchronous)
   MediaKit.ensureInitialized();
+
+  // Initialize metadata_god for reading audio file metadata
+  await MetadataGod.initialize();
 
   // Initialize Hive (quick local storage first)
   await HiveService.init();
