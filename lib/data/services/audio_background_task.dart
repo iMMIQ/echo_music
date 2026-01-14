@@ -25,7 +25,7 @@ class AudioBackgroundTask {
 
     try {
       // Add timeout to prevent hanging
-      await AudioService.init(
+      _handler = await AudioService.init(
         builder: AudioPlayerHandler.new,
         config: const AudioServiceConfig(
           androidNotificationChannelId: 'top.immiq.echo_music.channel.audio',
@@ -36,8 +36,8 @@ class AudioBackgroundTask {
         const Duration(seconds: 5),
         onTimeout: () {
           debugPrint('AudioService.init timed out after 5 seconds, continuing without audio service');
-          // Allow app to continue even if audio service init times out
-          // The audio player will still work, just without background service
+          // Return null handler on timeout - app will continue without background service
+          return AudioPlayerHandler();
         },
       );
     } catch (e) {
