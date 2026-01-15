@@ -248,9 +248,9 @@ MVP (Phase 1-3):            █████████████████�
 
 **Android**:
 - [x] Foreground service for playback (basic implementation)
-- [⚠️] Media session integration (partial, needs polish)
+- [ ] Media session integration (notification mini player not working)
 - [ ] Audio focus handling (needs improvement)
-- [ ] Notification controls (needs enhancement)
+- [ ] Notification controls (not implemented - notification bar mini player missing)
 - [x] Request storage permissions (implemented)
 
 **Windows**:
@@ -311,12 +311,19 @@ MVP (Phase 1-3):            █████████████████�
 
 ### Current Issues
 
-1. **Android Background Playback** ⚠️
-   - Media session integration is basic
-   - Notification controls need enhancement
+1. **Android Notification Mini Player** ⚠️
+   - **ISSUE**: Notification bar mini player (like Apple Music) is not displaying
+   - Background playback works but notification UI is missing
+   - Attempted integration with `audio_service` package using `just_audio`
+   - Created `MobileAudioHandler` (BaseAudioHandler) and `MobileAudioService`
+   - Notification still not appearing despite proper MediaItem and playbackState setup
+   - **Status**: Needs investigation - may require alternative approach
+
+2. **Android Background Playback** ⚠️
+   - Media session integration is partial
    - Audio focus loss handling needs improvement
 
-2. **Desktop Media Controls** ⚠️
+3. **Desktop Media Controls** ⚠️
    - No MPRIS/SMTC integration yet
    - No system tray support
    - No global hotkeys

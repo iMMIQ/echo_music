@@ -64,6 +64,11 @@ Focused on local music playback with future Navidrome support
 - 📝 **Metadata Editor** - Edit song metadata
 - ⏱️ **Sleep Timer** - Auto-stop playback
 - 🎛️ **Desktop Controls** - MPRIS (Linux), SMTC (Windows)
+- 🔔 **Android Notification Player** - Notification bar mini player (currently not working)
+
+### ⚠️ Known Issues
+
+- **Android Notification Mini Player**: The notification bar mini player (like Apple Music) is not displaying. Background playback works but the notification UI is missing. Attempted integration with `audio_service` package but notification still doesn't appear. This is a known limitation that needs further investigation.
 
 ### 📋 Planned (Post-MVP)
 

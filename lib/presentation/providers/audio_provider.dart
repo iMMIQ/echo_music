@@ -14,7 +14,10 @@ app_audio.AudioService audioService(AudioServiceRef ref) {
   final service = createAudioService();
 
   // Dispose when provider is disposed
-  ref.onDispose(service.dispose);
+  ref.onDispose(() {
+    service.dispose();
+    // Mobile handler will be disposed via global variable in audio_provider_mobile.dart
+  });
 
   return service;
 }
@@ -46,3 +49,4 @@ Stream<bool> isPlaying(IsPlayingRef ref) {
   final audioService = ref.watch(audioServiceProvider);
   return audioService.playingStream;
 }
+

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart' as audio_pkg;
 import 'package:just_audio/just_audio.dart';
@@ -6,15 +7,18 @@ import 'package:flutter/foundation.dart';
 
 import '../models/song_model.dart';
 import 'audio_service.dart';
+import 'mobile_audio_handler.dart';
 
 /// Audio service implementation for mobile platforms (Android/iOS)
 ///
 /// Uses just_audio + audio_service for background playback with notifications
 class MobileAudioService implements AudioService {
-  MobileAudioService() {
+  MobileAudioService(this._handler) {
     _initPlayer();
     _initListeners();
   }
+
+  final MobileAudioHandler _handler;
 
   late final AudioPlayer _player;
   final StreamController<PlaybackState> _stateController =
@@ -55,8 +59,9 @@ class MobileAudioService implements AudioService {
   bool get isPlaying => _player.playing;
 
   void _initPlayer() {
-    _player = AudioPlayer();
-    debugPrint('MobileAudioService: Created just_audio AudioPlayer');
+    // Use the handler's player to ensure audio_service tracks the state
+    _player = _handler.player;
+    debugPrint('MobileAudioService: Using handler\'s AudioPlayer');
   }
 
   void _initListeners() {
@@ -118,9 +123,15 @@ class MobileAudioService implements AudioService {
   @override
   Future<void> play(Song song) async {
     try {
-      // Create media item for audio_service
+      // Add to internal queue first
+      if (!_queue.any((s) => s.id == song.id)) {
+        _queue.add(song);
+      }
+      _currentIndex = _queue.indexWhere((s) => s.id == song.id);
+
+      // Convert song to AudioSource with MediaItem tag
       final mediaItem = audio_pkg.MediaItem(
-        id: song.id,
+        id: song.filePath, // Use filePath as ID for AudioSource
         title: song.title,
         artist: song.artist,
         album: song.album,
@@ -129,40 +140,21 @@ class MobileAudioService implements AudioService {
         extras: {'filePath': song.filePath},
       );
 
-      // Update audio_service with media item
-      // This will be handled by AudioPlayerHandler
-      if (audioHandler != null) {
-        // Add to queue if not already there
-        if (!_queue.any((s) => s.id == song.id)) {
-          _queue.add(song);
-          final mediaItems = _queue.map(_songToMediaItem).toList();
-          audioHandler.queue.value = mediaItems;
-        }
-        _currentIndex = _queue.indexWhere((s) => s.id == song.id);
-        audioHandler.mediaItem.value = mediaItem;
-      }
-
-      // Add to internal queue
-      if (!_queue.any((s) => s.id == song.id)) {
-        _queue.add(song);
-      }
-      _currentIndex = _queue.indexWhere((s) => s.id == song.id);
-
-      // Convert song to AudioSource
       final audioSource = AudioSource.uri(
         Uri.file(song.filePath),
-        tag: audio_pkg.MediaItem(
-          id: song.id,
-          title: song.title,
-          artist: song.artist,
-          album: song.album,
-          artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
-          duration: song.duration,
-        ),
+        tag: mediaItem,
       );
 
       // Play with just_audio
       await _player.setAudioSource(audioSource);
+      await _player.play();
+
+      // Update audio_service handler's queue
+      final mediaItems = _queue.map(_songToMediaItem).toList();
+      _handler.queue.value = mediaItems;
+
+      // Update audio_service handler's media item
+      _handler.mediaItem.value = mediaItem;
 
       _updateState(
         currentSong: song,
@@ -170,7 +162,7 @@ class MobileAudioService implements AudioService {
         currentIndex: _currentIndex,
       );
 
-      debugPrint('MobileAudioService: Playing ${song.title}');
+      debugPrint('MobileAudioService: Playing ${song.title}, handler.queue.length = ${_handler.queue.value.length}');
     } catch (e) {
       debugPrint('MobileAudioService: Failed to play song: $e');
       throw Exception('Failed to play song: $e');
@@ -179,7 +171,7 @@ class MobileAudioService implements AudioService {
 
   audio_pkg.MediaItem _songToMediaItem(Song song) {
     return audio_pkg.MediaItem(
-      id: song.id,
+      id: song.filePath, // Use filePath as ID
       title: song.title,
       artist: song.artist,
       album: song.album,
@@ -279,9 +271,9 @@ class MobileAudioService implements AudioService {
         _currentIndex = _queue.indexWhere((s) => s.id == currentSong.id);
 
         // Update audio_handler queue
-        if (audioHandler != null) {
+        if (_handler != null) {
           final mediaItems = _queue.map(_songToMediaItem).toList();
-          audioHandler!.queue.value = mediaItems;
+          _handler!.queue.value = mediaItems;
         }
       }
     }
@@ -298,9 +290,9 @@ class MobileAudioService implements AudioService {
     _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
 
     // Update audio_handler queue
-    if (audioHandler != null) {
+    if (_handler != null) {
       final mediaItems = _queue.map(_songToMediaItem).toList();
-      audioHandler!.queue.value = mediaItems;
+      _handler!.queue.value = mediaItems;
     }
   }
 
@@ -366,13 +358,11 @@ class MobileAudioService implements AudioService {
 
   @override
   Future<void> dispose() async {
-    await _player.dispose();
+    // Don't dispose _player as it belongs to the handler
+    // Just close the stream controllers
     await _stateController.close();
     await _positionController.close();
     await _durationController.close();
     await _playingController.close();
   }
-
-  /// Reference to the audio_service handler (set by audio_background_task)
-  dynamic audioHandler;
 }

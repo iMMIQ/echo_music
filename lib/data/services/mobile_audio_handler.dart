@@ -16,7 +16,9 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
     _init();
   }
 
-  late final AudioPlayer _player = AudioPlayer();
+  late final AudioPlayer player = AudioPlayer();
+
+  AudioPlayer get _player => player;
 
   Future<void> _init() async {
     // Configure audio session
