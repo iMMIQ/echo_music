@@ -28,15 +28,16 @@ class AudioBackgroundTask {
       // Add timeout to prevent hanging
       _handler = await AudioService.init(
         builder: () => AudioPlayerHandler(),
-        config: const AudioServiceConfig(
+        config: AudioServiceConfig(
           androidNotificationChannelId: 'top.immiq.echo_music.channel.audio',
           androidNotificationChannelName: 'Echo Music',
           androidNotificationOngoing: true,
           androidShowNotificationBadge: true,
           androidNotificationIcon: 'mipmap/ic_launcher',
           androidNotificationClickStartsActivity: true,
-          fastForwardInterval: Duration(seconds: 10),
-          rewindInterval: Duration(seconds: 10),
+          androidStopForegroundOnPause: false,
+          fastForwardInterval: const Duration(seconds: 10),
+          rewindInterval: const Duration(seconds: 10),
         ),
       ).timeout(
         const Duration(seconds: 10),
@@ -82,8 +83,18 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   /// Create the actual handler with MediaKit player
   AudioPlayerHandler() : _player = Player() {
-    // Initialize queue
+    // Initialize queue and playback state
     queue.value = [];
+    playbackState.add(PlaybackState(
+      controls: [
+        MediaControl.skipToPrevious,
+        MediaControl.play,
+        MediaControl.stop,
+        MediaControl.skipToNext,
+      ],
+      processingState: AudioProcessingState.idle,
+      playing: false,
+    ));
     _initPlayer();
     debugPrint('AudioPlayerHandler: Created handler with MediaKit player');
   }
@@ -106,6 +117,9 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
     // Listen to playback state changes
     _player!.stream.playing.listen((playing) {
+      debugPrint('AudioPlayerHandler: Playing state changed: $playing');
+      debugPrint('AudioPlayerHandler: Queue size: ${queue.value.length}, MediaItem: ${mediaItem.value?.title}');
+
       playbackState.add(playbackState.value.copyWith(
         controls: [
           MediaControl.skipToPrevious,
@@ -118,6 +132,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
             : AudioProcessingState.idle,
         playing: playing,
       ));
+
+      debugPrint('AudioPlayerHandler: Playback state updated: playing=$playing, processingState=${playing ? AudioProcessingState.ready : AudioProcessingState.idle}');
     });
 
     // Listen to position changes

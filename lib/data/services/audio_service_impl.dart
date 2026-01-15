@@ -186,24 +186,37 @@ class AudioServiceImpl implements AudioService {
   @override
   Future<void> play(Song song) async {
     try {
-      // Open media file with media_kit
-      await _player.open(Media('file://${song.filePath}'));
+      final handler = _audioHandler;
 
-      // Update current song and queue
+      // Update current song and queue FIRST (before playing)
       if (!_queue.any((s) => s.id == song.id)) {
         _queue.add(song);
-        _updateBackgroundQueue();
       }
       _currentIndex = _queue.indexWhere((s) => s.id == song.id);
 
+      // Update background queue BEFORE playing
+      _updateBackgroundQueue();
+
+      // Update background service media item BEFORE playing
+      _updateBackgroundService(song);
+
+      // Open media file with media_kit
+      await _player.open(Media('file://${song.filePath}'));
+
+      // Update internal state
       _updateState(
         currentSong: song,
         queue: List.from(_queue),
         currentIndex: _currentIndex,
       );
 
-      // Update background service
-      _updateBackgroundService(song);
+      debugPrint('AudioServiceImpl: Playing ${song.title}, queue size: ${_queue.length}');
+
+      // For mobile: ensure the handler's queue is set correctly
+      if (handler != null) {
+        debugPrint('AudioServiceImpl: Handler queue size: ${handler.queue.value.length}');
+        debugPrint('AudioServiceImpl: Handler media item: ${handler.mediaItem.value?.title}');
+      }
     } catch (e) {
       debugPrint('AudioServiceImpl: Failed to play song: $e');
       throw Exception('Failed to play song: $e');

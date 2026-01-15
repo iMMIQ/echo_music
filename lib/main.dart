@@ -23,13 +23,12 @@ void main() async {
   await HiveService.init();
   await HiveService.openBoxes();
 
-  // Start the app - audio background service will initialize later
-  runApp(const ProviderScope(child: MyApp()));
+  // Initialize audio service BEFORE starting the app
+  // This ensures the handler is ready when AudioServiceImpl is created
+  await AudioBackgroundTask.start();
 
-  // Initialize audio service in background (non-blocking)
-  AudioBackgroundTask.start().catchError((e) {
-    debugPrint('AudioBackgroundTask initialization failed: $e');
-  });
+  // Now start the app
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
