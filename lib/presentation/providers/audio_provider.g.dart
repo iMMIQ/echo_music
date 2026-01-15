@@ -6,23 +6,7 @@ part of 'audio_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$audioHandlerHash() => r'badffd7ba229576f79a070b796cfe4be116612a7';
-
-/// Audio service global instance (for background playback)
-///
-/// Copied from [audioHandler].
-@ProviderFor(audioHandler)
-final audioHandlerProvider = AutoDisposeProvider<AudioHandler?>.internal(
-  audioHandler,
-  name: r'audioHandlerProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$audioHandlerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef AudioHandlerRef = AutoDisposeProviderRef<AudioHandler?>;
-String _$audioServiceHash() => r'88c97871a7634bacbb748a2123f413b022f00211';
+String _$audioServiceHash() => r'890a5ecd123022a8a76c886a1236445796a93914';
 
 /// Audio service provider
 ///

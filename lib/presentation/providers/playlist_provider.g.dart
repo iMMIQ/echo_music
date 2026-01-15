@@ -498,7 +498,7 @@ class _IsSongFavoriteProviderElement
 }
 
 String _$playlistControllerHash() =>
-    r'756747edbe2ca689bb02e97b78dc962ca3ab43d4';
+    r'7c225d85aac91db68c29d1d77f82b269fe79a7db';
 
 /// Playlist controller
 ///
