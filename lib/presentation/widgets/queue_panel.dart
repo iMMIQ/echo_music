@@ -202,7 +202,6 @@ class _QueueItem extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        key: key,
         leading: _buildLeading(context),
         title: Text(
           song.title,

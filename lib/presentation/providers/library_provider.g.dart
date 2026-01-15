@@ -138,7 +138,7 @@ final allArtistsProvider = AutoDisposeFutureProvider<List<Artist>>.internal(
 );
 
 typedef AllArtistsRef = AutoDisposeFutureProviderRef<List<Artist>>;
-String _$importControllerHash() => r'639a8df41866ae923eb299b196cba5a77a1b03a0';
+String _$importControllerHash() => r'909566891ad886e1ac8df36e45de4b391e08a2e6';
 
 /// Import music controller
 ///

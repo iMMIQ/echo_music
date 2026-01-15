@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../models/album_model.dart';
 import '../models/artist_model.dart';
+import '../models/playlist_model.dart';
 import '../models/song_model.dart';
 import 'library_service.dart';
 import 'metadata_service.dart';
@@ -285,11 +286,15 @@ class LibraryServiceImpl extends LibraryService {
 
     final favoriteCount = songs.where((song) => song.isFavorite).length;
 
+    // Get playlist count from Hive directly
+    final playlistsBox = await Hive.openBox<Playlist>('playlists');
+    final playlistCount = playlistsBox.length;
+
     return LibraryStats(
       songCount: songs.length,
       albumCount: albums.length,
       artistCount: artists.length,
-      playlistCount: 0, // TODO(claude): Implement playlists
+      playlistCount: playlistCount,
       totalDuration: totalDuration,
       favoriteCount: favoriteCount,
     );
