@@ -1,25 +1,22 @@
-import 'dart:io';
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:audio_service/audio_service.dart' as audio_pkg;
+import 'package:just_audio/just_audio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/song_model.dart';
 import 'audio_service.dart';
-import 'audio_background_task.dart';
 
-/// Audio service implementation using media_kit
+/// Audio service implementation for mobile platforms (Android/iOS)
 ///
-/// On mobile platforms (Android/iOS), this integrates with audio_service
-/// for background playback. On desktop, it uses media_kit directly.
-class AudioServiceImpl implements AudioService {
-  AudioServiceImpl() {
+/// Uses just_audio + audio_service for background playback with notifications
+class MobileAudioService implements AudioService {
+  MobileAudioService() {
     _initPlayer();
     _initListeners();
   }
 
-  late final Player _player;
+  late final AudioPlayer _player;
   final StreamController<PlaybackState> _stateController =
       StreamController.broadcast();
   final StreamController<Duration> _positionController =
@@ -32,27 +29,6 @@ class AudioServiceImpl implements AudioService {
   PlaybackState _currentState = PlaybackState.initial();
   final List<Song> _queue = [];
   int _currentIndex = -1;
-
-  // Mobile: Get the background audio handler
-  AudioPlayerHandler? get _audioHandler {
-    if (!Platform.isLinux) {
-      return AudioBackgroundTask.currentHandler;
-    }
-    return null;
-  }
-
-  void _initPlayer() {
-    // On mobile, use the player from AudioBackgroundTask
-    // On desktop, create a new player
-    final handler = _audioHandler;
-    if (handler != null && handler.player != null) {
-      _player = handler.player!;
-      debugPrint('AudioServiceImpl: Using AudioBackgroundTask player');
-    } else {
-      _player = Player();
-      debugPrint('AudioServiceImpl: Created new player (desktop mode)');
-    }
-  }
 
   @override
   Stream<PlaybackState> get playbackStateStream => _stateController.stream;
@@ -70,38 +46,46 @@ class AudioServiceImpl implements AudioService {
   PlaybackState get currentState => _currentState;
 
   @override
-  Duration get position => _player.state.position;
+  Duration get position => _player.position;
 
   @override
-  Duration get duration => _player.state.duration;
+  Duration get duration => _player.duration ?? Duration.zero;
 
   @override
-  bool get isPlaying => _player.state.playing;
+  bool get isPlaying => _player.playing;
+
+  void _initPlayer() {
+    _player = AudioPlayer();
+    debugPrint('MobileAudioService: Created just_audio AudioPlayer');
+  }
 
   void _initListeners() {
     // Listen to player state changes
-    _player.stream.playing.listen((playing) {
+    _player.playingStream.listen((playing) {
       _playingController.add(playing);
       _updateState(isPlaying: playing);
     });
 
     // Listen to position changes
-    _player.stream.position.listen((position) {
+    _player.positionStream.listen((position) {
       _positionController.add(position);
       _updateState(position: position);
     });
 
     // Listen to duration changes
-    _player.stream.duration.listen((duration) {
-      _durationController.add(duration);
-      _updateState(duration: duration);
+    _player.durationStream.listen((duration) {
+      if (duration != null) {
+        _durationController.add(duration);
+        _updateState(duration: duration);
+      }
     });
 
     // Listen to completion
-    _player.stream.completed.listen((completed) {
-      if (completed && _queue.isNotEmpty) {
-        // Track completed, move to next
-        skipToNext();
+    _player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        if (_queue.isNotEmpty) {
+          skipToNext();
+        }
       }
     });
   }
@@ -126,101 +110,83 @@ class AudioServiceImpl implements AudioService {
       repeatMode: repeatMode ?? _currentState.repeatMode,
       isShuffle: isShuffle ?? _currentState.isShuffle,
       queue: queue ?? _currentState.queue,
-      currentIndex: currentIndex ?? _currentIndex,
+      currentIndex: currentIndex ?? _currentState.currentIndex,
     );
     _stateController.add(_currentState);
   }
 
-  /// Update the background audio service with current song
-  void _updateBackgroundService(Song song) {
-    final handler = _audioHandler;
-    if (handler == null) return;
-
-    // Create media item with file path in extras
-    final mediaItem = audio_pkg.MediaItem(
-      id: song.id,
-      title: song.title,
-      artist: song.artist,
-      album: song.album,
-      artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
-      duration: song.duration,
-      displayTitle: song.title,
-      displaySubtitle: song.artist,
-      displayDescription: 'From ${song.album}',
-      playable: true,
-      extras: {'filePath': song.filePath},
-    );
-
-    // Update the media item in background service
-    handler.mediaItem.value = mediaItem;
-    debugPrint('AudioServiceImpl: Updated background service with ${song.title}');
-  }
-
-  /// Update the background service queue
-  void _updateBackgroundQueue() {
-    final handler = _audioHandler;
-    if (handler == null) return;
-
-    // Convert songs to media items
-    final mediaItems = _queue.map((song) {
-      return audio_pkg.MediaItem(
+  @override
+  Future<void> play(Song song) async {
+    try {
+      // Create media item for audio_service
+      final mediaItem = audio_pkg.MediaItem(
         id: song.id,
         title: song.title,
         artist: song.artist,
         album: song.album,
         artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
         duration: song.duration,
-        displayTitle: song.title,
-        displaySubtitle: song.artist,
-        displayDescription: 'From ${song.album}',
-        playable: true,
         extras: {'filePath': song.filePath},
       );
-    }).toList();
 
-    // Update queue in background service
-    handler.queue.value = mediaItems;
-    debugPrint('AudioServiceImpl: Updated background queue with ${mediaItems.length} items');
-  }
+      // Update audio_service with media item
+      // This will be handled by AudioPlayerHandler
+      if (audioHandler != null) {
+        // Add to queue if not already there
+        if (!_queue.any((s) => s.id == song.id)) {
+          _queue.add(song);
+          final mediaItems = _queue.map(_songToMediaItem).toList();
+          audioHandler.queue.value = mediaItems;
+        }
+        _currentIndex = _queue.indexWhere((s) => s.id == song.id);
+        audioHandler.mediaItem.value = mediaItem;
+      }
 
-  @override
-  Future<void> play(Song song) async {
-    try {
-      final handler = _audioHandler;
-
-      // Update current song and queue FIRST (before playing)
+      // Add to internal queue
       if (!_queue.any((s) => s.id == song.id)) {
         _queue.add(song);
       }
       _currentIndex = _queue.indexWhere((s) => s.id == song.id);
 
-      // Update background queue BEFORE playing
-      _updateBackgroundQueue();
+      // Convert song to AudioSource
+      final audioSource = AudioSource.uri(
+        Uri.file(song.filePath),
+        tag: audio_pkg.MediaItem(
+          id: song.id,
+          title: song.title,
+          artist: song.artist,
+          album: song.album,
+          artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
+          duration: song.duration,
+        ),
+      );
 
-      // Update background service media item BEFORE playing
-      _updateBackgroundService(song);
+      // Play with just_audio
+      await _player.setAudioSource(audioSource);
 
-      // Open media file with media_kit
-      await _player.open(Media('file://${song.filePath}'));
-
-      // Update internal state
       _updateState(
         currentSong: song,
         queue: List.from(_queue),
         currentIndex: _currentIndex,
       );
 
-      debugPrint('AudioServiceImpl: Playing ${song.title}, queue size: ${_queue.length}');
-
-      // For mobile: ensure the handler's queue is set correctly
-      if (handler != null) {
-        debugPrint('AudioServiceImpl: Handler queue size: ${handler.queue.value.length}');
-        debugPrint('AudioServiceImpl: Handler media item: ${handler.mediaItem.value?.title}');
-      }
+      debugPrint('MobileAudioService: Playing ${song.title}');
     } catch (e) {
-      debugPrint('AudioServiceImpl: Failed to play song: $e');
+      debugPrint('MobileAudioService: Failed to play song: $e');
       throw Exception('Failed to play song: $e');
     }
+  }
+
+  audio_pkg.MediaItem _songToMediaItem(Song song) {
+    return audio_pkg.MediaItem(
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      album: song.album,
+      artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
+      duration: song.duration,
+      extras: {'filePath': song.filePath},
+    );
   }
 
   @override
@@ -245,7 +211,6 @@ class AudioServiceImpl implements AudioService {
 
     switch (_currentState.repeatMode) {
       case RepeatMode.one:
-        // Restart current song
         await seek(Duration.zero);
         await _player.play();
       case RepeatMode.off:
@@ -267,7 +232,7 @@ class AudioServiceImpl implements AudioService {
     if (_queue.isEmpty) return;
 
     // If more than 3 seconds played, restart current song
-    if (_player.state.position.inSeconds > 3) {
+    if (_player.position.inSeconds > 3) {
       await seek(Duration.zero);
       return;
     }
@@ -285,7 +250,7 @@ class AudioServiceImpl implements AudioService {
     if (speed < 0.5 || speed > 2.0) {
       throw ArgumentError('Speed must be between 0.5 and 2.0');
     }
-    await _player.setRate(speed);
+    await _player.setSpeed(speed);
     _updateState(playbackSpeed: speed);
   }
 
@@ -293,34 +258,18 @@ class AudioServiceImpl implements AudioService {
   Future<void> setRepeatMode(RepeatMode mode) async {
     _updateState(repeatMode: mode);
 
-    // Configure playlist mode for media_kit
-    switch (mode) {
-      case RepeatMode.one:
-        await _player.setPlaylistMode(PlaylistMode.single);
-      case RepeatMode.all:
-        await _player.setPlaylistMode(PlaylistMode.loop);
-      case RepeatMode.off:
-        await _player.setPlaylistMode(PlaylistMode.single);
-    }
+    final loopMode = switch (mode) {
+      RepeatMode.one => LoopMode.one,
+      RepeatMode.all => LoopMode.all,
+      RepeatMode.off => LoopMode.off,
+    };
 
-    // Update background service repeat mode
-    final handler = _audioHandler;
-    if (handler != null) {
-      final audioServiceRepeatMode = switch (mode) {
-        RepeatMode.one => audio_pkg.AudioServiceRepeatMode.one,
-        RepeatMode.all => audio_pkg.AudioServiceRepeatMode.all,
-        RepeatMode.off => audio_pkg.AudioServiceRepeatMode.none,
-      };
-      // Note: setRepeatMode is not directly exposed, but the playlist mode
-      // in media_kit handles this
-      debugPrint('AudioServiceImpl: Set repeat mode to $audioServiceRepeatMode');
-    }
+    await _player.setLoopMode(loopMode);
   }
 
   @override
   Future<void> toggleShuffle(bool enabled) async {
     if (enabled) {
-      // Shuffle the queue but keep current song
       if (_queue.isNotEmpty && _currentIndex >= 0) {
         final currentSong = _queue[_currentIndex];
         final shuffled = List<Song>.from(_queue)..shuffle();
@@ -328,15 +277,15 @@ class AudioServiceImpl implements AudioService {
           ..clear()
           ..addAll(shuffled);
         _currentIndex = _queue.indexWhere((s) => s.id == currentSong.id);
+
+        // Update audio_handler queue
+        if (audioHandler != null) {
+          final mediaItems = _queue.map(_songToMediaItem).toList();
+          audioHandler!.queue.value = mediaItems;
+        }
       }
-    } else {
-      // Restore original order (not implemented for now)
-      // Would need to store original order
     }
     _updateState(isShuffle: enabled, queue: List.from(_queue));
-
-    // Update background queue
-    _updateBackgroundQueue();
   }
 
   @override
@@ -348,17 +297,18 @@ class AudioServiceImpl implements AudioService {
 
     _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
 
-    // Update background queue
-    _updateBackgroundQueue();
+    // Update audio_handler queue
+    if (audioHandler != null) {
+      final mediaItems = _queue.map(_songToMediaItem).toList();
+      audioHandler!.queue.value = mediaItems;
+    }
   }
 
   @override
   Future<void> addToQueue(Song song) async {
     _queue.add(song);
     _updateState(queue: List.from(_queue));
-
-    // Update background queue
-    _updateBackgroundQueue();
+    // Note: Updating audio_handler queue would require calling its methods
   }
 
   @override
@@ -369,9 +319,6 @@ class AudioServiceImpl implements AudioService {
       _queue.addAll(songs);
     }
     _updateState(queue: List.from(_queue));
-
-    // Update background queue
-    _updateBackgroundQueue();
   }
 
   @override
@@ -379,16 +326,12 @@ class AudioServiceImpl implements AudioService {
     if (index >= 0 && index < _queue.length) {
       _queue.removeAt(index);
       if (index == _currentIndex) {
-        // Removing current song
         await stop();
         _currentIndex = -1;
       } else if (index < _currentIndex) {
         _currentIndex--;
       }
       _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
-
-      // Update background queue
-      _updateBackgroundQueue();
     }
   }
 
@@ -401,7 +344,6 @@ class AudioServiceImpl implements AudioService {
       final item = _queue.removeAt(oldIndex);
       _queue.insert(newIndex, item);
 
-      // Update current index if affected
       if (_currentIndex == oldIndex) {
         _currentIndex = newIndex;
       } else if (_currentIndex > oldIndex && _currentIndex <= newIndex) {
@@ -411,9 +353,6 @@ class AudioServiceImpl implements AudioService {
       }
 
       _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
-
-      // Update background queue
-      _updateBackgroundQueue();
     }
   }
 
@@ -423,23 +362,17 @@ class AudioServiceImpl implements AudioService {
     _queue.clear();
     _currentIndex = -1;
     _updateState(queue: [], currentIndex: -1);
-
-    // Clear background queue
-    final handler = _audioHandler;
-    if (handler != null) {
-      handler.clearQueue();
-    }
   }
 
   @override
   Future<void> dispose() async {
-    // Only dispose if we created the player (desktop mode)
-    if (_audioHandler == null) {
-      await _player.dispose();
-    }
+    await _player.dispose();
     await _stateController.close();
     await _positionController.close();
     await _durationController.close();
     await _playingController.close();
   }
+
+  /// Reference to the audio_service handler (set by audio_background_task)
+  dynamic audioHandler;
 }

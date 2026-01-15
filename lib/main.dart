@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
@@ -5,10 +7,12 @@ import 'package:metadata_god/metadata_god.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'data/services/audio_background_task.dart';
 import 'data/services/hive_service.dart';
 import 'presentation/pages/home_page.dart';
 import 'presentation/providers/settings_provider.dart';
+
+// Platform-specific initialization
+import 'main_mobile.dart' if (dart.library.io) 'main_desktop.dart' as platform_init;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,11 +27,13 @@ void main() async {
   await HiveService.init();
   await HiveService.openBoxes();
 
-  // Initialize audio service BEFORE starting the app
-  // This ensures the handler is ready when AudioServiceImpl is created
-  await AudioBackgroundTask.start();
+  // Platform-specific initialization
+  if (Platform.isAndroid || Platform.isIOS) {
+    // Mobile: Initialize audio_service with just_audio
+    await platform_init.initMobileAudioService();
+  }
 
-  // Now start the app
+  // Start the app
   runApp(const ProviderScope(child: MyApp()));
 }
 
