@@ -25,8 +25,11 @@ class DesktopAudioService implements AudioService {
       StreamController.broadcast();
   final StreamController<bool> _playingController =
       StreamController.broadcast();
+  final StreamController<double> _volumeController =
+      StreamController.broadcast();
 
   PlaybackState _currentState = PlaybackState.initial();
+  double _volume = 1.0;
   final List<Song> _queue = [];
   int _currentIndex = -1;
 
@@ -43,6 +46,9 @@ class DesktopAudioService implements AudioService {
   Stream<bool> get playingStream => _playingController.stream;
 
   @override
+  Stream<double> get volumeStream => _volumeController.stream;
+
+  @override
   PlaybackState get currentState => _currentState;
 
   @override
@@ -53,6 +59,19 @@ class DesktopAudioService implements AudioService {
 
   @override
   bool get isPlaying => _player.state.playing;
+
+  @override
+  double get volume => _volume;
+
+  @override
+  Future<void> setVolume(double volume) async {
+    if (volume < 0.0 || volume > 1.0) {
+      throw ArgumentError('Volume must be between 0.0 and 1.0');
+    }
+    _volume = volume;
+    await _player.setVolume(volume);
+    _volumeController.add(volume);
+  }
 
   void _initPlayer() {
     _player = Player();
@@ -305,5 +324,6 @@ class DesktopAudioService implements AudioService {
     await _positionController.close();
     await _durationController.close();
     await _playingController.close();
+    await _volumeController.close();
   }
 }

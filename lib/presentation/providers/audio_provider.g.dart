@@ -92,5 +92,21 @@ final isPlayingProvider = AutoDisposeStreamProvider<bool>.internal(
 );
 
 typedef IsPlayingRef = AutoDisposeStreamProviderRef<bool>;
+String _$volumeHash() => r'39fa9b060e861f8b44606b330ca502c9aaad9d92';
+
+/// Volume stream provider
+///
+/// Copied from [volume].
+@ProviderFor(volume)
+final volumeProvider = AutoDisposeStreamProvider<double>.internal(
+  volume,
+  name: r'volumeProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$volumeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef VolumeRef = AutoDisposeStreamProviderRef<double>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

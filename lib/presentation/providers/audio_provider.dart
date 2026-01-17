@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/services/audio_service.dart' as app_audio;
-import '../../data/services/audio_service_mobile.dart';
 import '../../data/services/audio_service_desktop.dart';
+import '../../data/services/audio_service_mobile.dart';
 
 // Import global handler from home_page.dart
 import '../pages/home_page.dart' show globalAudioHandler;
@@ -74,3 +75,9 @@ Stream<bool> isPlaying(IsPlayingRef ref) {
   return audioService.playingStream;
 }
 
+/// Volume stream provider
+@riverpod
+Stream<double> volume(VolumeRef ref) {
+  final audioService = ref.watch(audioServiceProvider);
+  return audioService.volumeStream;
+}

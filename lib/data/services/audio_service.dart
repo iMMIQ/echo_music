@@ -107,6 +107,15 @@ abstract class AudioService {
   /// Clear queue
   Future<void> clearQueue();
 
+  /// Set volume (0.0 - 1.0)
+  Future<void> setVolume(double volume);
+
+  /// Get current volume (0.0 - 1.0)
+  double get volume;
+
+  /// Stream of volume changes
+  Stream<double> get volumeStream;
+
   /// Dispose resources
   Future<void> dispose();
 }

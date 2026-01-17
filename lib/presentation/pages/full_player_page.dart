@@ -530,9 +530,7 @@ class _SecondaryControls extends ConsumerWidget {
             _SecondaryButton(
               icon: PhosphorIcons.speakerHigh(),
               label: 'Volume',
-              onTap: () {
-                // Show volume slider
-              },
+              onTap: () => _showVolumeSlider(context),
             ),
             _SecondaryButton(
               icon: PhosphorIcons.shareFat(),
@@ -600,6 +598,13 @@ class _SecondaryControls extends ConsumerWidget {
   Future<void> _toggleFavorite(WidgetRef ref, String songId) async {
     await ref.read(favoritesControllerProvider.notifier).toggleFavorite(songId);
   }
+
+  void _showVolumeSlider(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const _VolumeSliderDialog(),
+    );
+  }
 }
 
 /// Secondary button widget
@@ -647,6 +652,81 @@ class _SecondaryButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Volume slider dialog
+class _VolumeSliderDialog extends ConsumerStatefulWidget {
+  const _VolumeSliderDialog();
+
+  @override
+  ConsumerState<_VolumeSliderDialog> createState() => _VolumeSliderDialogState();
+}
+
+class _VolumeSliderDialogState extends ConsumerState<_VolumeSliderDialog> {
+  @override
+  Widget build(BuildContext context) {
+    final audioService = ref.watch(audioServiceProvider);
+
+    return AlertDialog(
+      title: Row(
+        children: [
+          Icon(
+            PhosphorIcons.speakerHigh(),
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 12),
+          const Text('Volume'),
+        ],
+      ),
+      content: StreamBuilder<double>(
+        stream: audioService.volumeStream,
+        initialData: audioService.volume,
+        builder: (context, snapshot) {
+          final volume = snapshot.data ?? 1.0;
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  activeTrackColor: Theme.of(context).colorScheme.primary,
+                  inactiveTrackColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainerHighest,
+                  thumbColor: Theme.of(context).colorScheme.primary,
+                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+                  overlayShape: const RoundSliderOverlayShape(overlayRadius: 20),
+                  trackHeight: 6,
+                ),
+                child: Slider(
+                  value: volume,
+                  min: 0.0,
+                  max: 1.0,
+                  divisions: 20,
+                  label: '${(volume * 100).round()}%',
+                  onChanged: (value) {
+                    ref.read(audioServiceProvider).setVolume(value);
+                  },
+                ),
+              ),
+              Text(
+                '${(volume * 100).round()}%',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
+          );
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }
