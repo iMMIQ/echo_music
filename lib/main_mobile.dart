@@ -17,7 +17,6 @@ Future<void> initMobileAudioService() async {
       fastForwardInterval: const Duration(seconds: 10),
       rewindInterval: const Duration(seconds: 10),
       preloadArtwork: false,
-      artDownloadEnabled: false,
     ),
   );
 }
