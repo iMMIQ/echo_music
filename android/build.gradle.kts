@@ -1,5 +1,7 @@
 allprojects {
     repositories {
+        maven { url = uri("https://mirrors.tuna.tsinghua.edu.cn") }
+
         google()
         mavenCentral()
     }

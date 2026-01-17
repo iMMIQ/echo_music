@@ -7,14 +7,17 @@ Future<void> initMobileAudioService() async {
     builder: () => MobileAudioHandler(),
     config: AudioServiceConfig(
       androidNotificationChannelId: 'top.immiq.echo_music.channel.audio',
-      androidNotificationChannelName: 'Echo Music',
+      androidNotificationChannelName: 'Echo Music Playback',
+      androidNotificationChannelDescription: 'Music playback controls',
       androidNotificationOngoing: true,
       androidShowNotificationBadge: true,
-      androidNotificationIcon: 'mipmap/ic_launcher',
+      androidNotificationIcon: 'drawable/ic_notification_icon',
       androidNotificationClickStartsActivity: true,
       androidStopForegroundOnPause: false,
       fastForwardInterval: const Duration(seconds: 10),
       rewindInterval: const Duration(seconds: 10),
+      preloadArtwork: false,
+      artDownloadEnabled: false,
     ),
   );
 }

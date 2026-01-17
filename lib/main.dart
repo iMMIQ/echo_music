@@ -11,9 +11,6 @@ import 'data/services/hive_service.dart';
 import 'presentation/pages/home_page.dart';
 import 'presentation/providers/settings_provider.dart';
 
-// Platform-specific initialization
-import 'main_mobile.dart' if (dart.library.io) 'main_desktop.dart' as platform_init;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -27,10 +24,9 @@ void main() async {
   await HiveService.init();
   await HiveService.openBoxes();
 
-  // Platform-specific initialization
+  // Initialize audio handler synchronously for mobile platforms
   if (Platform.isAndroid || Platform.isIOS) {
-    // Mobile: Initialize audio_service with just_audio
-    await platform_init.initMobileAudioService();
+    initAudioHandler();
   }
 
   // Start the app

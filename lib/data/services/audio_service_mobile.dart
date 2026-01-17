@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:audio_service/audio_service.dart' as audio_pkg;
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/foundation.dart';
@@ -123,38 +121,32 @@ class MobileAudioService implements AudioService {
   @override
   Future<void> play(Song song) async {
     try {
-      // Add to internal queue first
-      if (!_queue.any((s) => s.id == song.id)) {
+      final mediaItem = _songToMediaItem(song);
+
+      // Check if song is already in queue
+      final existingIndex = _queue.indexWhere((s) => s.id == song.id);
+
+      if (existingIndex == -1) {
+        // Add to queue
         _queue.add(song);
+        _currentIndex = _queue.length - 1;
+        await _handler.addQueueItem(mediaItem);
+      } else {
+        // Already in queue, just update index
+        _currentIndex = existingIndex;
       }
-      _currentIndex = _queue.indexWhere((s) => s.id == song.id);
 
-      // Convert song to AudioSource with MediaItem tag
-      final mediaItem = audio_pkg.MediaItem(
-        id: song.filePath, // Use filePath as ID for AudioSource
-        title: song.title,
-        artist: song.artist,
-        album: song.album,
-        artUri: song.albumArt != null ? Uri.file(song.albumArt!.path) : null,
-        duration: song.duration,
-        extras: {'filePath': song.filePath},
-      );
-
-      final audioSource = AudioSource.uri(
-        Uri.file(song.filePath),
-        tag: mediaItem,
-      );
-
-      // Play with just_audio
-      await _player.setAudioSource(audioSource);
-      await _player.play();
-
-      // Update audio_service handler's queue
-      final mediaItems = _queue.map(_songToMediaItem).toList();
-      _handler.queue.value = mediaItems;
-
-      // Update audio_service handler's media item
+      // Update handler's media item (this triggers notification)
       _handler.mediaItem.value = mediaItem;
+
+      // Find the index in handler's queue and seek to it
+      final handlerQueueIndex = _handler.queue.value.indexWhere((item) => item.id == song.filePath);
+      if (handlerQueueIndex != -1) {
+        await _handler.skipToQueueItem(handlerQueueIndex);
+      }
+
+      // Start playback
+      await _player.play();
 
       _updateState(
         currentSong: song,
@@ -162,7 +154,7 @@ class MobileAudioService implements AudioService {
         currentIndex: _currentIndex,
       );
 
-      debugPrint('MobileAudioService: Playing ${song.title}, handler.queue.length = ${_handler.queue.value.length}');
+      debugPrint('MobileAudioService: Playing ${song.title}, queue length = ${_handler.queue.value.length}');
     } catch (e) {
       debugPrint('MobileAudioService: Failed to play song: $e');
       throw Exception('Failed to play song: $e');
@@ -270,11 +262,9 @@ class MobileAudioService implements AudioService {
           ..addAll(shuffled);
         _currentIndex = _queue.indexWhere((s) => s.id == currentSong.id);
 
-        // Update audio_handler queue
-        if (_handler != null) {
-          final mediaItems = _queue.map(_songToMediaItem).toList();
-          _handler!.queue.value = mediaItems;
-        }
+        // Update audio_handler queue using the proper method
+        final mediaItems = _queue.map(_songToMediaItem).toList();
+        await _handler.updateQueue(mediaItems);
       }
     }
     _updateState(isShuffle: enabled, queue: List.from(_queue));
@@ -289,11 +279,9 @@ class MobileAudioService implements AudioService {
 
     _updateState(queue: List.from(_queue), currentIndex: _currentIndex);
 
-    // Update audio_handler queue
-    if (_handler != null) {
-      final mediaItems = _queue.map(_songToMediaItem).toList();
-      _handler!.queue.value = mediaItems;
-    }
+    // Update audio_handler queue using the proper method
+    final mediaItems = _queue.map(_songToMediaItem).toList();
+    await _handler.updateQueue(mediaItems);
   }
 
   @override

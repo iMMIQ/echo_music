@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../models/song_model.dart';
 
 /// Audio player handler for audio_service on mobile platforms
 ///
@@ -19,6 +15,9 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
   late final AudioPlayer player = AudioPlayer();
 
   AudioPlayer get _player => player;
+
+  // Store internal queue to manage items outside of just_audio's playlist
+  final List<MediaItem> _internalQueue = [];
 
   Future<void> _init() async {
     // Configure audio session
@@ -141,41 +140,76 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
-    // This is a simplified implementation
-    // In production, you'd need to properly manage the playlist
-    debugPrint('MobileAudioHandler: addQueueItem called');
+    _internalQueue.add(mediaItem);
+    queue.add([..._internalQueue]);
+    await _updateAudioSource();
+    debugPrint('MobileAudioHandler: addQueueItem: ${mediaItem.title}');
   }
 
   @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
-    // This is a simplified implementation
-    // In production, you'd need to properly manage the playlist
-    debugPrint('MobileAudioHandler: addQueueItems called with ${mediaItems.length} items');
+    _internalQueue.addAll(mediaItems);
+    queue.add([..._internalQueue]);
+    await _updateAudioSource();
+    debugPrint('MobileAudioHandler: addQueueItems: ${mediaItems.length} items');
   }
 
   @override
   Future<void> updateQueue(List<MediaItem> queue) async {
-    final audioSources = queue.map((item) {
+    _internalQueue
+      ..clear()
+      ..addAll(queue);
+    this.queue.add([..._internalQueue]);
+    await _updateAudioSource();
+  }
+
+  /// Updates the just_audio playlist from the internal queue
+  Future<void> _updateAudioSource() async {
+    if (_internalQueue.isEmpty) return;
+
+    final audioSources = _internalQueue.map((item) {
+      // Support both file paths and URIs
+      final uri = item.id.startsWith('file://')
+          ? Uri.parse(item.id)
+          : (item.id.startsWith('/') || item.id.contains(':'))
+              ? Uri.file(item.id)
+              : Uri.parse(item.id);
       return AudioSource.uri(
-        Uri.parse(item.id),
+        uri,
         tag: item,
       );
     }).toList();
-    await _player.setAudioSource(ConcatenatingAudioSource(children: audioSources));
+
+    try {
+      final currentIndex = _player.currentIndex;
+      final currentPosition = _player.position;
+
+      await _player.setAudioSource(
+        ConcatenatingAudioSource(children: audioSources),
+        initialIndex: currentIndex ?? 0,
+        initialPosition: currentPosition,
+      );
+    } catch (e) {
+      debugPrint('MobileAudioHandler: Error updating audio source: $e');
+    }
   }
 
-  @override
   Future<void> removeQueueItem(MediaItem mediaItem) async {
-    // This is a simplified implementation
-    // In production, you'd need to properly manage the ConcatenatingAudioSource
-    debugPrint('MobileAudioHandler: removeQueueItem called');
+    _internalQueue.removeWhere((item) => item.id == mediaItem.id);
+    queue.add([..._internalQueue]);
+    await _updateAudioSource();
   }
 
-  @override
   Future<void> moveQueueItem(int currentIndex, int newIndex) async {
-    // Implementation for reordering queue
-    // This would require manipulating the ConcatenatingAudioSource
-    debugPrint('MobileAudioHandler: moveQueueItem called');
+    if (currentIndex < 0 ||
+        currentIndex >= _internalQueue.length ||
+        newIndex < 0 ||
+        newIndex >= _internalQueue.length) return;
+
+    final item = _internalQueue.removeAt(currentIndex);
+    _internalQueue.insert(newIndex, item);
+    queue.add([..._internalQueue]);
+    await _updateAudioSource();
   }
 
   @override

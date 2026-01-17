@@ -6,7 +6,7 @@ part of 'audio_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$audioServiceHash() => r'd9f2e1ee070f35b6435811ce86084c7417876fde';
+String _$audioServiceHash() => r'94e4e22af1d8c58f41aa681824fd7f4d0aef5ee5';
 
 /// Audio service provider
 ///

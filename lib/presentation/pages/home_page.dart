@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -8,6 +9,7 @@ import '../../data/models/album_model.dart';
 import '../../data/models/artist_model.dart';
 import '../../data/models/settings_model.dart';
 import '../../data/models/song_model.dart';
+import '../../data/services/mobile_audio_handler.dart';
 import '../../data/services/permission_service.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
@@ -18,6 +20,37 @@ import '../providers/settings_provider.dart';
 import '../widgets/mini_player.dart';
 import '../widgets/settings_dialogs.dart';
 
+// Global audio handler for mobile
+MobileAudioHandler? globalAudioHandler;
+
+// Initialize the handler synchronously in main()
+void initAudioHandler() {
+  if (Platform.isAndroid || Platform.isIOS && globalAudioHandler == null) {
+    globalAudioHandler = MobileAudioHandler();
+  }
+}
+
+/// Initialize audio service for mobile platforms (async)
+Future<void> initMobileAudioService() async {
+  if (Platform.isAndroid || Platform.isIOS) {
+    await AudioService.init(
+      builder: () => globalAudioHandler!,
+      config: AudioServiceConfig(
+        androidNotificationChannelId: 'top.immiq.echo_music.channel.audio',
+        androidNotificationChannelName: 'Echo Music Playback',
+        androidNotificationChannelDescription: 'Music playback controls',
+        androidNotificationOngoing: false,
+        androidShowNotificationBadge: true,
+        androidNotificationIcon: 'drawable/ic_notification_icon',
+        androidNotificationClickStartsActivity: true,
+        androidStopForegroundOnPause: true,
+        fastForwardInterval: const Duration(seconds: 10),
+        rewindInterval: const Duration(seconds: 10),
+      ),
+    );
+  }
+}
+
 /// Home page of the app
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -27,10 +60,24 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    _requestPermissions();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _requestPermissions();
+    if (Platform.isAndroid || Platform.isIOS) {
+      await initMobileAudioService();
+    }
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
   }
 
   Future<void> _requestPermissions() async {
