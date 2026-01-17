@@ -1,6 +1,6 @@
 # Echo Music - Development Roadmap
 
-> **Last Updated**: 2026-01-15
+> **Last Updated**: 2026-01-17
 > **Current Version**: v0.2.0-alpha
 > **Verification**: Code analysis passed (56 info, 0 errors, 0 warnings)
 
@@ -22,7 +22,8 @@ MVP (Phase 1-3):            █████████████████�
 ### Key Achievements (Latest Verification)
 
 ✅ **Hive Storage** - Fully initialized with all adapters registered
-✅ **Audio Service** - Complete implementation using MediaKit
+✅ **Audio Service** - Complete implementation using MediaKit and just_audio
+✅ **Volume Control** - Volume slider dialog with real-time adjustment
 ✅ **Library Service** - Full CRUD operations with search
 ✅ **Playlist Service** - Complete with smart playlists support
 ✅ **Metadata Service** - Multi-format extraction with metadata_god
@@ -72,6 +73,7 @@ MVP (Phase 1-3):            █████████████████�
 - [x] Implement queue management (add, remove, reorder)
 - [x] Add playback state providers (Riverpod)
 - [x] Implement shuffle and repeat modes
+- [x] Add volume control with slider dialog
 - [⚠️] Audio focus handling (partially done)
 - [⚠️] Media session integration (basic, needs Android polish)
 
@@ -148,6 +150,7 @@ MVP (Phase 1-3):            █████████████████�
 **Implemented Features**:
 - ✅ Shuffle mode (queue shuffling)
 - ✅ Repeat modes (off, all, one)
+- ✅ Volume control with slider dialog
 - ✅ Playlist CRUD operations
 - ✅ Smart playlists with rule evaluation (genre, year, artist, album, favorite)
 - ✅ Favorites system (persisted in Hive)
@@ -235,7 +238,7 @@ MVP (Phase 1-3):            █████████████████�
 
 ### Providers (Riverpod)
 
-- [x] AudioProvider - playback state, position, controls
+- [x] AudioProvider - playback state, position, controls, volume
 - [x] QueueProvider - queue management
 - [x] LibraryProvider - songs, albums, artists
 - [x] PlaylistProvider - playlists CRUD
@@ -444,7 +447,7 @@ All issues are **non-blocking** and can be addressed incrementally.
 
 ## Version History
 
-- **v0.2.0-alpha** (Current) - MVP nearly complete, all core features implemented
+- **v0.2.0-alpha** (Current) - MVP nearly complete, all core features implemented, volume control added
 - **v0.1.0** - Project foundation, basic structure
 - **v0.3.0** (Planned) - Enhanced features, desktop polish
 - **v0.5.0** (Target) - Full MVP + Navidrome support

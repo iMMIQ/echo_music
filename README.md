@@ -31,6 +31,7 @@ Focused on local music playback with future Navidrome support
 - 🔀 **Shuffle & Repeat** - Shuffle queue, repeat modes (off/all/one)
 - 🎚️ **Playback Controls** - Mini player and full-screen player
 - 📊 **Progress Tracking** - Real-time position and duration
+- 🔊 **Volume Control** - Volume slider with real-time adjustment
 
 #### Library Management
 - 📁 **Music Import** - File picker with multi-file selection
