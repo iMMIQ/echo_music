@@ -50,7 +50,7 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   int? _getQueueIndex(int? currentIndex, bool shuffleModeEnabled, List<int>? shuffleIndices) {
-    final effectiveIndices = _player.effectiveIndices ?? [];
+    final effectiveIndices = _player.effectiveIndices;
     if (effectiveIndices.isEmpty) return currentIndex;
     final shuffleIndicesInv = List.filled(effectiveIndices.length, 0);
     for (var i = 0; i < effectiveIndices.length; i++) {
@@ -217,11 +217,10 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
     if (index < 0 || index >= queue.value.length) return;
     _player.seek(
       Duration.zero,
-      index: _player.shuffleModeEnabled ? (_player.shuffleIndices![index]) : index,
+      index: _player.shuffleModeEnabled ? _player.shuffleIndices[index] : index,
     );
   }
 
-  @override
   Future<void> dispose() async {
     await _player.dispose();
   }

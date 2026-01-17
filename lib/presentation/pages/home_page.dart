@@ -60,8 +60,6 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  bool _isInitialized = false;
-
   @override
   void initState() {
     super.initState();
@@ -72,11 +70,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     await _requestPermissions();
     if (Platform.isAndroid || Platform.isIOS) {
       await initMobileAudioService();
-    }
-    if (mounted) {
-      setState(() {
-        _isInitialized = true;
-      });
     }
   }
 
