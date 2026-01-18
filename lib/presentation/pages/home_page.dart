@@ -67,79 +67,6 @@ class _NavDestination {
   final String label;
 }
 
-/// Animated navigation icon widget
-class _AnimatedNavIcon extends StatefulWidget {
-  const _AnimatedNavIcon({
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool isSelected;
-
-  @override
-  State<_AnimatedNavIcon> createState() => _AnimatedNavIconState();
-}
-
-class _AnimatedNavIconState extends State<_AnimatedNavIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-  }
-
-  @override
-  void didUpdateWidget(_AnimatedNavIcon oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.isSelected != oldWidget.isSelected) {
-      if (widget.isSelected) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _scaleAnimation,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Icon(
-              widget.icon,
-              color: widget.isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
 /// Home page of the app
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -242,18 +169,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                             index;
                       },
                       destinations: _navDestinations.map((dest) {
-                        final index = _navDestinations.indexOf(dest);
                         return NavigationDestination(
-                          icon: _AnimatedNavIcon(
-                            icon: dest.icon,
-                            label: dest.label,
-                            isSelected: currentIndex == index,
-                          ),
-                          selectedIcon: _AnimatedNavIcon(
-                            icon: dest.selectedIcon,
-                            label: dest.label,
-                            isSelected: currentIndex == index,
-                          ),
+                          icon: Icon(dest.icon),
+                          selectedIcon: Icon(dest.selectedIcon),
                           label: dest.label,
                         );
                       }).toList(),

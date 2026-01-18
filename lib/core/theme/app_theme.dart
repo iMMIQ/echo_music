@@ -144,6 +144,11 @@ ThemeData lightTheme({Color accentColor = AppColors.primary}) {
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.transparent,
       indicatorColor: Colors.transparent,
+      indicatorShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+      ),
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
+      height: 65,
       labelTextStyle: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
           return const TextStyle(color: AppColors.primary);
