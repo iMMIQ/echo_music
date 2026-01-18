@@ -19,6 +19,7 @@ import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/mini_player.dart';
 import '../../widgets/neumorphic_card.dart';
+import '../../core/theme/app_theme.dart';
 import '../widgets/settings_dialogs.dart';
 
 // Global audio handler for mobile
@@ -456,11 +457,14 @@ class _RecentlyPlayedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return NeumorphicCard(
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$title coming soon!')),
+        );
+      },
+      padding: EdgeInsets.zero,
+      borderRadius: DesignTokens.radiusLarge,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
