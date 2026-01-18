@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../data/services/audio_service.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
@@ -75,7 +76,7 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                     const SizedBox(height: 32),
 
                     // Album art
-                    _AlbumArt(),
+                    const _AlbumArtWithGlow(),
 
                     const SizedBox(height: 48),
 
@@ -136,47 +137,81 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
   }
 }
 
-/// Album art widget
-class _AlbumArt extends ConsumerWidget {
+/// Album art widget with glow and breathing animation
+class _AlbumArtWithGlow extends ConsumerStatefulWidget {
+  const _AlbumArtWithGlow();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_AlbumArtWithGlow> createState() => _AlbumArtWithGlowState();
+}
+
+class _AlbumArtWithGlowState extends ConsumerState<_AlbumArtWithGlow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _breathingController;
+  late Animation<double> _breathingAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _breathingController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+    _breathingAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
+      CurvedAnimation(parent: _breathingController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _breathingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final playbackStateAsync = ref.watch(playbackStateProvider);
 
     return playbackStateAsync.when(
       data: (state) {
         final song = state.currentSong;
+        if (song == null) return const SizedBox.shrink();
 
-        if (song == null) {
-          return const SizedBox.shrink();
-        }
+        final accent = theme.colorScheme.primary;
+        final isDark = theme.brightness == Brightness.dark;
 
-        return Container(
-          width: 256,
-          height: 256,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: song.albumArt != null
-                ? Image.file(File(song.albumArt!.path), fit: BoxFit.cover)
-                : ColoredBox(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                    child: Icon(
-                      PhosphorIcons.musicNote(),
-                      size: 64,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+        return ScaleTransition(
+          scale: _breathingAnimation,
+          child: Container(
+            width: 280,
+            height: 280,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                // Outer glow
+                BoxShadow(
+                  color: accent.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                ),
+                // Neumorphic raised shadow
+                if (isDark) ...neumorphicDark.raised else ...neumorphicLight.raised,
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: song.albumArt != null
+                  ? Image.file(File(song.albumArt!.path), fit: BoxFit.cover)
+                  : ColoredBox(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      child: Icon(
+                        PhosphorIcons.musicNote(),
+                        size: 280 * 0.4,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
+            ),
           ),
         );
       },
