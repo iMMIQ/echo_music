@@ -44,7 +44,6 @@ Future<void> initMobileAudioService() async {
         androidNotificationChannelDescription: 'Music playback controls',
         androidNotificationOngoing: false,
         androidShowNotificationBadge: true,
-        androidNotificationIcon: 'drawable/ic_notification_icon',
         androidNotificationClickStartsActivity: true,
         androidStopForegroundOnPause: true,
         fastForwardInterval: const Duration(seconds: 10),
