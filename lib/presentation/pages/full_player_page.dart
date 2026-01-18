@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../core/theme/app_theme.dart';
-import '../../data/services/audio_service.dart';
+import '../../data/services/audio_service.dart' as audio_service;
+import '../../widgets/neumorphic_button.dart';
+
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/library_provider.dart';
@@ -396,6 +398,7 @@ class _MainControls extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playbackStateAsync = ref.watch(playbackStateProvider);
+    final theme = Theme.of(context);
 
     return playbackStateAsync.when(
       data: (state) {
@@ -403,79 +406,86 @@ class _MainControls extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // Shuffle
-            IconButton(
-              icon: Icon(
+            NeumorphicButton(
+              style: NeumorphicButtonStyle.outlined,
+              width: 48,
+              height: 48,
+              iconSize: 20,
+              accentColor:
+                  state.isShuffle ? theme.colorScheme.primary : null,
+              onPressed: () {
+                ref.read(audioServiceProvider).toggleShuffle(!state.isShuffle);
+              },
+              child: Icon(
                 PhosphorIcons.shuffle(
                   state.isShuffle
                       ? PhosphorIconsStyle.fill
                       : PhosphorIconsStyle.regular,
                 ),
-                size: 24,
-                color: state.isShuffle
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onSurface,
               ),
-              onPressed: () {
-                ref.read(audioServiceProvider).toggleShuffle(!state.isShuffle);
-              },
             ),
 
             // Previous
-            IconButton(
-              icon: Icon(PhosphorIcons.skipBack(), size: 32),
+            NeumorphicButton(
+              style: NeumorphicButtonStyle.outlined,
+              width: 56,
+              height: 56,
+              iconSize: 24,
               onPressed: () {
                 ref.read(audioServiceProvider).skipToPrevious();
               },
+              child: Icon(PhosphorIcons.skipBack()),
             ),
 
             // Play/Pause
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: Icon(
-                  state.isPlaying
-                      ? PhosphorIcons.pause(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.play(PhosphorIconsStyle.fill),
-                  size: 32,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                onPressed: () {
-                  final service = ref.read(audioServiceProvider);
-                  if (state.isPlaying) {
-                    service.pause();
-                  } else {
-                    if (state.currentSong != null) {
-                      service.play(state.currentSong!);
-                    }
+            NeumorphicButton(
+              style: NeumorphicButtonStyle.filled,
+              width: 72,
+              height: 72,
+              iconSize: 32,
+              onPressed: () {
+                final service = ref.read(audioServiceProvider);
+                if (state.isPlaying) {
+                  service.pause();
+                } else {
+                  if (state.currentSong != null) {
+                    service.play(state.currentSong!);
                   }
-                },
+                }
+              },
+              child: Icon(
+                state.isPlaying
+                    ? PhosphorIcons.pause(PhosphorIconsStyle.fill)
+                    : PhosphorIcons.play(PhosphorIconsStyle.fill),
               ),
             ),
 
             // Next
-            IconButton(
-              icon: Icon(PhosphorIcons.skipForward(), size: 32),
+            NeumorphicButton(
+              style: NeumorphicButtonStyle.outlined,
+              width: 56,
+              height: 56,
+              iconSize: 24,
               onPressed: () {
                 ref.read(audioServiceProvider).skipToNext();
               },
+              child: Icon(PhosphorIcons.skipForward()),
             ),
 
             // Repeat
-            IconButton(
-              icon: Icon(
-                _getRepeatIcon(state.repeatMode),
-                size: 24,
-                color: state.repeatMode != RepeatMode.off
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onSurface,
-              ),
+            NeumorphicButton(
+              style: NeumorphicButtonStyle.outlined,
+              width: 48,
+              height: 48,
+              iconSize: 20,
+              accentColor: state.repeatMode != audio_service.RepeatMode.off
+                  ? theme.colorScheme.primary
+                  : null,
               onPressed: () {
                 final nextMode = _getNextRepeatMode(state.repeatMode);
                 ref.read(audioServiceProvider).setRepeatMode(nextMode);
               },
+              child: Icon(_getRepeatIcon(state.repeatMode)),
             ),
           ],
         );
@@ -485,25 +495,26 @@ class _MainControls extends ConsumerWidget {
     );
   }
 
-  PhosphorIconData _getRepeatIcon(RepeatMode mode) {
+  PhosphorIconData _getRepeatIcon(audio_service.RepeatMode mode) {
     switch (mode) {
-      case RepeatMode.off:
+      case audio_service.RepeatMode.off:
         return PhosphorIcons.repeat();
-      case RepeatMode.all:
+      case audio_service.RepeatMode.all:
         return PhosphorIcons.repeat(PhosphorIconsStyle.fill);
-      case RepeatMode.one:
+      case audio_service.RepeatMode.one:
         return PhosphorIcons.repeatOnce();
     }
   }
 
-  RepeatMode _getNextRepeatMode(RepeatMode current) {
+  audio_service.RepeatMode _getNextRepeatMode(
+      audio_service.RepeatMode current) {
     switch (current) {
-      case RepeatMode.off:
-        return RepeatMode.all;
-      case RepeatMode.all:
-        return RepeatMode.one;
-      case RepeatMode.one:
-        return RepeatMode.off;
+      case audio_service.RepeatMode.off:
+        return audio_service.RepeatMode.all;
+      case audio_service.RepeatMode.all:
+        return audio_service.RepeatMode.one;
+      case audio_service.RepeatMode.one:
+        return audio_service.RepeatMode.off;
     }
   }
 }
