@@ -119,10 +119,13 @@ class _NeumorphicButtonState extends State<NeumorphicButton>
     final isDark = theme.brightness == Brightness.dark;
     final shadows = isDark ? neumorphicDark : neumorphicLight;
 
-    final accentColor = widget.accentColor ?? theme.colorScheme.primary;
+    // For outlined style with no accentColor, use onSurface instead of primary
+    final defaultAccentColor = widget.style == NeumorphicButtonStyle.outlined && widget.accentColor == null
+        ? theme.colorScheme.onSurface
+        : theme.colorScheme.primary;
     final buttonColor = widget.onPressed == null
         ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
-        : accentColor;
+        : (widget.accentColor ?? defaultAccentColor);
 
     // Get shadows based on press state
     List<BoxShadow> getShadows() {
@@ -190,12 +193,12 @@ class _NeumorphicButtonState extends State<NeumorphicButton>
           width: widget.width,
           height: widget.height,
           decoration: getDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: DesignTokens.spacing4,
-              vertical: DesignTokens.spacing3,
-            ),
-            child: Center(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: widget.width == null ? DesignTokens.spacing4 : 0,
+                vertical: widget.height == null ? DesignTokens.spacing3 : 0,
+              ),
               child: IconTheme.merge(
                 data: IconThemeData(
                   size: widget.iconSize,
