@@ -184,7 +184,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             ],
           ),
           // Mini player
-          const Positioned(left: 0, right: 0, bottom: 80, child: MiniPlayer()),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 56,
+            child: const MiniPlayer(),
+          ),
         ],
       ),
     );

@@ -148,7 +148,7 @@ ThemeData lightTheme({Color accentColor = AppColors.primary}) {
         borderRadius: BorderRadius.circular(0),
       ),
       overlayColor: MaterialStateProperty.all(Colors.transparent),
-      height: 65,
+      height: 56,
       labelTextStyle: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
           return const TextStyle(color: AppColors.primary);
