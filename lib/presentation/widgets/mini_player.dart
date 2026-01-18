@@ -6,6 +6,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../data/models/song_model.dart';
 import '../../data/services/audio_service.dart';
+import '../../widgets/neumorphic_button.dart';
+import '../../core/theme/app_theme.dart';
 import '../pages/full_player_page.dart';
 import '../providers/audio_provider.dart';
 
@@ -33,13 +35,9 @@ class MiniPlayer extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: Theme.of(context).brightness == Brightness.dark
+                  ? neumorphicDark.raised
+                  : neumorphicLight.raised,
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
@@ -195,21 +193,19 @@ class _Controls extends StatelessWidget {
     return Row(
       children: [
         // Previous
-        IconButton(
-          icon: Icon(PhosphorIcons.skipBack(), size: 24),
+        NeumorphicButton(
           onPressed: () => ref.read(audioServiceProvider).skipToPrevious(),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+          style: NeumorphicButtonStyle.outlined,
+          width: 40,
+          height: 40,
+          iconSize: 20,
+          child: Icon(PhosphorIcons.skipBack()),
         ),
 
+        const SizedBox(width: 8),
+
         // Play/Pause
-        IconButton(
-          icon: Icon(
-            state.isPlaying
-                ? PhosphorIcons.pauseCircle(PhosphorIconsStyle.fill)
-                : PhosphorIcons.playCircle(PhosphorIconsStyle.fill),
-            size: 32,
-          ),
+        NeumorphicButton(
           onPressed: () {
             final service = ref.read(audioServiceProvider);
             if (state.isPlaying) {
@@ -220,16 +216,27 @@ class _Controls extends StatelessWidget {
               }
             }
           },
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+          style: NeumorphicButtonStyle.filled,
+          width: 48,
+          height: 48,
+          iconSize: 24,
+          child: Icon(
+            state.isPlaying
+                ? PhosphorIcons.pause()
+                : PhosphorIcons.play(),
+          ),
         ),
 
+        const SizedBox(width: 8),
+
         // Next
-        IconButton(
-          icon: Icon(PhosphorIcons.skipForward(), size: 24),
+        NeumorphicButton(
           onPressed: () => ref.read(audioServiceProvider).skipToNext(),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+          style: NeumorphicButtonStyle.outlined,
+          width: 40,
+          height: 40,
+          iconSize: 20,
+          child: Icon(PhosphorIcons.skipForward()),
         ),
       ],
     );
