@@ -7,7 +7,7 @@ part of 'favorites_provider.dart';
 // **************************************************************************
 
 String _$favoritesControllerHash() =>
-    r'035e699a82ec6ad2e6d24c868421cc2c745e7c09';
+    r'a88b079db95ae60158c6391dde990805914891f0';
 
 /// Favorites controller
 ///
