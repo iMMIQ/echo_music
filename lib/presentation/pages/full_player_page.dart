@@ -63,50 +63,93 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            _buildHeader(context),
-
-            // Main content
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 32),
-
-                    // Album art
-                    const _AlbumArtWithGlow(),
-
-                    const SizedBox(height: 48),
-
-                    // Song info
-                    _SongInfo(),
-
-                    const SizedBox(height: 32),
-
-                    // Progress bar
-                    _ProgressBar(),
-
-                    const SizedBox(height: 32),
-
-                    // Main controls
-                    _MainControls(),
-
-                    const SizedBox(height: 32),
-
-                    // Secondary controls
-                    _SecondaryControls(onShowQueue: _showQueuePanel),
-
-                    const SizedBox(height: 24),
-                  ],
-                ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Blurred background
+          Consumer(
+            builder: (context, ref, _) {
+              final playbackStateAsync = ref.watch(playbackStateProvider);
+              return playbackStateAsync.when(
+                data: (state) {
+                  final song = state.currentSong;
+                  if (song == null || song.albumArt == null) {
+                    return Container(color: theme.colorScheme.background);
+                  }
+                  return Opacity(
+                    opacity: 0.1,
+                    child: Image.file(
+                      File(song.albumArt!.path),
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                },
+                loading: () => Container(color: theme.colorScheme.background),
+                error: (_, __) => Container(color: theme.colorScheme.background),
+              );
+            },
+          ),
+          // Gradient overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  theme.colorScheme.background.withOpacity(0.3),
+                  theme.colorScheme.background.withOpacity(0.7),
+                  theme.colorScheme.background,
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          // Content
+          SafeArea(
+            child: Column(
+              children: [
+                // Header
+                _buildHeader(context),
+
+                // Main content
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 32),
+
+                        // Album art
+                        const _AlbumArtWithGlow(),
+
+                        const SizedBox(height: 48),
+
+                        // Song info
+                        _SongInfo(),
+
+                        const SizedBox(height: 32),
+
+                        // Progress bar
+                        _ProgressBar(),
+
+                        const SizedBox(height: 32),
+
+                        // Main controls
+                        _MainControls(),
+
+                        const SizedBox(height: 32),
+
+                        // Secondary controls
+                        _SecondaryControls(onShowQueue: _showQueuePanel),
+
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
