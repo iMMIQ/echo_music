@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/services/audio_service.dart' as app_audio;
-import '../../data/services/audio_service_desktop.dart';
-import '../../data/services/audio_service_mobile.dart';
+import '../../data/services/audio_service_unified.dart';
 
 // Import global handler from home_page.dart
 import '../pages/home_page.dart' show globalAudioHandler;
@@ -21,14 +20,14 @@ app_audio.AudioService createAudioService() {
   }
 
   if (Platform.isAndroid || Platform.isIOS) {
-    // Mobile: use just_audio + audio_service with global handler
+    // Mobile: use media_kit + audio_service with global handler
     if (globalAudioHandler == null) {
       throw StateError('globalAudioHandler not initialized. Call initMobileAudioService() first.');
     }
-    _cachedService = MobileAudioService(globalAudioHandler!);
+    _cachedService = UnifiedAudioService();
   } else {
-    // Desktop: use media_kit
-    _cachedService = DesktopAudioService();
+    // Desktop: use media_kit directly
+    _cachedService = UnifiedAudioService();
   }
 
   return _cachedService!;

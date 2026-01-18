@@ -11,7 +11,7 @@ import '../../data/models/album_model.dart';
 import '../../data/models/artist_model.dart';
 import '../../data/models/settings_model.dart';
 import '../../data/models/song_model.dart';
-import '../../data/services/mobile_audio_handler.dart';
+import '../../data/services/media_kit_audio_handler.dart';
 import '../../data/services/permission_service.dart';
 import '../../widgets/neumorphic_card.dart';
 import '../providers/audio_provider.dart';
@@ -24,12 +24,12 @@ import '../widgets/settings_dialogs.dart';
 import '../widgets/mini_player.dart';
 
 // Global audio handler for mobile
-MobileAudioHandler? globalAudioHandler;
+MediaKitAudioHandler? globalAudioHandler;
 
 // Initialize the handler synchronously in main()
 void initAudioHandler() {
   if (Platform.isAndroid || Platform.isIOS && globalAudioHandler == null) {
-    globalAudioHandler = MobileAudioHandler();
+    globalAudioHandler = MediaKitAudioHandler();
   }
 }
 
