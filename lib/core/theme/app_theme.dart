@@ -19,10 +19,10 @@ class DesignTokens {
   static const double spacing20 = 80;
 
   // Border radius
-  static const double radiusSmall = 8;
-  static const double radiusMedium = 12;
-  static const double radiusLarge = 16;
-  static const double radiusXLarge = 24;
+  static const double radiusSmall = 12;
+  static const double radiusMedium = 16;
+  static const double radiusLarge = 20;
+  static const double radiusXLarge = 28;
 
   // Elevation (for shadow)
   static const double elevationNone = 0;
@@ -31,10 +31,10 @@ class DesignTokens {
   static const double elevationHigh = 16;
 
   // Durations (ms)
-  static const int durationFast = 150;
-  static const int durationNormal = 250;
-  static const int durationSlow = 350;
-  static const int durationSlower = 500;
+  static const int durationFast = 120;
+  static const int durationNormal = 200;
+  static const int durationSlow = 300;
+  static const int durationSlower = 400;
 }
 
 /// App colors
@@ -42,7 +42,7 @@ class AppColors {
   const AppColors._();
 
   // Dark theme colors
-  static const Color darkBackground = Color(0xFF0A0A0B);
+  static const Color darkBackground = Color(0xFF12141A);
   static const Color darkSurface = Color(0xFF121214);
   static const Color darkSurfaceVariant = Color(0xFF1C1C1E);
   static const Color darkTextPrimary = Color(0xFFFFFFFF);
@@ -67,6 +67,51 @@ class AppColors {
   static const Color success = Color(0xFF10B981); // Green 500
   static const Color warning = Color(0xFFF59E0B); // Amber 500
 }
+
+/// Neumorphic shadow data class
+class NeumorphicShadow {
+  final List<BoxShadow> raised;
+  final List<BoxShadow> inset;
+  final List<BoxShadow> buttonPressed;
+
+  const NeumorphicShadow({
+    required this.raised,
+    required this.inset,
+    required this.buttonPressed,
+  });
+}
+
+/// Dark mode neumorphic shadows
+const neumorphicDark = NeumorphicShadow(
+  raised: [
+    BoxShadow(color: Color(0x3D0A0B0E), offset: Offset(8, 8), blurRadius: 16),
+    BoxShadow(color: Color(0xFF1A1D26), offset: Offset(-8, -8), blurRadius: 16),
+  ],
+  inset: [
+    BoxShadow(color: Color(0x3D0A0B0E), offset: Offset(4, 4), blurRadius: 8, spreadRadius: 1),
+    BoxShadow(color: Color(0xFF1A1D26), offset: Offset(-4, -4), blurRadius: 8, spreadRadius: 1),
+  ],
+  buttonPressed: [
+    BoxShadow(color: Color(0x3D0A0B0E), offset: Offset(2, 2), blurRadius: 4),
+    BoxShadow(color: Color(0xFF1A1D26), offset: Offset(-2, -2), blurRadius: 4),
+  ],
+);
+
+/// Light mode neumorphic shadows
+const neumorphicLight = NeumorphicShadow(
+  raised: [
+    BoxShadow(color: Color(0x1AE0E0E0), offset: Offset(6, 6), blurRadius: 12),
+    BoxShadow(color: Color(0xFFFFFFFF), offset: Offset(-6, -6), blurRadius: 12),
+  ],
+  inset: [
+    BoxShadow(color: Color(0x1AE0E0E0), offset: Offset(3, 3), blurRadius: 6, spreadRadius: 1),
+    BoxShadow(color: Color(0xFFFFFFFF), offset: Offset(-3, -3), blurRadius: 6, spreadRadius: 1),
+  ],
+  buttonPressed: [
+    BoxShadow(color: Color(0x1AE0E0E0), offset: Offset(1.5, 1.5), blurRadius: 3),
+    BoxShadow(color: Color(0xFFFFFFFF), offset: Offset(-1.5, -1.5), blurRadius: 3),
+  ],
+);
 
 /// Light theme data with dynamic accent color
 ThemeData lightTheme({Color accentColor = AppColors.primary}) {
