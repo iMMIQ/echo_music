@@ -138,6 +138,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final currentIndex = ref.watch(currentNavigationIndexProvider);
+    final isMobile = Platform.isAndroid || Platform.isIOS;
 
     return Scaffold(
       body: Stack(
@@ -145,49 +146,58 @@ class _HomePageState extends ConsumerState<HomePage> {
           Column(
             children: [
               // Main content
-              Expanded(child: SafeArea(child: _buildPage(currentIndex))),
-              // Bottom navigation with frosted glass effect
-              ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? Colors.black.withOpacity(0.8)
-                          : Colors.white.withOpacity(0.8),
-                      border: Border(
-                        top: BorderSide(
-                          color: theme.colorScheme.onSurface.withOpacity(0.1),
-                          width: 0.5,
-                        ),
-                      ),
-                    ),
-                    child: NavigationBar(
-                      selectedIndex: currentIndex,
-                      onDestinationSelected: (index) {
-                        ref.read(currentNavigationIndexProvider.notifier).index =
-                            index;
-                      },
-                      destinations: _navDestinations.map((dest) {
-                        return NavigationDestination(
-                          icon: Icon(dest.icon),
-                          selectedIcon: Icon(dest.selectedIcon),
-                          label: dest.label,
-                        );
-                      }).toList(),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                    ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: isMobile ? 0 : 80),
+                  child: SafeArea(
+                    bottom: true,
+                    child: _buildPage(currentIndex),
                   ),
                 ),
               ),
+              // Bottom navigation with frosted glass effect (mobile only)
+              if (isMobile)
+                ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? Colors.black.withOpacity(0.8)
+                            : Colors.white.withOpacity(0.8),
+                        border: Border(
+                          top: BorderSide(
+                            color: theme.colorScheme.onSurface.withOpacity(0.1),
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: NavigationBar(
+                        selectedIndex: currentIndex,
+                        onDestinationSelected: (index) {
+                          ref.read(currentNavigationIndexProvider.notifier).index =
+                              index;
+                        },
+                        destinations: _navDestinations.map((dest) {
+                          return NavigationDestination(
+                            icon: Icon(dest.icon),
+                            selectedIcon: Icon(dest.selectedIcon),
+                            label: dest.label,
+                          );
+                        }).toList(),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
-          // Mini player
+          // Mini player - positioned differently based on platform
           Positioned(
             left: 0,
             right: 0,
-            bottom: 56,
+            bottom: isMobile ? 56 : 16,
             child: const MiniPlayer(),
           ),
         ],
