@@ -105,48 +105,41 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
           ),
           // Content
           SafeArea(
-            child: Column(
-              children: [
-                // Header
-                _buildHeader(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  // Header
+                  _buildHeader(context),
 
-                // Main content
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 32),
-
-                        // Album art
-                        const _AlbumArtWithGlow(),
-
-                        const SizedBox(height: 48),
-
-                        // Song info
-                        _SongInfo(),
-
-                        const SizedBox(height: 32),
-
-                        // Progress bar
-                        _ProgressBar(),
-
-                        const SizedBox(height: 32),
-
-                        // Main controls
-                        _MainControls(),
-
-                        const SizedBox(height: 32),
-
-                        // Secondary controls
-                        _SecondaryControls(onShowQueue: _showQueuePanel),
-
-                        const SizedBox(height: 24),
-                      ],
+                  // Album art - takes available space
+                  const Expanded(
+                    child: Center(
+                      child: _AlbumArtWithGlow(),
                     ),
                   ),
-                ),
-              ],
+
+                  // Song info
+                  _SongInfo(),
+
+                  const SizedBox(height: 12),
+
+                  // Progress bar
+                  _ProgressBar(),
+
+                  const SizedBox(height: 12),
+
+                  // Main controls
+                  _MainControls(),
+
+                  const SizedBox(height: 8),
+
+                  // Secondary controls
+                  _SecondaryControls(onShowQueue: _showQueuePanel),
+
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
         ],
@@ -217,6 +210,9 @@ class _AlbumArtWithGlowState extends ConsumerState<_AlbumArtWithGlow>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final playbackStateAsync = ref.watch(playbackStateProvider);
+    final screenSize = MediaQuery.of(context).size;
+    // Responsive album art size - about 35-40% of screen height
+    final artSize = (screenSize.height * 0.38).clamp(220.0, 320.0);
 
     return playbackStateAsync.when(
       data: (state) {
@@ -229,8 +225,8 @@ class _AlbumArtWithGlowState extends ConsumerState<_AlbumArtWithGlow>
         return ScaleTransition(
           scale: _breathingAnimation,
           child: Container(
-            width: 280,
-            height: 280,
+            width: artSize,
+            height: artSize,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
@@ -252,7 +248,7 @@ class _AlbumArtWithGlowState extends ConsumerState<_AlbumArtWithGlow>
                       color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         PhosphorIcons.musicNote(),
-                        size: 280 * 0.4,
+                        size: artSize * 0.4,
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
