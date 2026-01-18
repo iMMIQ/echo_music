@@ -141,6 +141,22 @@ ThemeData lightTheme({Color accentColor = AppColors.primary}) {
       type: BottomNavigationBarType.fixed,
       elevation: DesignTokens.elevationSubtle,
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.transparent,
+      indicatorColor: Colors.transparent,
+      labelTextStyle: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return const TextStyle(color: AppColors.primary);
+        }
+        return TextStyle(color: AppColors.lightTextSecondary);
+      }),
+      iconTheme: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return const IconThemeData(color: AppColors.primary);
+        }
+        return IconThemeData(color: AppColors.lightTextSecondary);
+      }),
+    ),
     cardTheme: const CardThemeData(
       color: AppColors.lightSurface,
       elevation: DesignTokens.elevationSubtle,
