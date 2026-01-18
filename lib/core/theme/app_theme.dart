@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'page_transitions.dart';
+
 /// Design tokens for the app
 class DesignTokens {
   const DesignTokens._();
@@ -150,6 +152,12 @@ ThemeData lightTheme({Color accentColor = AppColors.primary}) {
     ),
     iconTheme: const IconThemeData(color: AppColors.lightTextPrimary),
     textTheme: _buildTextTheme(AppColors.lightTextPrimary),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(),
+        TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(),
+      },
+    ),
   );
 }
 
@@ -192,6 +200,12 @@ ThemeData darkTheme({Color accentColor = AppColors.primary}) {
     ),
     iconTheme: const IconThemeData(color: AppColors.darkTextPrimary),
     textTheme: _buildTextTheme(AppColors.darkTextPrimary),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(),
+        TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(),
+      },
+    ),
   );
 }
 
