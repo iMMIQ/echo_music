@@ -127,17 +127,11 @@ class _AnimatedNavIconState extends State<_AnimatedNavIcon>
           scale: _scaleAnimation.value,
           child: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: widget.isSelected
-                  ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15)
-                  : null,
-              borderRadius: BorderRadius.circular(12),
-            ),
             child: Icon(
               widget.icon,
               color: widget.isSelected
                   ? Theme.of(context).colorScheme.primary
-                  : null,
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         );
