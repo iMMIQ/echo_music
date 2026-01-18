@@ -18,6 +18,7 @@ import '../providers/navigation_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/mini_player.dart';
+import '../../widgets/neumorphic_card.dart';
 import '../widgets/settings_dialogs.dart';
 
 // Global audio handler for mobile
@@ -289,7 +290,7 @@ class _QuickActions extends ConsumerWidget {
 }
 
 /// Quick action card
-class _QuickActionCard extends StatelessWidget {
+class _QuickActionCard extends StatefulWidget {
   const _QuickActionCard({
     required this.icon,
     required this.label,
@@ -302,31 +303,86 @@ class _QuickActionCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<_QuickActionCard> createState() => _QuickActionCardState();
+}
+
+class _QuickActionCardState extends State<_QuickActionCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _translateAnimation;
+  bool _isHovering = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _translateAnimation = Tween<double>(begin: 0.0, end: -2.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleHover(bool isHovering) {
+    setState(() {
+      _isHovering = isHovering;
+    });
+    if (isHovering) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconTheme(
-              data: IconThemeData(color: color),
-              child: icon,
+    final theme = Theme.of(context);
+
+    return MouseRegion(
+      onEnter: (_) => _handleHover(true),
+      onExit: (_) => _handleHover(false),
+      child: AnimatedBuilder(
+        animation: _translateAnimation,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0, _translateAnimation.value),
+            child: NeumorphicCard(
+              onTap: widget.onTap,
+              padding: EdgeInsets.zero,
+              borderRadius: 12,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  color: widget.color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconTheme(
+                      data: IconThemeData(color: widget.color),
+                      child: widget.icon,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.label,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: widget.color,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: color),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
