@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,98 @@ Future<void> initMobileAudioService() async {
   }
 }
 
+/// Navigation destination data class
+class _NavDestination {
+  const _NavDestination({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+}
+
+/// Animated navigation icon widget
+class _AnimatedNavIcon extends StatefulWidget {
+  const _AnimatedNavIcon({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+
+  @override
+  State<_AnimatedNavIcon> createState() => _AnimatedNavIconState();
+}
+
+class _AnimatedNavIconState extends State<_AnimatedNavIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void didUpdateWidget(_AnimatedNavIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isSelected != oldWidget.isSelected) {
+      if (widget.isSelected) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _scaleAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: widget.isSelected
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : null,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              widget.icon,
+              color: widget.isSelected
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : null,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// Home page of the app
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -96,27 +189,25 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
   }
 
-  final List<NavigationDestination> _destinations = [
-    NavigationDestination(
-      icon: Icon(PhosphorIcons.house()),
-      selectedIcon: Icon(PhosphorIcons.house(PhosphorIconsStyle.fill)),
+  static final List<_NavDestination> _navDestinations = [
+    _NavDestination(
+      icon: PhosphorIcons.house(),
+      selectedIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
       label: 'Home',
     ),
-    NavigationDestination(
-      icon: Icon(PhosphorIcons.books()),
-      selectedIcon: Icon(PhosphorIcons.books(PhosphorIconsStyle.fill)),
+    _NavDestination(
+      icon: PhosphorIcons.books(),
+      selectedIcon: PhosphorIcons.books(PhosphorIconsStyle.fill),
       label: 'Library',
     ),
-    NavigationDestination(
-      icon: Icon(PhosphorIcons.magnifyingGlass()),
-      selectedIcon: Icon(
-        PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.fill),
-      ),
+    _NavDestination(
+      icon: PhosphorIcons.magnifyingGlass(),
+      selectedIcon: PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.fill),
       label: 'Search',
     ),
-    NavigationDestination(
-      icon: Icon(PhosphorIcons.gear()),
-      selectedIcon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.fill)),
+    _NavDestination(
+      icon: PhosphorIcons.gear(),
+      selectedIcon: PhosphorIcons.gear(PhosphorIconsStyle.fill),
       label: 'Settings',
     ),
   ];
@@ -124,6 +215,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final currentIndex = ref.watch(currentNavigationIndexProvider);
 
     return Scaffold(
@@ -133,14 +225,49 @@ class _HomePageState extends ConsumerState<HomePage> {
             children: [
               // Main content
               Expanded(child: SafeArea(child: _buildPage(currentIndex))),
-              // Bottom navigation
-              NavigationBar(
-                selectedIndex: currentIndex,
-                onDestinationSelected: (index) {
-                  ref.read(currentNavigationIndexProvider.notifier).index = index;
-                },
-                destinations: _destinations,
-                backgroundColor: theme.colorScheme.surface,
+              // Bottom navigation with frosted glass effect
+              ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.black.withOpacity(0.8)
+                          : Colors.white.withOpacity(0.8),
+                      border: Border(
+                        top: BorderSide(
+                          color: theme.colorScheme.onSurface.withOpacity(0.1),
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: NavigationBar(
+                      selectedIndex: currentIndex,
+                      onDestinationSelected: (index) {
+                        ref.read(currentNavigationIndexProvider.notifier).index =
+                            index;
+                      },
+                      destinations: _navDestinations.map((dest) {
+                        final index = _navDestinations.indexOf(dest);
+                        return NavigationDestination(
+                          icon: _AnimatedNavIcon(
+                            icon: dest.icon,
+                            label: dest.label,
+                            isSelected: currentIndex == index,
+                          ),
+                          selectedIcon: _AnimatedNavIcon(
+                            icon: dest.selectedIcon,
+                            label: dest.label,
+                            isSelected: currentIndex == index,
+                          ),
+                          label: dest.label,
+                        );
+                      }).toList(),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
