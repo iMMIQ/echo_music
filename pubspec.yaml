@@ -22,9 +22,8 @@ dependencies:
 
   # Audio Playback
   audio_service: ^0.18.13
-  just_audio: ^0.10.5  # Mobile: Android/iOS
-  media_kit: ^1.2.6  # Desktop: Windows/Linux/macOS
-  media_kit_libs_audio: ^1.0.7
+  media_kit: ^1.2.6  # All platforms: Android/iOS/Windows/Linux/macOS
+  media_kit_libs_audio: ^1.0.7  # Native audio libraries (no video)
 
   # Data Persistence
   hive: ^2.2.3
