@@ -195,7 +195,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: isMobile ? 56 : 72,
+            bottom: isMobile ? 120 : 72,
             child: const MiniPlayer(),
           ),
         ],

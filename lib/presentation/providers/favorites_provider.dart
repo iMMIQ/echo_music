@@ -11,7 +11,6 @@ class FavoritesController extends _$FavoritesController {
 
   /// Toggle favorite status for a song
   Future<void> toggleFavorite(String songId) async {
-    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final service = ref.read(libraryServiceProvider);
       await service.toggleFavorite(songId);
