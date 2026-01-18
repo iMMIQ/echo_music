@@ -322,14 +322,14 @@ class _ProgressBarState extends ConsumerState<_ProgressBar> {
             // Slider
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
-                activeTrackColor: Theme.of(context).colorScheme.primary,
-                inactiveTrackColor: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerHighest,
-                thumbColor: Theme.of(context).colorScheme.primary,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                trackHeight: 6,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
                 overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
-                trackHeight: 4,
+                activeTrackColor: Theme.of(context).colorScheme.primary,
+                inactiveTrackColor: Theme.of(context).colorScheme.surfaceVariant,
+                thumbColor: Theme.of(context).colorScheme.primary,
+                overlayColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                trackShape: _NeumorphicTrackShape(),
               ),
               child: Slider(
                 value: _sliderValue.clamp(0.0, 1.0),
@@ -774,5 +774,22 @@ class _VolumeSliderDialogState extends ConsumerState<_VolumeSliderDialog> {
         ),
       ],
     );
+  }
+}
+
+class _NeumorphicTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight!;
+    final trackLeft = offset.dx;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
