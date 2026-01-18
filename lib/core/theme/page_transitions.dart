@@ -19,8 +19,6 @@ class SharedAxisPageTransitionsBuilder extends PageTransitionsBuilder {
 }
 
 class SlideUpPageTransition<T> extends PageRouteBuilder<T> {
-  final Widget child;
-
   SlideUpPageTransition({
     required this.child,
     super.transitionDuration = const Duration(milliseconds: 300),
@@ -45,4 +43,6 @@ class SlideUpPageTransition<T> extends PageRouteBuilder<T> {
             );
           },
         );
+
+  final Widget child;
 }

@@ -1,7 +1,8 @@
 import 'dart:async';
+
 import 'package:audio_service/audio_service.dart' as audio_pkg;
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../models/song_model.dart';
 import 'audio_service.dart';

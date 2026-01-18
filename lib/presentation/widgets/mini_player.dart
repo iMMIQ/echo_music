@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../data/models/song_model.dart';
 import '../../data/services/audio_service.dart';
 import '../../widgets/neumorphic_button.dart';
-import '../../core/theme/app_theme.dart';
 import '../pages/full_player_page.dart';
 import '../providers/audio_provider.dart';
 

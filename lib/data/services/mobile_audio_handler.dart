@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Audio player handler for audio_service on mobile platforms
@@ -184,6 +184,7 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
       final currentIndex = _player.currentIndex;
       final currentPosition = _player.position;
 
+      // ignore: deprecated_member_use
       await _player.setAudioSource(
         ConcatenatingAudioSource(children: audioSources),
         initialIndex: currentIndex ?? 0,
@@ -194,6 +195,7 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
     }
   }
 
+  @override
   Future<void> removeQueueItem(MediaItem mediaItem) async {
     _internalQueue.removeWhere((item) => item.id == mediaItem.id);
     queue.add([..._internalQueue]);
@@ -204,7 +206,9 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
     if (currentIndex < 0 ||
         currentIndex >= _internalQueue.length ||
         newIndex < 0 ||
-        newIndex >= _internalQueue.length) return;
+        newIndex >= _internalQueue.length) {
+      return;
+    }
 
     final item = _internalQueue.removeAt(currentIndex);
     _internalQueue.insert(newIndex, item);
@@ -215,6 +219,7 @@ class MobileAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> skipToQueueItem(int index) async {
     if (index < 0 || index >= queue.value.length) return;
+    // ignore: unawaited_futures
     _player.seek(
       Duration.zero,
       index: _player.shuffleModeEnabled ? _player.shuffleIndices[index] : index,

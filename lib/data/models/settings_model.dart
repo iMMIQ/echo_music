@@ -36,16 +36,16 @@ enum AudioQuality {
   medium('Medium', 256),
   high('High', 320);
 
+  const AudioQuality(this.label, this.bitrate);
+
   final String label;
   final int bitrate;
-
-  const AudioQuality(this.label, this.bitrate);
 }
 
 /// Extension for Hive adapter
 class AppSettingsAdapter extends TypeAdapter<AppSettings> {
   @override
-  final int typeId = 6;
+  int get typeId => 6;
 
   @override
   AppSettings read(BinaryReader reader) {

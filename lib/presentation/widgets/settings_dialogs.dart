@@ -23,7 +23,9 @@ class ThemeModeDialog extends ConsumerWidget {
             title: Text(_getThemeModeLabel(mode)),
             subtitle: Text(_getThemeModeDescription(mode)),
             value: mode,
+            // ignore: deprecated_member_use
             groupValue: currentThemeMode,
+            // ignore: deprecated_member_use
             onChanged: (value) {
               if (value != null) {
                 ref.read(settingsProvider.notifier).setThemeMode(value);
@@ -94,7 +96,7 @@ class AccentColorDialog extends ConsumerWidget {
               Navigator.of(context).pop();
             },
             borderRadius: BorderRadius.circular(12),
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(12),
@@ -107,7 +109,7 @@ class AccentColorDialog extends ConsumerWidget {
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: color.withOpacity(0.5),
+                          color: color.withValues(alpha: 0.5),
                           blurRadius: 8,
                           spreadRadius: 2,
                         ),
@@ -135,8 +137,7 @@ class AccentColorDialog extends ConsumerWidget {
 
   Color _getContrastColor(Color color) {
     // Calculate luminance
-    final luminance =
-        (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
+    final luminance = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b;
     return luminance > 0.5 ? Colors.black : Colors.white;
   }
 }
@@ -159,7 +160,9 @@ class AudioQualityDialog extends ConsumerWidget {
             title: Text(quality.label),
             subtitle: Text('${quality.bitrate} kbps'),
             value: quality,
+            // ignore: deprecated_member_use
             groupValue: currentQuality,
+            // ignore: deprecated_member_use
             onChanged: (value) {
               if (value != null) {
                 ref.read(settingsProvider.notifier).setAudioQuality(value);

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:media_kit/media_kit.dart';
 import 'package:flutter/foundation.dart';
+import 'package:media_kit/media_kit.dart';
 
 import '../models/song_model.dart';
 import 'audio_service.dart';

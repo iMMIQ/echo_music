@@ -6,22 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../data/models/album_model.dart';
 import '../../data/models/artist_model.dart';
 import '../../data/models/settings_model.dart';
 import '../../data/models/song_model.dart';
 import '../../data/services/mobile_audio_handler.dart';
 import '../../data/services/permission_service.dart';
+import '../../widgets/neumorphic_card.dart';
 import '../providers/audio_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/library_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
-import '../widgets/mini_player.dart';
-import '../../widgets/neumorphic_card.dart';
-import '../../core/theme/app_theme.dart';
 import '../widgets/settings_dialogs.dart';
+import '../widgets/mini_player.dart';
 
 // Global audio handler for mobile
 MobileAudioHandler? globalAudioHandler;
@@ -161,11 +161,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: isDark
-                          ? Colors.black.withOpacity(0.8)
-                          : Colors.white.withOpacity(0.8),
+                          ? Colors.black.withValues(alpha: 0.8)
+                          : Colors.white.withValues(alpha: 0.8),
                       border: Border(
                         top: BorderSide(
-                          color: theme.colorScheme.onSurface.withOpacity(0.1),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
                           width: 0.5,
                         ),
                       ),
@@ -363,7 +363,6 @@ class _QuickActionCardState extends State<_QuickActionCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _translateAnimation;
-  bool _isHovering = false;
 
   @override
   void initState() {
@@ -384,9 +383,6 @@ class _QuickActionCardState extends State<_QuickActionCard>
   }
 
   void _handleHover(bool isHovering) {
-    setState(() {
-      _isHovering = isHovering;
-    });
     if (isHovering) {
       _controller.forward();
     } else {

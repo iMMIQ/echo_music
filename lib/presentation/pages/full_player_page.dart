@@ -74,7 +74,7 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                 data: (state) {
                   final song = state.currentSong;
                   if (song == null || song.albumArt == null) {
-                    return Container(color: theme.colorScheme.background);
+                    return Container(color: theme.colorScheme.surface);
                   }
                   return Opacity(
                     opacity: 0.1,
@@ -84,8 +84,8 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                     ),
                   );
                 },
-                loading: () => Container(color: theme.colorScheme.background),
-                error: (_, __) => Container(color: theme.colorScheme.background),
+                loading: () => Container(color: theme.colorScheme.surface),
+                error: (_, __) => Container(color: theme.colorScheme.surface),
               );
             },
           ),
@@ -96,9 +96,9 @@ class _FullPlayerPageState extends ConsumerState<FullPlayerPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  theme.colorScheme.background.withOpacity(0.3),
-                  theme.colorScheme.background.withOpacity(0.7),
-                  theme.colorScheme.background,
+                  theme.colorScheme.surface.withValues(alpha: 0.3),
+                  theme.colorScheme.surface.withValues(alpha: 0.7),
+                  theme.colorScheme.surface,
                 ],
               ),
             ),
@@ -365,9 +365,9 @@ class _ProgressBarState extends ConsumerState<_ProgressBar> {
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
                 overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
                 activeTrackColor: Theme.of(context).colorScheme.primary,
-                inactiveTrackColor: Theme.of(context).colorScheme.surfaceVariant,
+                inactiveTrackColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 thumbColor: Theme.of(context).colorScheme.primary,
-                overlayColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                 trackShape: _NeumorphicTrackShape(),
               ),
               child: Slider(

@@ -72,15 +72,15 @@ class AppColors {
 
 /// Neumorphic shadow data class
 class NeumorphicShadow {
-  final List<BoxShadow> raised;
-  final List<BoxShadow> inset;
-  final List<BoxShadow> buttonPressed;
-
   const NeumorphicShadow({
     required this.raised,
     required this.inset,
     required this.buttonPressed,
   });
+
+  final List<BoxShadow> raised;
+  final List<BoxShadow> inset;
+  final List<BoxShadow> buttonPressed;
 }
 
 /// Dark mode neumorphic shadows
@@ -147,19 +147,19 @@ ThemeData lightTheme({Color accentColor = AppColors.primary}) {
       indicatorShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),
       ),
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
       height: 56,
-      labelTextStyle: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return const TextStyle(color: AppColors.primary);
         }
-        return TextStyle(color: AppColors.lightTextSecondary);
+        return const TextStyle(color: AppColors.lightTextSecondary);
       }),
-      iconTheme: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return const IconThemeData(color: AppColors.primary);
         }
-        return IconThemeData(color: AppColors.lightTextSecondary);
+        return const IconThemeData(color: AppColors.lightTextSecondary);
       }),
     ),
     cardTheme: const CardThemeData(
